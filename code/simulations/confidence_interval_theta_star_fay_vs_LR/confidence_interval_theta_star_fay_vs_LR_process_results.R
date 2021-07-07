@@ -5,8 +5,7 @@ library(cowplot)
 library(fs)
 library(furrr)
 
-results <- read_rds("sim_results_10000.rds")
-
+results <- read_rds("code/simulations/confidence_interval_theta_star_fay_vs_LR/confidence_interval_theta_star_fay_vs_LR_results.rds")
 
 # Process Results ---------------------------------------------------------
 coverage_results <-
@@ -42,28 +41,7 @@ ci_results <-
 
 
 # Plot Results ------------------------------------------------------------
-# make_coverage_plot_for_method <- function(method_name, plot_title = method_name) {
-#   coverage_results %>%
-#     filter(method == method_name) %>%
-#     ggplot(aes(specificity, sensitivity, fill = coverage)) +
-#     facet_grid(n_tested_for_prevalence ~ prevalence,
-#                labeller = labeller(
-#                  prevalence = function(.) str_c("Prevalence:\n", scales::percent(as.numeric(.), accuracy = .1)),
-#                  n_tested_for_prevalence = function(.) str_c("Tested for Prevalence Size:\n", scales::comma(as.numeric(.))))
-#     ) +
-#     # geom_raster(interpolate = F) +
-#     geom_tile() +
-#     cowplot::theme_cowplot() +
-#     scale_x_continuous(name = "Specificity", labels = function(.) percent(., accuracy = 1)) +
-#     scale_y_continuous(name = "Sensitivity", labels = function(.) percent(., accuracy = 1)) +
-#     scale_fill_distiller(name = "Coverage",type = "div", palette = "PiYG", direction = 1, limits = c(0.9, 1), labels = function(.) percent(., accuracy = 1)) +
-#     guides(fill = guide_colourbar(barwidth = 20)) +
-#     ggtitle(plot_title) +
-#     theme(legend.position = "bottom")
-# }
-#
-# Fay_plot <- make_coverage_plot_for_method("Fay")
-# LR_plot <- make_coverage_plot_for_method("LR", "Lang and Reiczigel")
+
 coverage_comparison_plot <-
   coverage_results %>%
   ggplot(aes(specificity, sensitivity, fill = coverage)) +
@@ -143,11 +121,10 @@ upper_error_frequency_comparison_plot <-
   ggtitle("Upper Error Frequency Comparison", subtitle = "10,000 replications each, nP = 100, nSp = 300, nSe = 60") +
   theme(legend.position = "bottom")
 
-
-dir_create("figures")
-
+plot_sav_dir <- "code/simulations/confidence_interval_theta_star_fay_vs_LR/figures"
+dir_create(plot_sav_dir)
 sapply(ls()[str_ends(ls(), "_plot")],
-       function(plot_name) save_plot(filename = path("figures", plot_name, ext = "pdf"),
+       function(plot_name) save_plot(filename = path(plot_sav_dir, plot_name, ext = "pdf"),
                                      plot = get(plot_name),
                                      base_height = 8,
                                      base_asp = 16/9))
