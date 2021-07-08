@@ -23,14 +23,16 @@ tmp2<-
 tmp %>%
   group_by(replication, ICC, prevalence) %>%
   unnest(psu) %>%
-  summarize(wspoissonTest_result = list(wspoissonTest(x = psu_positives, w = psu_size / sum(psu_size), midp = T)),
-    total_psu_size = sum(psu_size),
+  summarize(wspoissonTest_result = list(wspoissonTest(x = psu_positives,
+                                                      w = psu_size / sum(psu_size),
+                                                      midp = T,
+                                                      mult = 1/sum(psu_size))), # This is wrong
     .groups = "drop") %>%
-  # This is wrong
-  mutate(conf.int = map2(wspoissonTest_result, total_psu_size,
-                         ~set_names(.x$conf.int / .y, c("low", "high")))) %>%
+  mutate(conf.int = map(wspoissonTest_result, "conf.int") %>% map(~set_names(., c("low", "high")))) %>%
   unnest_wider(conf.int, names_sep = "_")
 
 
-tmp2 %>%
-  count(prevalence < conf.int_high)
+
+possion_rates <- sample(1:5, 20, replace = T)
+set.seed(200)
+rpois(20, possion_rates)
