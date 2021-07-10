@@ -24,7 +24,9 @@ state_pop <- tibble(
     5893718, 576851
   )
 ) %>%
-  mutate(state = row_number())
+  mutate(state = row_number(),
+         pop_weight = population / sum(population)) %>%
+  select(state, population, pop_weight, area)
 
 few_state_scenario <- state_pop %>%
   mutate(population_cases = case_when(
@@ -46,12 +48,13 @@ generate_state_sample <- function(scenario, total_people_sampled) {
   sample(n_states, size = total_people_sampled, replace = T, prob = scenario[["population"]]) %>%
     enframe(name = NULL, value = "state") %>%
     count(state, name = "n_sampled") %>%
-    left_join(scenario) %>%
+    left_join(scenario, by = "state") %>%
     mutate(sample_cases = rbinom(n = n_states, size = n_sampled, prob = population_cases / population)) %>%
     select(
       group = state,
       size = n_sampled,
-      cases = sample_cases
+      cases = sample_cases,
+      group_weight = pop_weight
     )
 }
 
