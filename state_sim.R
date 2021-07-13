@@ -28,6 +28,7 @@ AC_method <- function(y, n_survey_design, m_survey_design, adj = F, conf.level =
 }
 
 n_simulations <- 10000
+# n_simulations <- 5000
 m_survey_design <- 12000
 n_survey_design <- 1
 set.seed(200)
@@ -53,6 +54,17 @@ state_samples <-
       mutate(group_weight = population / sum(population))
 
     wspoissonTest(x = dat[["cases"]], w = dat[["group_weight"]] / dat[["size"]])
+  }),
+  result_wspoissonTest_midp = map(data, function(data) {
+    dat <-
+      data %>%
+      group_by(state, population) %>%
+      summarize(cases = sum(sample_cases),
+                size = sum(sample_size),
+                .groups = "drop") %>%
+      mutate(group_weight = population / sum(population))
+
+    wspoissonTest(x = dat[["cases"]], w = dat[["group_weight"]] / dat[["size"]], midp = T)
   }),
   result_AC = map(data, ~AC_method(y = .[["sample_cases"]],
                                    n_survey_design = n_survey_design,
@@ -112,13 +124,23 @@ state_samples %>%
             lower_error_freq = mean(conf.int_l > prevalence),
             upper_error_freq = mean(prevalence > conf.int_u),
             .groups = "drop") %>%
-  arrange(scenario, method)
+  arrange(scenario, method) %>%
+  dput()
+
 
 structure(list(scenario = c("few_state", "few_state", "few_state",
-                            "many_state", "many_state", "many_state"), method = c("AC", "AC_adj",
-                                                                                  "wspoissonTest", "AC", "AC_adj", "wspoissonTest"), coverage = c(0.957,
-                                                                                                                                                  0.957, 0.9629, 0.9515, 0.9515, 0.9597), lower_error_freq = c(0.0259,
-                                                                                                                                                                                                               0.0259, 0.0216, 0.0287, 0.0287, 0.0246), upper_error_freq = c(0.0171,
-                                                                                                                                                                                                                                                                             0.0171, 0.0155, 0.0198, 0.0198, 0.0157)), row.names = c(NA, -6L
-                                                                                                                                                                                                                                                                             ), class = c("tbl_df", "tbl", "data.frame"))
-
+                            "few_state", "many_state", "many_state", "many_state", "many_state"
+), method = c("AC", "AC_adj", "wspoissonTest", "wspoissonTest_midp",
+              "AC", "AC_adj", "wspoissonTest", "wspoissonTest_midp"), coverage = c(0.957,
+                                                                                   0.957, 0.9629, 0.9559, 0.9515, 0.9515, 0.9597, 0.9517), lower_error_freq = c(0.0259,
+                                                                                                                                                                0.0259, 0.0216, 0.025, 0.0287, 0.0287, 0.0246, 0.0281), upper_error_freq = c(0.0171,
+                                                                                                                                                                                                                                             0.0171, 0.0155, 0.0191, 0.0198, 0.0198, 0.0157, 0.0202)), row.names = c(NA,
+                                                                                                                                                                                                                                                                                                                     -8L), class = c("tbl_df", "tbl", "data.frame"))
+structure(list(scenario = c("few_state", "few_state", "few_state",
+                            "few_state", "many_state", "many_state", "many_state", "many_state"
+), method = c("AC", "AC_adj", "wspoissonTest", "wspoissonTest_midp",
+              "AC", "AC_adj", "wspoissonTest", "wspoissonTest_midp"), coverage = c(0.957,
+                                                                                   0.957, 0.9629, 0.9559, 0.9515, 0.9515, 0.9597, 0.9517), lower_error_freq = c(0.0259,
+                                                                                                                                                                0.0259, 0.0216, 0.025, 0.0287, 0.0287, 0.0246, 0.0281), upper_error_freq = c(0.0171,
+                                                                                                                                                                                                                                             0.0171, 0.0155, 0.0191, 0.0198, 0.0198, 0.0157, 0.0202)), row.names = c(NA,
+                                                                                                                                                                                                                                                                                                                     -8L), class = c("tbl_df", "tbl", "data.frame"))
