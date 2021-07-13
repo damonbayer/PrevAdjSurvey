@@ -24,15 +24,16 @@ state_pop <- tibble(
     5893718, 576851
   )
 ) %>%
-  mutate(state = row_number(),
-         pop_weight = population / sum(population)) %>%
-  select(state, population, pop_weight, area)
+  mutate(state = row_number()) %>%
+  select(state, population, area)
 
 few_state_scenario <- state_pop %>%
   mutate(population_cases = case_when(
     area %in% c("California", "Texas", "Florida", "New York") ~ round(population * 0.015),
+    # area %in% c("California", "Texas", "Florida", "New York") ~ round(population * 0.005),
     TRUE ~ 0
   ))
+
 
 ICC <- 0.01
 prevalence <- 0.005
@@ -41,22 +42,29 @@ set.seed(200)
 many_state_scenario <- state_pop %>%
   mutate(., population_cases = round(rbeta(nrow(.), (1 - ICC) / ICC * prevalence, (1 - ICC) / ICC * (1 - prevalence)) * population))
 
+scenario <- many_state_scenario
 
-generate_state_sample <- function(scenario, total_people_sampled) {
-  n_states <- nrow(scenario)
 
-  sample(n_states, size = total_people_sampled, replace = T, prob = scenario[["population"]]) %>%
-    enframe(name = NULL, value = "state") %>%
-    count(state, name = "n_sampled") %>%
-    left_join(scenario, by = "state") %>%
-    mutate(sample_cases = rbinom(n = n_states, size = n_sampled, prob = population_cases / population)) %>%
-    select(
-      group = state,
-      size = n_sampled,
-      cases = sample_cases,
-      group_weight = pop_weight
-    )
+
+generate_state_sample <- function(scenario, m, n_tilde) {
+  scenario %>%
+    sample_n(size = m, replace = T, weight = population) %>%
+    mutate(., sample_cases = rbinom(n = nrow(.), size = n_tilde, prob = population_cases / population)) %>%
+    mutate(sample_size = n_tilde) %>%
+    select(state, population, sample_cases, sample_size)
 }
 
-generate_state_sample(many_state_scenario, 12000)
-generate_state_sample(few_state_scenario, 12000)
+
+
+
+# group_by(group = state, population) %>%
+#   summarize(cases = sum(sample_cases),
+#             size = n_tilde * n(),
+#             .groups = "drop") %>%
+#   mutate(group_weight = population / sum(population)) %>%
+#   select(-population)
+
+
+# generate_state_sample(many_state_scenario, m = 12000, n_tilde = 1)
+# generate_state_sample(many_state_scenario, 12000)
+# generate_state_sample(few_state_scenario, 12000)
