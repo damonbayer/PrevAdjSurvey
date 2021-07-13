@@ -67,8 +67,8 @@ Here are some notes on the project. You can change the notation if you want. I a
 
 \section{Overview}
 
-Quick overview. I described the problem in Section~\ref{sec-math}. The usual adjustment for sensitivity and specificity is described in Section~\ref{sec-usualAdj}. Then the three parts I spoke about. First, the confidence interval for a simple random sample is described in Section~\ref{sec-thetastar} (that is what you already did). Second, the confidence interval assuming a perfect assay in Section~\ref{sec-betaPerfect}. And finally, the 
-confidence interval for an imperfect assay in Section~\ref{sec-betaImperfect}. 
+Quick overview. I described the problem in Section~\ref{sec-math}. The usual adjustment for sensitivity and specificity is described in Section~\ref{sec-usualAdj}. Then the three parts I spoke about. First, the confidence interval for a simple random sample is described in Section~\ref{sec-thetastar} (that is what you already did). Second, the confidence interval assuming a perfect assay in Section~\ref{sec-betaPerfect}. And finally, the
+confidence interval for an imperfect assay in Section~\ref{sec-betaImperfect}.
 
 
 \section{Mathematical Statement of Problem}
@@ -101,15 +101,15 @@ Here is the statistical problem. Assuming all of the above holds, and we observe
 \section{Usual Adjustment for Sensitivity and Specificity}
 \label{sec-usualAdj}
 
-To simplify the problem, suppose there is only one sampling unit, and let $X_1=X$ and $n_1=n$, etc. Then $\beta = \theta_1^*=\theta^*$. 
+To simplify the problem, suppose there is only one sampling unit, and let $X_1=X$ and $n_1=n$, etc. Then $\beta = \theta_1^*=\theta^*$.
 Further assume that $\phi_p$ and $\phi_n$ are known. Let $Y_1,\ldots,Y_n$ be the result of the assay from the $n$ individuals in the population
-($Y_i=1$ is positive and $Y_i=0$ is negative). Let $Y_1^*,\ldots,Y_n^*$ be the true disease status ($Y_i^*=1$ is diseased, and $Y_i^*=0$ is not diseased).  
+($Y_i=1$ is positive and $Y_i=0$ is negative). Let $Y_1^*,\ldots,Y_n^*$ be the true disease status ($Y_i^*=1$ is diseased, and $Y_i^*=0$ is not diseased).
 Then using the definition of sensitivity and specificity, we get:
 \begin{eqnarray*}
 Pr[ Y_i =1 | Y_i^*=1] & = & \phi_p \\
-Pr[ Y_i=0 | Y_i^*=0] & = & 1- \phi_n 
+Pr[ Y_i=0 | Y_i^*=0] & = & 1- \phi_n
 \end{eqnarray*}
-and 
+and
 \begin{eqnarray*}
 Pr[ Y_i=1] & = & Pr[ Y_i =1 | Y_i^*=1]  Pr[Y_i^*=1] + Pr[ Y_i =1 | Y_i^*=0] Pr[ Y_i^*=0] \\
 & = & \phi_p \theta^* + \phi_n (1-\theta^*)  \\
@@ -117,12 +117,12 @@ Pr[ Y_i=1] & = & Pr[ Y_i =1 | Y_i^*=1]  Pr[Y_i^*=1] + Pr[ Y_i =1 | Y_i^*=0] Pr[ 
 \end{eqnarray*}
 Let $\theta = Pr[ Y_i=1]$.
 
-So we have 
+So we have
 \begin{eqnarray*}
 & & X \sim Binomial \left(n, \theta \right)  \\
 \mbox{ where} & \theta & = \theta^* \left\{ \phi_p - \phi_n \right\} + \phi_n.
 \end{eqnarray*}
-Thus, 
+Thus,
 \begin{eqnarray}
 \theta^* & =  & \frac{ \theta - \phi_n }{ \phi_p - \phi_n}  = \frac{ \theta + (1 - \phi_n) -1  }{ \phi_p + (1 - \phi_n) -1 } \label{eq:thetastar}
 \end{eqnarray}
@@ -134,26 +134,38 @@ This gives the usual estimator for  prevalence adjusted for sensitivity and spec
 \begin{eqnarray*}
 \hat{\theta}^* & = & \frac{ \hat{\theta} - \hat{\phi}_n }{\hat{\phi}_p - \hat{\phi}_n} = \frac{ \hat{\theta} + \widehat{Sp} -1 }{\widehat{Se} + \widehat{Sp} -1}.
 \end{eqnarray*}
- 
- 
+
+
 \section{Confidence Interval on $\theta^*$}
 \label{sec-thetastar}
 
 The simulation you (Damon) already did handles this problem. It answers: what is a good confidence interval for $\theta^*$?
 You compared the method of \citet{Lang:2014} to the new method described in the Supplement to \citet{Kali:2021}, using the method of \citet{FayP:2015}.
-It shows that the lower error has a better bound with the new method. 
+It shows that the lower error has a better bound with the new method.
 
 \section{Confidence Interval on $\beta$ with a Perfect Assay}
 \label{sec-betaPerfect}
 
 
-Suppose we have a perfect assay (i.e., $\phi_p=1$ and $\phi_n=0$). Then $\theta^* = \theta$, and $\beta = \sum_{i=1}^{k} w_i \theta$. 
-The problem reduces to getting a confidence interval for a weighted average of the means of sample proportions. 
-This problem is a standard survey sampling one. Some methods are \citet{Korn:1998}, see the review in \citet{Dean:2015}. 
+Suppose we have a perfect assay (i.e., $\phi_p=1$ and $\phi_n=0$). Then $\theta^* = \theta$, and $\beta = \sum_{i=1}^{k} w_i \theta$.
+The problem reduces to getting a confidence interval for a weighted average of the means of sample proportions.
+This problem is a standard survey sampling one. Some methods are \citet{Korn:1998}, see the review in \citet{Dean:2015}.
 
-Another way to address this problem is to assume that $X_i \sim Poisson( n_i \theta_i)$ and use the methods 
-of \citet{FayF:1997} or \citet{FayK:2017}. This should give a confidence interval for $\beta=\sum_{i=1}^{k} w_i \theta_i$ 
-that gives a lower and upper confidence distribution that is distributed gamma. (I will let you work out those details. Let me know if it is not easy.)  
+Another way to address this problem is to assume that $X_i \sim Poisson( n_i \theta_i)$ and use the methods
+of \citet{FayF:1997} or \citet{FayK:2017}.
+The notation is different in those papers. Here is the correspondence between the notations in these notes and in \citet{FayK:2017}.
+
+\begin{tabular}{cc}
+These Notes & Fay and Kim  \\ \hline
+$w_i$     & $s_i$ \\
+$\theta_i$ & $\lambda_i$ \
+\end{tabular}
+
+and $X_i$ and $n_i$ are the same in both papers. 
+
+
+This should give a confidence interval for $\beta=\sum_{i=1}^{k} w_i \theta_i$
+that gives a lower and upper confidence distribution that is distributed gamma. (I will let you work out those details. Let me know if it is not easy.)
 
 
 \section{Confidence Interval on $\beta$ with an Imperfect Assay}
@@ -161,19 +173,19 @@ that gives a lower and upper confidence distribution that is distributed gamma. 
 
 This is the final problem (described in Section~\ref{sec-math} that combines the two other problems.
 
-We have 
+We have
 \begin{eqnarray*}
 \beta & = & \sum_{i=1}^{k} w_i \theta_i^*  \\
 & = &  \sum_{i=1}^{k} w_i  \frac{ \theta_i - \phi_n }{ \phi_p - \phi_n} \\
 & = &   \frac{ \sum_{i=1}^{k} w_i  \theta_i  }{ \phi_p - \phi_n} - \frac{ \phi_n \sum_{i=1}^{k} w_i    }{ \phi_p - \phi_n} \\
 & = &   \frac{ \sum_{i=1}^{k} w_i  \theta_i  }{ \phi_p - \phi_n} - \frac{ \phi_n     }{ \phi_p - \phi_n},
 \end{eqnarray*}
-where the last step is because the weights are assumed to sum to 1. 
+where the last step is because the weights are assumed to sum to 1.
 
-We can use 
+We can use
 \begin{eqnarray*}
 \hat{\beta} & = &   \frac{ \sum_{i=1}^{k} w_i  \hat{\theta}_i  }{ \hat{\phi}_p - \hat{\phi}_n} - \frac{ \hat{\phi}_n   }{ \hat{\phi}_p - \hat{\phi}_n} \\
-& = & 
+& = &
 \end{eqnarray*}
 as our estimator of $\beta$. Then we can use the melding method of \citet{FayP:2015} to combine the confidence distributions for $\sum_{i=1}^{k} w_i  {\theta}_i$, for $\phi_p$,
 and for $\phi_n$. That might not be straightforward, since I am not sure if $\phi_n$ and $\phi_p$ are monotonic in $\beta$. You need to check that out.
@@ -190,4 +202,4 @@ We can compare that new method to the method described in the supplement of \cit
 
 \bibliography{refs}
 
-\end{document}
+\end{document} 
