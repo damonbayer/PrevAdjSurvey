@@ -26,7 +26,7 @@
 %\usepackage{rotating}
 %\usepackage{pdflscape}
 %\usepackage{longtable}
-
+\usepackage{booktabs}
 
 
 %\usepackage{C:/R/R-2.11.1/share/texmf/Sweave}
@@ -167,6 +167,49 @@ and $X_i$ and $n_i$ are the same in both papers.
 This should give a confidence interval for $\beta=\sum_{i=1}^{k} w_i \theta_i$
 that gives a lower and upper confidence distribution that is distributed gamma. (I will let you work out those details. Let me know if it is not easy.)
 
+\subsection{Current Results}
+
+For this section I have applied 4 methods to 2 populations, with 10,0000 replications each.
+
+\noindent Methods:
+\begin{itemize}
+    \item AC \& AC\_adj: The Agresti-Coull and Agresti-Coull adjusted methods for survey samples described in \cite{Dean:2015}. Implemented by hand.
+    \item wspoissonTest \& wspoissonTest\_midp: the methods described in \cite{FayF:1997} and \cite{FayK:2017}. Implemented in \cite{asht}.
+\end{itemize}
+
+In each scenario, I use the 2020 census population counts for all states \& DC and specify the exact number of cases in each state's population to achieve an overall prevalence $\approx$  0.5\%.
+Per \cite{Lemeshow1985SurveysTM}, I implement a 2-stage sampling algorithm, where $m$ states are sampled with replacement and $\tilde{n}$ people are sampled from each of the $m$ states.
+In the results here, $m = 12,000$ and $\tilde{n} = 1$, equivalent to a simple random sample from the country.
+Alternative schemes like $m = 120$ and $\tilde{n} = 100$ seem to produce worse results for the wspoissonTest methods, but I have not investigated this fully.\\
+The differences between the two scenarios are presented below.\\
+
+\noindent Scenarios:
+\begin{itemize}
+    \item few\_state: California, Texas, Florida, and New York each have 1.5\% prevalence, while all other states have no cases.
+    \item many\_state: all states have 0.5\% prevalence
+\end{itemize}
+
+\noindent Results:
+\begin{table}[h]
+\centering
+\begin{tabular}{llrrr}
+\toprule
+scenario & method & coverage & lower\_error\_freq & upper\_error\_freq\\
+\midrule
+few\_state & AC & 0.9570 & 0.0259 & 0.0171\\
+few\_state & AC\_adj & 0.9570 & 0.0259 & 0.0171\\
+few\_state & wspoissonTest & 0.9629 & 0.0216 & 0.0155\\
+few\_state & wspoissonTest\_midp & 0.9559 & 0.0250 & 0.0191\\
+\addlinespace
+many\_state & AC & 0.9515 & 0.0287 & 0.0198\\
+many\_state & AC\_adj & 0.9515 & 0.0287 & 0.0198\\
+many\_state & wspoissonTest & 0.9597 & 0.0246 & 0.0157\\
+many\_state & wspoissonTest\_midp & 0.9517 & 0.0281 & 0.0202\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+I have not found any scenarios that ``break" the AC methods, which appear to be on par with the wspoissonTest\_midp methods.
 
 \section{Confidence Interval on $\beta$ with an Imperfect Assay}
 \label{sec-betaImperfect}
