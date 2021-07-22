@@ -30,10 +30,15 @@ state_pop <- tibble(
 few_state_scenario <- state_pop %>%
   mutate(population_cases = case_when(
     area %in% c("California", "Texas", "Florida", "New York") ~ round(population * 0.015),
-    # area %in% c("California", "Texas", "Florida", "New York") ~ round(population * 0.005),
     TRUE ~ 0
   ))
 
+
+two_state_scenario <- state_pop %>%
+  mutate(population_cases = case_when(
+    area %in% c("California", "New York") ~ round(population * 0.03),
+    TRUE ~ 0
+  ))
 
 ICC <- 0.01
 prevalence <- 0.005
@@ -42,7 +47,13 @@ set.seed(200)
 many_state_scenario <- state_pop %>%
   mutate(., population_cases = round(rbeta(nrow(.), (1 - ICC) / ICC * prevalence, (1 - ICC) / ICC * (1 - prevalence)) * population))
 
-scenario <- many_state_scenario
+ICC <- 0.5
+prevalence <- 0.005
+
+set.seed(201)
+one_state_scenario <- state_pop %>%
+  mutate(., population_cases = round(rbeta(nrow(.), (1 - ICC) / ICC * prevalence, (1 - ICC) / ICC * (1 - prevalence)) * population))
+
 
 
 
@@ -53,18 +64,3 @@ generate_state_sample <- function(scenario, m, n_tilde) {
     mutate(sample_size = n_tilde) %>%
     select(state, population, sample_cases, sample_size)
 }
-
-
-
-
-# group_by(group = state, population) %>%
-#   summarize(cases = sum(sample_cases),
-#             size = n_tilde * n(),
-#             .groups = "drop") %>%
-#   mutate(group_weight = population / sum(population)) %>%
-#   select(-population)
-
-
-# generate_state_sample(many_state_scenario, m = 12000, n_tilde = 1)
-# generate_state_sample(many_state_scenario, 12000)
-# generate_state_sample(few_state_scenario, 12000)
