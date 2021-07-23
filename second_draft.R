@@ -1,121 +1,160 @@
-library(extraDistr)
 library(tidyverse)
-n_replications <- 1000
-survey_sample_size <- 100
-n_weights <- 30
-ICC <- 0.1
-prevalence <- 0.005
-alpha <- (1 - ICC) / ICC * prevalence
-beta <- (1 - ICC) / ICC * (1 - prevalence)
+library(extraDistr)
+library(asht)
+library(cowplot)
+AC_method <- function(p_hat, var_hat_p_hat, conf.level = 0.95) {
+  alpha <- 1 - conf.level
+  z_val <- qnorm(1 - alpha / 2)
+  c <- z_val * z_val / 2
+
+  n_eff <- p_hat * (1 - p_hat) / var_hat_p_hat
+
+  x_tilde <- p_hat * n_eff + c
+  n_tilde <- n_eff + 2 * c
+  p_tilde <- x_tilde / n_tilde
+
+  ci <- p_tilde + c(-1,1) * z_val * sqrt(p_tilde * (1 - p_tilde) / n_tilde)
+  attr(ci, "conf.level") <- conf.level
+
+  rval <- list(conf.int = ci, estimate = p_tilde, p_hat = p_hat, var_hat_p_hat = var_hat_p_hat)
+  class(rval) <- "htest"
+  return(rval)
+}
+
+CP_method <- function(p_hat, var_hat_p_hat, conf.level = 0.95) {
+  alpha <- 1 - conf.level
+
+  n <- n_eff <- p_hat * (1 - p_hat) / var_hat_p_hat
+  x <- p_hat * n_eff
+
+  nu_1 <- 2 * x
+  nu_2 <- 2 * (n - x + 1)
+  nu_3 <- 2 * (x + 1)
+  nu_4 <- 2 * (n - x)
+
+  ci_l <- (nu_1 * qf(alpha / 2, nu_1, nu_2)) / (nu_2 + nu_1 * qf(alpha / 2, nu_1, nu_2))
+  ci_u <- (nu_3 * qf(1 - alpha / 2, nu_3, nu_4)) / (nu_4 + nu_3 * qf(1 - alpha / 2, nu_3, nu_4))
+
+  ci <- c(ci_l, ci_u)
+  attr(ci, "conf.level") <- conf.level
+
+  rval <- list(conf.int = ci, p_hat = p_hat, var_hat_p_hat = var_hat_p_hat)
+  class(rval) <- "htest"
+  return(rval)
+}
+
+# multipdplyr appears to be slower for this
+# library(multidplyr)
+# cluster <- new_cluster(parallel::detectCores() / 2 - 2)
+# cluster_library(cluster, "asht")
+# cluster_library(cluster, c("asht", "dplyr"))
+# cluster_assign(cluster, AC_method = AC_method)
 
 
 
-tmp <- tibble(group = rep(1:n_replications, each = n_weights),
-       weights = as.vector(t(rdirichlet(n_replications, alpha = rep(1, n_weights)))),
-       true_positivity = rbeta(n_weights * n_replications, alpha, beta),
-       sample_size = survey_sample_size) %>%
-  mutate(sample_positives = rbinom(n = n_weights * n_replications, size = sample_size, prob = true_positivity)) %>%
-  mutate(sample_positivity = sample_positives / sample_size)
+n_replications <- 2
+set.seed(200)
+tmp <-
+crossing(prevalence = 0.005,
+         ICC = c(0.01, 0.25, 0.9),
+         dirichlet_alpha = 10^(-2:2),
+         n_weights = 8000,
+         samples_per_weight = 1) %>%
+  mutate(design = 1:n()) %>%
+  select(design, everything()) %>%
+  mutate(data = pmap(list(prevalence, ICC, dirichlet_alpha, n_weights, samples_per_weight),
+                     function(prevalence, ICC, dirichlet_alpha, n_weights, samples_per_weight) {
+                       alpha <- (1 - ICC) / ICC * prevalence
+                       beta <- (1 - ICC) / ICC * (1 - prevalence)
 
+                       tibble(iteration = rep(1:n_replications, each = n_weights),
+                              weight = as.vector(t(rdirichlet(n_replications, alpha = rep(dirichlet_alpha, n_weights)))),
+                              true_positivity = rbeta(n_weights * n_replications, alpha, beta),
+                              n_tested = samples_per_weight) %>%
+                         mutate(sample_positives = rbinom(n = n(), size = n_tested, prob = true_positivity)) %>%
+                         mutate(sample_positivity = sample_positives / n_tested)
+                     })) %>%
+  unnest(data) %>%
+  group_by(design, prevalence, ICC, dirichlet_alpha, n_weights, samples_per_weight, iteration) %>%
+  # partition(cluster) %>%
+  summarize(
+    var_weight = var(weight),
+    var_true_positivity = var(true_positivity),
+    result_wspoissonTest = list(
+      wspoissonTest(
+        x = sample_positives,
+        w = weight / n_tested,
+        midp = F
+      )
+    ),
+    result_wspoissonTest_midp = list(
+      wspoissonTest(
+        x = sample_positives,
+        w = weight / n_tested,
+        midp = T)
+    ),
+    result_AC = list(
+      AC_method(
+        p_hat = sum(sample_positivity * weight),
+        var_hat_p_hat = sum((weight / n_tested)^2 * sample_positives))
+    ),
+    result_CP = list(
+      CP_method(p_hat = sum(sample_positivity * weight),
+                var_hat_p_hat = sum((weight / n_tested)^2 * sample_positives))
+    ),
+    .groups = "drop") %>%
+  # collect() %>%
+  pivot_longer(cols = starts_with("result"),
+               names_prefix = "result_",
+               names_to = "method",
+               values_to = "htest")
 
-tmp2 <- tmp %>%
-  group_by(group) %>%
-  summarize(result_wspoissonTest_midp = list(wspoissonTest(x = cur_data()[["sample_positives"]], w = cur_data()[["weights"]] / cur_data()[["sample_size"]], midp = F)),
-            result_wspoissonTest_midp = list(wspoissonTest(x = cur_data()[["sample_positives"]], w = cur_data()[["weights"]] / cur_data()[["sample_size"]], midp = T)))
-
-
+results <-
 tmp %>%
-  group_by(group) %>%
-  summarize(p_hat = sum(cur_data()[["sample_positivity"]] * cur_data()[["weights"]]))
-
-tmp2 %>%
-  mutate(conf.int = wspoissonTest %>% map("conf.int") %>% map(~set_names(., c("l", "u")))) %>%
-  unnest_wider(conf.int) %>%
-  mutate(lower_error = l > 0.05,
-         upper_error = u > 0.05,
+  mutate(conf.int = htest %>%
+           map("conf.int") %>%
+           map(~set_names(., c("l", "u")))) %>%
+  unnest_wider(conf.int, names_sep = "_") %>%
+  mutate(lower_error = conf.int_l > prevalence,
+         upper_error = prevalence > conf.int_u,
          covered = !(lower_error | upper_error)) %>%
-  summarize(mean(lower_error), mean(upper_error), mean(covered))
+  select(-htest, -starts_with("conf.int"))
+
+# IT WOULD BE BETTER TO GENERATE DATA< DO TESTS AND TOSS DATA IN ONE GO
+
+result_plot <-
+  results %>%
+  group_by(method, dirichlet_alpha, ICC) %>%
+  summarize(lower_error_freq = mean(lower_error),
+            upper_error_freq = mean(upper_error),
+            coverage = mean(covered),
+            .groups = "drop") %>%
+  pivot_longer(-c(method, dirichlet_alpha, ICC)) %>%
+  mutate(name = fct_recode(name,
+                           "Lower Error Frequency" = "lower_error_freq",
+                           "Upper Error Frequency" = "upper_error_freq",
+                           "Coverage" = "coverage"),
+         method = fct_recode(method,
+                             "Agresti-Coull (Unadjusted)" = "AC",
+                             "Clopper-Pearson (Unadjusted)" = "CP",
+                             "wsPoisson" = "wspoissonTest",
+                             "wsPoisson with mid-p" = "wspoissonTest_midp"),
+         dirichlet_alpha = as_factor(dirichlet_alpha)) %>%
+  ggplot(aes(dirichlet_alpha, value, group = method, color = method)) +
+  facet_grid(name ~ ICC, scale = "free_y", labeller = labeller(ICC = label_both)) +
+  geom_line() +
+  geom_point() +
+  geom_hline(data = tibble(
+    name =  c("Lower Error Frequency", "Upper Error Frequency", "Coverage"),
+    yintercept = c(0.025, 0.025, 0.95)),
+    mapping = aes(yintercept = yintercept), linetype = "dashed") +
+  # scale_x_discrete(name = latex2exp::TeX("\\overset{Dirichlet $\\alpha$}{smaller $\\Rightarrow$ larger variance of weights}")) +
+  scale_x_discrete(name = TeX(r'(\overset{Dirichlet $\alpha$}{larger $\Rightarrow$ smaller variance of weights})')) +
+  ggtitle("Properties of Confidence Intervals for Surveys with Perfect Assays", subtitle = "8000 subjects per study, replicated 1000 times each") +
+  scale_y_continuous(name = NULL, labels = scales::percent) +
+  scale_color_discrete(name = "Method") +
+  cowplot::theme_minimal_grid() +
+  theme(legend.position = "bottom")
 
 
-# y = sum s * x / n
-# y = sum weigts * sample_positivity
-
-
-# -------------------------------------------------------------------------
-
-
-
-wspoissonTest(x = tmp[["sample_positives"]], w = tmp[["weights"]] / tmp[["sample_size"]], midp = T)
-wspoissonTest(x = tmp[["sample_positives"]], w = tmp[["weights"]] / tmp[["sample_size"]], midp = T)
-
-wspoissonTest(x = tmp$sample_positives, w = tmp$weights / tmp$sample_size)$conf.int
-wspoissonTest(x = dat[["cases"]], w = dat[["group_weight"]] / dat[["size"]])
-
-
-tmp %>%
-  group_by(group) %>%
-  summarize(group_positivity = sum(sample_positivity * weights)) %>%
-  summarize(mean(group_positivity))
-
-
-  group_by(group) %>%
-  summarize(sum(weights))
-
-
-map_dbl(1:n_replications, ~{
-  tibble(weights = as.vector(rdirichlet(1, alpha = rep(20, n_weights))),
-         true_positivity = rbeta(n_weights, alpha, beta),
-         sample_size = survey_sample_size) %>%
-    mutate(positives = rbinom(n = n_weights, size = sample_size, prob = true_positivity)) %>%
-    summarize(a = mean(positives / sample_size)) %>%
-    pull(a)
-})
-
-# Generate weights ike this:
-rdirichlet(1, alpha = rep(20, n_weights))
-# smaller alpha => larger variance
-
-
-# Generate positivity rates like this
-# ICC, Prevalence
-
-
-
-
-rbeta(n_weights, alpha, beta)
-
-
-
-tibble(psu_size = round(rgamma(n_psu, shape = 2, scale = 100)),
-       psu_positives = round(psu_size * rbeta(n_psu, alpha, beta)),
-       psu_prevalence = psu_positives / psu_size)}))
-# Generate sample sizes like this?
-
-
-tibble()
-
-as.vector(rdirichlet(1, alpha = rep(20, n_weights)))
-
-rdirichlet(n_replications, alpha = rep(20, n_weights)) %>%
-  t() %>%
-  as_tibble
-
-rdirichlet(n_replications, alpha = rep(100, n_weights)) %>%
-  apply(1, var) %>%
-  mean()
-1.095742e-05
-
-
-rdirichlet(n_replications, alpha = rep(1, n_weights)) %>%
-  apply(1, var) %>%
-  mean()
-0.001066417
-
-rdirichlet(n_replications, alpha = rep(.1, n_weights)) %>%
-  apply(1, var) %>%
-  mean()
-
-rdirmnom(n = 100, size = 1000, alpha = rep(0.5, 30)) %>%
-  `/`(1000) %>%
-  apply(1, var) %>%
-  mean()
+save_plot(filename = "results_2021-07-23.pdf", plot = result_plot, ncol = 3, nrow = 3, base_height = 2.5)
