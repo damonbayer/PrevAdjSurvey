@@ -169,6 +169,28 @@ that gives a lower and upper confidence distribution that is distributed gamma. 
 
 \subsection{Dirichlet Weights Simulation Results}
 
+Two scenarios fall under my Dirichlet Weights Simulation:
+
+\begin{itemize}
+    \item 8,000 individuals (groups of 1) with population prevalence 0.05\% and varying variance among the weights.
+    \item 200 groups of 50 sampled with population prevalence 0.05\%, varying ICC, and varying variance among the weights.
+\end{itemize}
+
+The weight of each group is generated from a Dirichlet distribution with equal concentration parameters for all dimensions.
+
+The positivity of each group is generated from a Beta distribution which achieves the specified mean and ICC.
+
+
+
+As you predicted, the usual methods (Agresti-Coull and Clopper-Pearson) exhibit poor performance when there is high variance among the weights.
+
+Dean and Pagano recommend an adjustment suggested by Korn and Graubard that I wasn’t sure how to apply in the context of my simulation, so it’s possible that this is a pessimistic assessment of those methods. 
+
+Let’s chat about these results and next steps early next week.
+
+Thanks,
+
+Damon
 
 
 
