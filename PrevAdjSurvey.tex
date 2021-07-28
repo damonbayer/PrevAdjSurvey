@@ -167,7 +167,12 @@ and $X_i$ and $n_i$ are the same in both papers.
 This should give a confidence interval for $\beta=\sum_{i=1}^{k} w_i \theta_i$
 that gives a lower and upper confidence distribution that is distributed gamma. (I will let you work out those details. Let me know if it is not easy.)
 
-\subsection{Current Results}
+\subsection{Dirichlet Weights Simulation Results}
+
+
+
+
+\subsection{Weird U.S. State Simulation Results}
 
 For this section I have applied 4 methods to 2 populations, with 10,0000 replications each.
 
@@ -185,17 +190,29 @@ The differences between the two scenarios are presented below.\\
 
 \noindent Scenarios:
 \begin{itemize}
+    \item one\_state: Montana has 30\% prevalence, while all other states have no cases.
+    \item two\_state: California and New York each have 3\% prevalence, while all other states have no cases.
     \item few\_state: California, Texas, Florida, and New York each have 1.5\% prevalence, while all other states have no cases.
-    \item many\_state: all states have 0.5\% prevalence
+    \item many\_state: all states have $\approx$ 0.5\% prevalence, but with some clustering of cases
 \end{itemize}
 
 \noindent Results:
-\begin{table}[h]
+\begin{table}
 \centering
 \begin{tabular}{llrrr}
 \toprule
 scenario & method & coverage & lower\_error\_freq & upper\_error\_freq\\
 \midrule
+one\_state & AC & 0.9660 & 0.0232 & 0.0108\\
+one\_state & AC\_adj & 0.9660 & 0.0232 & 0.0108\\
+one\_state & wspoissonTest & 0.9928 & 0.0039 & 0.0033\\
+one\_state & wspoissonTest\_midp & 0.9852 & 0.0083 & 0.0065\\
+\addlinespace
+two\_state & AC & 0.9484 & 0.0256 & 0.0260\\
+two\_state & AC\_adj & 0.9484 & 0.0256 & 0.0260\\
+two\_state & wspoissonTest & 0.9632 & 0.0193 & 0.0175\\
+two\_state & wspoissonTest\_midp & 0.9538 & 0.0235 & 0.0227\\
+\addlinespace
 few\_state & AC & 0.9570 & 0.0259 & 0.0171\\
 few\_state & AC\_adj & 0.9570 & 0.0259 & 0.0171\\
 few\_state & wspoissonTest & 0.9629 & 0.0216 & 0.0155\\
@@ -210,9 +227,13 @@ many\_state & wspoissonTest\_midp & 0.9517 & 0.0281 & 0.0202\\
 \end{table}
 
 I have not found any scenarios that ``break" the AC methods, which appear to be on par with the wspoissonTest\_midp methods.
+There is no obvious pattern in coverage vs number of states with cases, other than that the wspoissonTest appears to do better with more evenly spread cases and both wspoissonTest methods do poorly in the one\_state scenario.
 
 \section{Confidence Interval on $\beta$ with an Imperfect Assay}
 \label{sec-betaImperfect}
+
+
+\subsection{Preliminaries}
 
 This is the final problem (described in Section~\ref{sec-math} that combines the two other problems.
 
@@ -227,15 +248,30 @@ where the last step is because the weights are assumed to sum to 1.
 
 We can use
 \begin{eqnarray*}
-\hat{\beta} & = &   \frac{ \sum_{i=1}^{k} w_i  \hat{\theta}_i  }{ \hat{\phi}_p - \hat{\phi}_n} - \frac{ \hat{\phi}_n   }{ \hat{\phi}_p - \hat{\phi}_n} \\
-& = &
+\hat{\beta} & = &   \frac{ \sum_{i=1}^{k} w_i  \hat{\theta}_i  }{ \hat{\phi}_p - \hat{\phi}_n} - \frac{ \hat{\phi}_n   }{ \hat{\phi}_p - \hat{\phi}_n} 
 \end{eqnarray*}
-as our estimator of $\beta$. Then we can use the melding method of \citet{FayP:2015} to combine the confidence distributions for $\sum_{i=1}^{k} w_i  {\theta}_i$, for $\phi_p$,
+as our estimator of $\beta$. 
+
+\subsection{Confidence Distribution Approach}
+
+Then we can use the melding method of \citet{FayP:2015} to combine the confidence distributions for $\beta_a = \sum_{i=1}^{k} w_i  {\theta}_i$, for $\phi_p$,
 and for $\phi_n$. That might not be straightforward, since I am not sure if $\phi_n$ and $\phi_p$ are monotonic in $\beta$. You need to check that out.
 
+\subsection{Korn-Graubard+CD Approach} 
 
-We can compare that new method to the method described in the supplement of \citet{Kali:2021}.
-
+This is the method described in the supplement of \citet{Kali:2021}.
+Basically, we use the method of Korn and Graubard to get confidence distributions for ${\beta}_a = \sum_{i=1}^{k} w_i \theta_i$ (the apparent prevalence, assuming perfect sensitivity and specificity).
+Let $\hat{\beta}_a= \sum_{i=1}^{k} w_i X_i$. Under the Poisson assumption, we estimate the variance 
+of $\hat{\beta}_a$ with $\widehat{Var}(\hat{\beta}_a) = \sum_{i=1}^{k} w_i^2 X_i$. Then Korn-Graubard define the effective sample size by setting the $\widehat{Var}(\hat{\beta}_a)$ to the binomial variance estimate,
+\begin{eqnarray*}
+\widehat{Var}(\hat{\beta}_a) \stackrel{set}{=} \frac{\hat{\beta}_a (1-\hat{\beta}_a)}{n_e}
+\end{eqnarray*}
+So we get 
+\begin{eqnarray*}
+n_e =   \frac{\hat{\beta}_a (1-\hat{\beta}_a)}{\widehat{Var}(\hat{\beta}_a)}
+\end{eqnarray*}
+Then the effective count is $x_e = n_e \hat{\beta}_a$, and the lower and upper confidence distributions for ${\beta}_a$ under the Korn-Graubard method are Beta$(x_e, n_e-x_e+1)$ and Beta$(x_e+1,n_e-x_e)$, respectively. 
+Then those confidence distributions are used in place of the confidence distributions for $\beta_a$ in the previous subsection. 
 
 
 
