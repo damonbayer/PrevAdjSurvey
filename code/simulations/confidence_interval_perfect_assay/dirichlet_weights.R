@@ -129,6 +129,7 @@ generate_results <- function(simulation_design, n_replications) {
                            var_weight <- var(dat$weight)
                            coef_var <- sqrt(var_weight) / mean_weight
 
+                           true_p <- sum(dat$true_positivity * dat$weight)
                            p_hat <- sum(dat$sample_positivity * dat$weight)
                            var_hat_p_hat <- sum((dat$weight / dat$n_tested)^2 * dat$sample_positives) # this is a bad estimate with high ICC
 
@@ -163,7 +164,8 @@ generate_results <- function(simulation_design, n_replications) {
                            #                        n_psu = n_weights,
                            #                        adjusted = T)
 
-                           list(mean_weight = mean_weight,
+                           list(true_prevalence = true_p,
+                                mean_weight = mean_weight,
                                 var_weight = var_weight,
                                 coef_var = coef_var,
                                 result_wspoissonTest = result_wspoissonTest,
@@ -185,8 +187,8 @@ generate_results <- function(simulation_design, n_replications) {
              map("conf.int") %>%
              map(~set_names(., c("l", "u")))) %>%
     unnest_wider(conf.int, names_sep = "_") %>%
-    mutate(lower_error = conf.int_l > prevalence,
-           upper_error = prevalence > conf.int_u,
+    mutate(lower_error = conf.int_l > true_prevalence,
+           upper_error = true_prevalence > conf.int_u,
            covered = !(lower_error | upper_error)) %>%
     select(-htest, -starts_with("conf.int"))
 
@@ -195,11 +197,11 @@ generate_results <- function(simulation_design, n_replications) {
 
 # Get results for the two simulation designs
 experimental_results_8000_1 <- generate_results(simulation_design = simulation_design_8000_1, n_replications = 10000)
-experimental_results_200_50 <- generate_results(simulation_design = simulation_design_200_50, n_replications = 10000)
+# experimental_results_200_50 <- generate_results(simulation_design = simulation_design_200_50, n_replications = 10000)
 
 # Save results
 write_rds(experimental_results_8000_1, "experimental_results_8000_1.rds")
-write_rds(experimental_results_200_50, "experimental_results_200_50.rds")
+# write_rds(experimental_results_200_50, "experimental_results_200_50.rds")
 
 # Function for making plots
 generate_plot <- function(experimental_results, n_weights = 0, samples_per_weight = 0) {
@@ -255,8 +257,8 @@ generate_plot <- function(experimental_results, n_weights = 0, samples_per_weigh
 
 # Generate plots
 results_plot_8000_1 <- generate_plot(experimental_results = experimental_results_8000_1 %>% filter(str_ends(method, "adjusted", negate = T)), n_weights = 8000, samples_per_weight = 1)
-results_plot_200_50 <- generate_plot(experimental_results = experimental_results_200_50 %>% filter(str_ends(method, "adjusted", negate = T)), n_weights = 200, samples_per_weight = 50)
+# results_plot_200_50 <- generate_plot(experimental_results = experimental_results_200_50 %>% filter(str_ends(method, "adjusted", negate = T)), n_weights = 200, samples_per_weight = 50)
 
 # Save plots
 save_plot(results_plot_8000_1, ncol = 1, nrow = 3, filename = path("figures", "results_plot_8000_1", ext = "pdf"), base_asp = 2.5)
-save_plot(results_plot_200_50, ncol = 3, nrow = 3, filename = path("figures", "results_plot_200_50", ext = "pdf"), base_asp =  2)
+# save_plot(results_plot_200_50, ncol = 3, nrow = 3, filename = path("figures", "results_plot_200_50", ext = "pdf"), base_asp =  2)
