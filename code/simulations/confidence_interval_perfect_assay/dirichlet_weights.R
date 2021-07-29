@@ -256,4 +256,4 @@ results_plot_200_50 <- generate_plot(experimental_results = experimental_results
 
 # Save plots
 save_plot(results_plot_8000_1, ncol = 1, nrow = 3, filename = path("figures", "results_plot_8000_1", ext = "pdf"), base_asp = 2.5)
-save_plot(results_plot_200_50, ncol = 3, nrow = 3, filename = path("figures", "results_plot_200_50", ext = "pdf"), base_asp =  1.5)
+save_plot(results_plot_200_50, ncol = 3, nrow = 3, filename = path("figures", "results_plot_200_50", ext = "pdf"), base_asp =  2)
