@@ -7,8 +7,10 @@ library(fs)
 library(scales)
 library(glue)
 
+# Set up parallel processing
 plan(multisession, workers = 7)
 
+# Agresti-Coull Method
 AC_method <- function(p_hat,
                       var_hat_p_hat,
                       adjusted = F,
@@ -37,9 +39,10 @@ AC_method <- function(p_hat,
 
   rval <- list(conf.int = ci, estimate = p_tilde, p_hat = p_hat, var_hat_p_hat = var_hat_p_hat)
   class(rval) <- "htest"
-  return(rval)
+  rval
 }
 
+# Clopper-Pearson Method
 CP_method <- function(p_hat,
                       var_hat_p_hat,
                       adjusted = F,
@@ -72,11 +75,10 @@ CP_method <- function(p_hat,
 
   rval <- list(conf.int = ci, p_hat = p_hat, var_hat_p_hat = var_hat_p_hat)
   class(rval) <- "htest"
-  return(rval)
+  rval
 }
 
-# n_replications <- 10000
-
+# Design specification for 8000 groups of 1
 simulation_design_8000_1 <-
   crossing(prevalence = 0.005,
            ICC = c(0.1),
@@ -86,7 +88,7 @@ simulation_design_8000_1 <-
   mutate(design = 1:n()) %>%
   select(design, everything())
 
-
+# Design specification for 200 groups of 50
 simulation_design_200_50 <-
   crossing(prevalence = 0.005,
            ICC = c(0.0001, 0.025, 0.05, 0.1),
@@ -101,14 +103,16 @@ set.seed(200)
 generate_results <- function(simulation_design, n_replications) {
   experimental_results <-
     simulation_design %>%
-    slice(rep(1:n(), each = n_replications)) %>%
+    slice(rep(1:n(), each = n_replications)) %>% # duplicate each design n_replications times
     group_by(design) %>%
     mutate(replication = row_number()) %>%
     ungroup() %>%
     mutate(interval_results =
-             future_pmap(.options = furrr_options(seed = 200),
+             future_pmap(.options = furrr_options(seed = 200), # reproducible seed for parallel computing
                          list(prevalence, ICC, dirichlet_alpha, n_weights, samples_per_weight),
                          function(prevalence, ICC, dirichlet_alpha, n_weights, samples_per_weight) {
+
+                           # Calculate parameters for beta distribution with given mean and ICC
                            alpha <- (1 - ICC) / ICC * prevalence
                            beta <- (1 - ICC) / ICC * (1 - prevalence)
 
@@ -124,7 +128,7 @@ generate_results <- function(simulation_design, n_replications) {
                            coef_var <- sqrt(var_weight) / mean_weight
 
                            p_hat <- sum(dat$sample_positivity * dat$weight)
-                           var_hat_p_hat <- sum((dat$weight / dat$n_tested)^2 * dat$sample_positives) # this is incorrect
+                           var_hat_p_hat <- sum((dat$weight / dat$n_tested)^2 * dat$sample_positives) # this is a bad estimate with high ICC
 
                            result_wspoissonTest <-
                              wspoissonTest(x = dat$sample_positives,
@@ -140,6 +144,7 @@ generate_results <- function(simulation_design, n_replications) {
                                                   var_hat_p_hat = var_hat_p_hat,
                                                   adjusted = F)
 
+                           # Adjustment doesn't make any difference with this many weights.
                            # result_AC_adjusted <- AC_method(p_hat = p_hat,
                            #                        var_hat_p_hat = var_hat_p_hat,
                            #                        n_psu = n_weights,
@@ -149,6 +154,7 @@ generate_results <- function(simulation_design, n_replications) {
                                                   var_hat_p_hat = var_hat_p_hat,
                                                   adjusted = F)
 
+                           # Adjustment doesn't make any difference with this many weights.
                            # result_CP_adjusted <- CP_method(p_hat = p_hat,
                            #                        var_hat_p_hat = var_hat_p_hat,
                            #                        n_psu = n_weights,
@@ -165,6 +171,7 @@ generate_results <- function(simulation_design, n_replications) {
                                 # result_CP_adjusted = result_CP_adjusted
                                 )
                          })) %>%
+    # Cleanup
     select(-n_weights, -samples_per_weight) %>%
     unnest_wider(interval_results) %>%
     pivot_longer(cols = starts_with("result"),
@@ -183,14 +190,17 @@ generate_results <- function(simulation_design, n_replications) {
   experimental_results
 }
 
-
+# Get results for the two simulation designs
 experimental_results_8000_1 <- generate_results(simulation_design = simulation_design_8000_1, n_replications = 10000)
 experimental_results_200_50 <- generate_results(simulation_design = simulation_design_200_50, n_replications = 10000)
 
+# Save results
 write_rds(experimental_results_8000_1, "experimental_results_8000_1.rds")
 write_rds(experimental_results_200_50, "experimental_results_200_50.rds")
 
+# Function for making plots
 generate_plot <- function(experimental_results, n_weights = 0, samples_per_weight = 0) {
+  # Calculat average ceofficient of variation for each dirichilet alpha group
   alpha_to_coef_var_conversion <-
       experimental_results %>%
       group_by(design, replication) %>%
@@ -240,10 +250,10 @@ generate_plot <- function(experimental_results, n_weights = 0, samples_per_weigh
   result_plot
 }
 
-
+# Generate plots
 results_plot_8000_1 <- generate_plot(experimental_results = experimental_results_8000_1 %>% filter(str_ends(method, "adjusted", negate = T)), n_weights = 8000, samples_per_weight = 1)
 results_plot_200_50 <- generate_plot(experimental_results = experimental_results_200_50 %>% filter(str_ends(method, "adjusted", negate = T)), n_weights = 200, samples_per_weight = 50)
 
-
+# Save plots
 save_plot(results_plot_8000_1, ncol = 1, nrow = 3, filename = path("figures", "results_plot_8000_1", ext = "pdf"), base_asp = 2.5)
 save_plot(results_plot_200_50, ncol = 3, nrow = 3, filename = path("figures", "results_plot_200_50", ext = "pdf"), base_asp =  1.5)
