@@ -116,6 +116,7 @@ generate_results <- function(simulation_design, n_replications) {
                            alpha <- (1 - ICC) / ICC * prevalence
                            beta <- (1 - ICC) / ICC * (1 - prevalence)
 
+                           # Simulate data
                            dat <- tibble(
                              weight = as.vector(rdirichlet(1, alpha = rep(dirichlet_alpha, n_weights))),
                              true_positivity = rbeta(n_weights, alpha, beta),
@@ -123,6 +124,7 @@ generate_results <- function(simulation_design, n_replications) {
                              mutate(sample_positives = rbinom(n = n(), size = n_tested, prob = true_positivity)) %>%
                              mutate(sample_positivity = sample_positives / n_tested)
 
+                           # Useful calculations for applying methods or post-processing results
                            mean_weight <- mean(dat$weight)
                            var_weight <- var(dat$weight)
                            coef_var <- sqrt(var_weight) / mean_weight
@@ -130,6 +132,7 @@ generate_results <- function(simulation_design, n_replications) {
                            p_hat <- sum(dat$sample_positivity * dat$weight)
                            var_hat_p_hat <- sum((dat$weight / dat$n_tested)^2 * dat$sample_positives) # this is a bad estimate with high ICC
 
+                           # Apply each method to simulated data
                            result_wspoissonTest <-
                              wspoissonTest(x = dat$sample_positives,
                                            w = dat$weight / dat$n_tested,
