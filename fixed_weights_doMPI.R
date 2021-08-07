@@ -4,13 +4,14 @@ library(parallel)
 library(foreach)
 library(doRNG)
 library(doParallel)
-# library(future)
+library(fs)
+library(doMPI)
+library(future)
 
+cl <- doMPI::startMPIcluster()
+registerDoMPI(cl)
 
-cl <- makeCluster(parallelly::availableCores())
-registerDoParallel(cl)
-
-n_replications <- 2
+n_replications <- 100
 
 # Agresti-Coull Method
 AC_method <- function(p_hat,
@@ -122,7 +123,7 @@ weight_candidates <-
 set.seed(200)
 weight_candidates$weights <-
   foreach(n_groups = weight_candidates$n_groups,
-          target_coef_var = weight_candidates$target_coef_var) %dopar% {
+          target_coef_var = weight_candidates$target_coef_var) %dorng% {
             simulate_weights(n_groups, target_coef_var)
             }
 
@@ -184,7 +185,7 @@ results$interval_results <-
           group_prev = results$group_prev,
           n_groups = results$n_groups,
           tests_per_group = results$tests_per_group,
-          .packages = "asht") %dopar% {
+          .packages = "asht") %dorng% {
              positive_tests <- integer(n_groups)
              positive_tests[groups_with_prev] <- rbinom(n = n_groups_with_prev, size = tests_per_group, prob = group_prev)
              sample_positiviity <- positive_tests / tests_per_group
@@ -237,4 +238,5 @@ results_summary <-
 
 write_rds(results_summary, "//data/bayerdm/fixed_weights_results_summary_10000.rds")
 
-parallel::stopCluster(cl)
+closeCluster(cl)
+mpi.quit()
