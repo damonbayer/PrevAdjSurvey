@@ -15,10 +15,11 @@ suppressMessages({
 })
 
 save_path <- path("//", "data", "bayerdm", "fixed_weights_many")
-# dir_create(save_path)
+dir_create(save_path)
 
 plan(multisession, workers = parallelly::availableCores() / 2)
-n_partitions <- 100
+# n_partitions <- 100
+n_partitions <- 1000
 n_replications <- 10000
 
 
