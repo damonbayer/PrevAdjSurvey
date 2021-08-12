@@ -1,18 +1,23 @@
-library(tidyverse)
-library(asht)
-library(parallel)
-library(foreach)
-library(doRNG)
-library(doParallel)
-library(fs)
-library(doMPI)
-library(future)
+suppressMessages({
+  library(tidyverse)
+  library(asht)
+  library(parallel)
+  library(foreach)
+  library(doRNG)
+  library(doParallel)
+  library(fs)
+  library(doMPI)
+  library(future)
+})
 
 cl <- doMPI::startMPIcluster()
 registerDoMPI(cl)
 
-n_replications <- 100
+n_replications <- 1
 
+timings <- as.POSIXct(rep(NA, 9))
+
+timings[1] <- Sys.time(); write_rds(timings, "//data/bayerdm/timings1.rds")
 # Agresti-Coull Method
 AC_method <- function(p_hat,
                       var_hat_p_hat,
@@ -94,6 +99,8 @@ CP_method <- function(p_hat,
   rval
 }
 
+timings[2] <- Sys.time(); write_rds(timings, "//data/bayerdm/timings1.rds")
+
 # Simulate Weights
 simulate_weights <- function(n_groups, coef_var) {
   # mu <- 1 / n_groups
@@ -109,6 +116,8 @@ simulate_weights <- function(n_groups, coef_var) {
   x / sum(x)
 }
 
+
+timings[3] <- Sys.time(); write_rds(timings, "//data/bayerdm/timings1.rds")
 
 weight_candidates <-
   crossing(n_groups = c(50, 8000),
@@ -126,6 +135,8 @@ weight_candidates$weights <-
           target_coef_var = weight_candidates$target_coef_var) %dorng% {
             simulate_weights(n_groups, target_coef_var)
             }
+
+timings[4] <- Sys.time(); write_rds(timings, "//data/bayerdm/timings1.rds")
 
 experimental_design <-
   weight_candidates %>%
@@ -166,6 +177,8 @@ experimental_design <-
   filter(group_prev <= 1) %>% # impossible to achieve desired population prevalence when only a small number of groups have cases
   mutate(design = 1:n())
 
+timings[5] <- Sys.time(); write_rds(timings, "//data/bayerdm/timings1.rds")
+
 results <-
   experimental_design %>%
   slice(rep(1:n(), each = n_replications)) %>%
@@ -176,6 +189,8 @@ results <-
 
 write_rds(experimental_design, "//data/bayerdm/fixed_weights_experimental_design.rds")
 rm(experimental_design)
+
+timings[6] <- Sys.time(); write_rds(timings, "//data/bayerdm/timings1.rds")
 
 results$interval_results <-
   foreach(weights = results$weights,
@@ -208,11 +223,15 @@ results$interval_results <-
                   result_CP = result_CP)
            }
 
+timings[7] <- Sys.time(); write_rds(timings, "//data/bayerdm/timings1.rds")
+
 results <-
   results %>%
   select(design, replication, prev, interval_results)
 
-write_rds(results, "//data/bayerdm/fixed_weights_results_raw_10000.rds")
+timings[8] <- Sys.time(); write_rds(timings, "//data/bayerdm/timings1.rds")
+
+write_rds(results, "//data/bayerdm/fixed_weights_results_raw_1.rds")
 
 results_summary <-
   results %>%
@@ -235,8 +254,8 @@ results_summary <-
     coverage = mean(covered),
     .groups = "drop")
 
-
-write_rds(results_summary, "//data/bayerdm/fixed_weights_results_summary_10000.rds")
+timings[9] <- Sys.time(); write_rds(timings, "//data/bayerdm/timings1.rds")
+write_rds(results_summary, "//data/bayerdm/fixed_weights_results_summary_1.rds")
 
 closeCluster(cl)
 mpi.quit()

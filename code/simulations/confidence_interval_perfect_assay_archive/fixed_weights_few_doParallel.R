@@ -1,10 +1,11 @@
-library(tidyverse)
-library(asht)
-library(parallel)
-library(foreach)
-library(doRNG)
-library(doParallel)
-# library(future)
+suppressMessages({
+  library(tidyverse)
+  library(asht)
+  library(parallel)
+  library(foreach)
+  library(doRNG)
+  library(doParallel)
+})
 
 
 cl <- makeCluster(parallelly::availableCores())
