@@ -1,12 +1,11 @@
 #!/bin/bash
 
 #SBATCH --partition=norm
-#SBATCH --constraint=x2650
-#SBATCH --ntasks=16
+#SBATCH --ntasks=1
 #SBATCH --ntasks-per-core=1
-#SBATCH --time=2:00:00
-#SBATCH --mem=32g
-#SBATCH --array=1-2
+#SBATCH --time=1:00:00
+#SBATCH --mem=4g
+#SBATCH --array=120-250
 #SBATCH --gres=lscratch:10
 #SBATCH --job-name="PrevAdjSurvey"
 

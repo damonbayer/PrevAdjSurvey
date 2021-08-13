@@ -1,6 +1,6 @@
 args <- commandArgs(trailingOnly=TRUE)
 sjob <- as.integer(args[1])
-cat("sjob is ", sjob)
+cat("sjob is ", sjob, "\n")
 
 suppressMessages({
   library(tidyverse)
@@ -17,11 +17,12 @@ suppressMessages({
 save_path <- path("//", "data", "bayerdm", "fixed_weights_many")
 dir_create(save_path)
 
-plan(multisession, workers = parallelly::availableCores() / 2)
+plan(multisession, workers = parallelly::availableCores())
+cat("using", parallelly::availableCores(), "cores\n")
 # n_partitions <- 100
-n_partitions <- 1000
+n_partitions <- 250
 n_replications <- 10000
-
+cat("session planned\n")
 
 # Agresti-Coull Method
 AC_method <- function(p_hat,
@@ -136,7 +137,7 @@ weight_candidates <-
                                .x = n_groups,
                                .y = target_coef_var,
                                .f = ~simulate_weights(n_groups = .x, coef_var = .y)))
-
+cat("weights simulated\n")
 
 experimental_design <-
   weight_candidates %>%
@@ -177,6 +178,7 @@ experimental_design <-
   filter(group_prev <= 1) %>% # impossible to achieve desired population prevalence when only a small number of groups have cases
   mutate(design = 1:n()) %>%
   mutate(., partition = ceiling(row_number() / (nrow(.) / n_partitions)))
+cat("experiments designed\n")
 
 if (sjob == 1) {
   write_rds(experimental_design, path(save_path, "experimental_design.rds"))
@@ -209,7 +211,8 @@ calculate_interval_results <- function(weights,
        conf_int_AC = as.vector(result_AC$conf.int),
        conf_int_CP = as.vector(result_CP$conf.int))
 }
-
+plan(multisession, workers = parallelly::availableCores() / 2)
+cat("starting results\n")
 results <-
   experimental_design %>%
   filter(partition == sjob) %>% # this is where I would select the partition
@@ -247,10 +250,11 @@ results <-
   mutate(lower_error = conf_int_1 > prev,
          upper_error = prev > conf_int_2,
          covered = !(lower_error | upper_error))
-
+cat("results finished\n")
 
 write_rds(x = results, file = path(save_path, str_c("results_raw", sprintf("%04d", sjob), "of", n_partitions, sep = "_"), ext = "rds"))
 
+cat("summarizing results\n")
 results_summary <-
   results %>%
   select(-starts_with("conf_int")) %>%
