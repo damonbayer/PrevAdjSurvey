@@ -8,7 +8,7 @@
 \parindent 3em
 
 \usepackage{amsmath}
-
+\usepackage{amssymb}
 %% Please use the following statements for
 %% managing the text and math fonts for your papers:
 \usepackage{times}
@@ -43,12 +43,16 @@
 \newcommand{\sle}{\stackrel{st}{\le}}
 
 
+\DeclareMathOperator{\E}{E}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
 
 
 \newcommand{\ch}[2]{\ensuremath{ \left( \begin{array}{c} #1 \\ #2 \end{array} \right) }}
 \newcommand{\dfn}[2]{\ensuremath{ \left( #1 \right)_{(#2)}}}
 
-
+\usepackage{graphicx}
+\graphicspath{ {./figures/} }
 
 \begin{document}
 
@@ -167,35 +171,47 @@ and $X_i$ and $n_i$ are the same in both papers.
 This should give a confidence interval for $\beta=\sum_{i=1}^{k} w_i \theta_i$
 that gives a lower and upper confidence distribution that is distributed gamma. (I will let you work out those details. Let me know if it is not easy.)
 
-\subsection{Dirichlet Weights Simulation Results}
+\subsection{Results for varying Coeficient of Variation, Number of Weights with Non-Zero Prevalence, and Distribution of Weights with Non-Zero Prevalence}
 
-I present results for two scenarios:
+Simulation method:
 
 \begin{itemize}
-    \item The weight of each group is generated from a Dirichlet distribution with equal concentration parameters for all dimensions. The "Coefficient of Variation" in the figures referes to these weights.
-    \item The true positivity of each group is generated from a Beta distribution which achieves the specified mean and ICC.
-    \item Figure~\ref{fig:dws1}. Samples of 8,000 groups of 1. Population prevalence = 0.05\%/ Varying weight variance. Replicated 10,000 times.
+    \item Simulating weights. To simulate \( k \) weights with a coefficient of variation \( v \):
     \begin{itemize}
-        \item The two wsPoisson methods maintain appropriate or conservative coverage, regardless of the coefficient of variation among the weights.
-        \item The other two methods (Agresti-Coull and Clopper-Pearson) only begin to falter at unrealistic or unusual (according to Barry) coefficients of variation.
-        \item More typical coefficients of variation would be 20\%-40\%.
+        \item Sample \( W_i \sim \text{Beta}\left( \frac{1}{v^2} - \frac{1}{kv^2} - \frac{1}{k}, \left( \frac{1}{v^2} - \frac{1}{nk^2} - \frac{1}{k} \right)  (k - 1) \right)\).
+        \item By design \( \E W_i = 1 / k \), and  \( \Var W_i = ( v / k )^2  \).
+        \item Thus, \( \E \left[ \sum_{i=1}^k w_i \right] = 1\).
+        \item Normalize \( w_i^* = \frac{w_i}{\sum_{i=1}^k w_i} \), to guarantee \( \sum_{i=1}^k w_i^* = 1 \).
+        \item These \( w_i^* \) should have approximately the desired coefficient of variation.
     \end{itemize}
-    \item Figure~\ref{fig:dws2}. Samples of 200 groups of 50. Population prevalence = 0.05\%. Varying ICC. Varying weight variance. Replicated 10,000 times.
+    \item Selecting weights with non-zero prevalence. Selecting weights with non-zero prevalence is deterministic. 
     \begin{itemize}
-        \item Results here are a bit confusing.
-        \item I know that the results for Agresti-Coull and Clopper-Pearson could be improved with a better estimate for \(\hat{\text{var}}(\hat{p}) \). The simple estimate I was using appears to perform poorly in the case of high ICC. \textbf{I wonder if Barry can point me towards a good estimator for \(\hat{\text{var}}(\hat{p}) \) in the presence of high ICC.}
-        \item It is a bit strange that the wsPoisson methods perform better when there is extreme Coefficient of Variation, but it is consistent with the previously observed behavior of higher CoV leading to more conservative coverage.
+        \item First, the proportion of weights with non-zero prevalence is selected. Call this \( a \), where \( 0 < a \leq k \)
+        \item Then, the specific weights with non-zero prevalence are selected by 1 of 3 options:
+        \begin{itemize}
+            \item High weights: the  \( a \) largest weights are selected.
+            \item Uniform weights: \( a \) weights are selected such that the ranks of their weights are evenly spaced. Ex: For \( k = 100 \) and \( a = 3 \), the 25th, 50th and 75th largest weights are selected.
+            \item Low weights: the  \( a \) smallest weights are selected.
+        \end{itemize}
+    \end{itemize}
+    \item Determining prevalence among weights with non-zero prevalence.
+    \begin{itemize}
+        \item \( \theta_i \)  for each of the \( a \) weights with non-zero prevalence is \( \beta / \sum_{i=1}^a w_i^{**} \).
+        \item Note: in some cases (Low weights and/or high coefficient of variation) it is not possible for the selected weights to provide an overall level of \( \beta \) prevalence. These cases are discarded.
+    \end{itemize}
+    \item Simulating data.
+    \begin{itemize}
+        \item \( X_i \sim \text{Binomial}(n_i, \theta_i) \)
     \end{itemize}
 \end{itemize}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figures/results_plot_8000_1.pdf}
-    \caption{Dirichlet Weights Scenario 1}
-    \label{fig:dws1}
-\end{figure}
+These simulations are performed in two scenarios:
 
-\pagebreak
+\begin{enumerate}
+    \item \( k = 50 \), \( n_i = 200 \), Total sample size: 10,000. Meant to resemble a scenario like taking an equal-sized sample from each of the 50 US States.
+    \item \( k = 8000 \), \( n_i = 1 \), Total sample size: 8,000. Meant to resemble a scenario with a complex weighting scheme where each person has their own weight.
+\end{enumerate}
+
 \begin{landscape}
 \begin{figure}
     \centering
@@ -206,80 +222,112 @@ I present results for two scenarios:
 \end{landscape}
 \pagebreak
 
+% \subsection{Dirichlet Weights Simulation Results}
+
+% I present results for two scenarios:
+
+% \begin{itemize}
+%     \item The weight of each group is generated from a Dirichlet distribution with equal concentration parameters for all dimensions. The "Coefficient of Variation" in the figures referes to these weights.
+%     \item The true positivity of each group is generated from a Beta distribution which achieves the specified mean and ICC.
+%     \item Figure~\ref{fig:dws1}. Samples of 8,000 groups of 1. Population prevalence = 0.05\%/ Varying weight variance. Replicated 10,000 times.
+%     \begin{itemize}
+%         \item The two wsPoisson methods maintain appropriate or conservative coverage, regardless of the coefficient of variation among the weights.
+%         \item The other two methods (Agresti-Coull and Clopper-Pearson) only begin to falter at unrealistic or unusual (according to Barry) coefficients of variation.
+%         \item More typical coefficients of variation would be 20\%-40\%.
+%     \end{itemize}
+%     \item Figure~\ref{fig:dws2}. Samples of 200 groups of 50. Population prevalence = 0.05\%. Varying ICC. Varying weight variance. Replicated 10,000 times.
+%     \begin{itemize}
+%         \item Results here are a bit confusing.
+%         \item I know that the results for Agresti-Coull and Clopper-Pearson could be improved with a better estimate for \(\hat{\text{var}}(\hat{p}) \). The simple estimate I was using appears to perform poorly in the case of high ICC. \textbf{I wonder if Barry can point me towards a good estimator for \(\hat{\text{var}}(\hat{p}) \) in the presence of high ICC.}
+%         \item It is a bit strange that the wsPoisson methods perform better when there is extreme Coefficient of Variation, but it is consistent with the previously observed behavior of higher CoV leading to more conservative coverage.
+%     \end{itemize}
+% \end{itemize}
+
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=\textwidth]{figures/results_plot_8000_1.pdf}
+%     \caption{Dirichlet Weights Scenario 1}
+%     \label{fig:dws1}
+% \end{figure}
+
+% \pagebreak
+% \begin{landscape}
+% \begin{figure}
+%     \centering
+%     \includegraphics[width = \paperwidth]{figures/results_plot_200_50.pdf}
+%     \caption{Dirichlet Weights Scenario 2}
+%     \label{fig:dws2}
+% \end{figure}
+% \end{landscape}
+% \pagebreak
 
 
+% As you predicted, the usual methods (Agresti-Coull and Clopper-Pearson) exhibit poor performance when there is high variance among the weights.
 
+% Dean and Pagano recommend an adjustment suggested by Korn and Graubard that I wasn’t sure how to apply in the context of my simulation, so it’s possible that this is a pessimistic assessment of those methods. 
 
+% Let’s chat about these results and next steps early next week.
 
+% Thanks,
 
-As you predicted, the usual methods (Agresti-Coull and Clopper-Pearson) exhibit poor performance when there is high variance among the weights.
+% Damon
 
-Dean and Pagano recommend an adjustment suggested by Korn and Graubard that I wasn’t sure how to apply in the context of my simulation, so it’s possible that this is a pessimistic assessment of those methods. 
+% \subsection{Weird U.S. State Simulation Results}
 
-Let’s chat about these results and next steps early next week.
+% For this section I have applied 4 methods to 2 populations, with 10,0000 replications each.
 
-Thanks,
+% \noindent Methods:
+% \begin{itemize}
+%     \item AC \& AC\_adj: The Agresti-Coull and Agresti-Coull adjusted methods for survey samples described in \cite{Dean:2015}. Implemented by hand.
+%     \item wspoissonTest \& wspoissonTest\_midp: the methods described in \cite{FayF:1997} and \cite{FayK:2017}. Implemented in \cite{asht}.
+% \end{itemize}
 
-Damon
+% In each scenario, I use the 2020 census population counts for all states \& DC and specify the exact number of cases in each state's population to achieve an overall prevalence $\approx$  0.5\%.
+% Per \cite{Lemeshow1985SurveysTM}, I implement a 2-stage sampling algorithm, where $m$ states are sampled with replacement and $\tilde{n}$ people are sampled from each of the $m$ states.
+% In the results here, $m = 12,000$ and $\tilde{n} = 1$, equivalent to a simple random sample from the country.
+% Alternative schemes like $m = 120$ and $\tilde{n} = 100$ seem to produce worse results for the wspoissonTest methods, but I have not investigated this fully.\\
+% The differences between the two scenarios are presented below.\\
 
+% \noindent Scenarios:
+% \begin{itemize}
+%     \item one\_state: Montana has 30\% prevalence, while all other states have no cases.
+%     \item two\_state: California and New York each have 3\% prevalence, while all other states have no cases.
+%     \item few\_state: California, Texas, Florida, and New York each have 1.5\% prevalence, while all other states have no cases.
+%     \item many\_state: all states have $\approx$ 0.5\% prevalence, but with some clustering of cases
+% \end{itemize}
 
+% \noindent Results:
+% \begin{table}
+% \centering
+% \begin{tabular}{llrrr}
+% \toprule
+% scenario & method & coverage & lower\_error\_freq & upper\_error\_freq\\
+% \midrule
+% one\_state & AC & 0.9660 & 0.0232 & 0.0108\\
+% one\_state & AC\_adj & 0.9660 & 0.0232 & 0.0108\\
+% one\_state & wspoissonTest & 0.9928 & 0.0039 & 0.0033\\
+% one\_state & wspoissonTest\_midp & 0.9852 & 0.0083 & 0.0065\\
+% \addlinespace
+% two\_state & AC & 0.9484 & 0.0256 & 0.0260\\
+% two\_state & AC\_adj & 0.9484 & 0.0256 & 0.0260\\
+% two\_state & wspoissonTest & 0.9632 & 0.0193 & 0.0175\\
+% two\_state & wspoissonTest\_midp & 0.9538 & 0.0235 & 0.0227\\
+% \addlinespace
+% few\_state & AC & 0.9570 & 0.0259 & 0.0171\\
+% few\_state & AC\_adj & 0.9570 & 0.0259 & 0.0171\\
+% few\_state & wspoissonTest & 0.9629 & 0.0216 & 0.0155\\
+% few\_state & wspoissonTest\_midp & 0.9559 & 0.0250 & 0.0191\\
+% \addlinespace
+% many\_state & AC & 0.9515 & 0.0287 & 0.0198\\
+% many\_state & AC\_adj & 0.9515 & 0.0287 & 0.0198\\
+% many\_state & wspoissonTest & 0.9597 & 0.0246 & 0.0157\\
+% many\_state & wspoissonTest\_midp & 0.9517 & 0.0281 & 0.0202\\
+% \bottomrule
+% \end{tabular}
+% \end{table}
 
-\subsection{Weird U.S. State Simulation Results}
-
-For this section I have applied 4 methods to 2 populations, with 10,0000 replications each.
-
-\noindent Methods:
-\begin{itemize}
-    \item AC \& AC\_adj: The Agresti-Coull and Agresti-Coull adjusted methods for survey samples described in \cite{Dean:2015}. Implemented by hand.
-    \item wspoissonTest \& wspoissonTest\_midp: the methods described in \cite{FayF:1997} and \cite{FayK:2017}. Implemented in \cite{asht}.
-\end{itemize}
-
-In each scenario, I use the 2020 census population counts for all states \& DC and specify the exact number of cases in each state's population to achieve an overall prevalence $\approx$  0.5\%.
-Per \cite{Lemeshow1985SurveysTM}, I implement a 2-stage sampling algorithm, where $m$ states are sampled with replacement and $\tilde{n}$ people are sampled from each of the $m$ states.
-In the results here, $m = 12,000$ and $\tilde{n} = 1$, equivalent to a simple random sample from the country.
-Alternative schemes like $m = 120$ and $\tilde{n} = 100$ seem to produce worse results for the wspoissonTest methods, but I have not investigated this fully.\\
-The differences between the two scenarios are presented below.\\
-
-\noindent Scenarios:
-\begin{itemize}
-    \item one\_state: Montana has 30\% prevalence, while all other states have no cases.
-    \item two\_state: California and New York each have 3\% prevalence, while all other states have no cases.
-    \item few\_state: California, Texas, Florida, and New York each have 1.5\% prevalence, while all other states have no cases.
-    \item many\_state: all states have $\approx$ 0.5\% prevalence, but with some clustering of cases
-\end{itemize}
-
-\noindent Results:
-\begin{table}
-\centering
-\begin{tabular}{llrrr}
-\toprule
-scenario & method & coverage & lower\_error\_freq & upper\_error\_freq\\
-\midrule
-one\_state & AC & 0.9660 & 0.0232 & 0.0108\\
-one\_state & AC\_adj & 0.9660 & 0.0232 & 0.0108\\
-one\_state & wspoissonTest & 0.9928 & 0.0039 & 0.0033\\
-one\_state & wspoissonTest\_midp & 0.9852 & 0.0083 & 0.0065\\
-\addlinespace
-two\_state & AC & 0.9484 & 0.0256 & 0.0260\\
-two\_state & AC\_adj & 0.9484 & 0.0256 & 0.0260\\
-two\_state & wspoissonTest & 0.9632 & 0.0193 & 0.0175\\
-two\_state & wspoissonTest\_midp & 0.9538 & 0.0235 & 0.0227\\
-\addlinespace
-few\_state & AC & 0.9570 & 0.0259 & 0.0171\\
-few\_state & AC\_adj & 0.9570 & 0.0259 & 0.0171\\
-few\_state & wspoissonTest & 0.9629 & 0.0216 & 0.0155\\
-few\_state & wspoissonTest\_midp & 0.9559 & 0.0250 & 0.0191\\
-\addlinespace
-many\_state & AC & 0.9515 & 0.0287 & 0.0198\\
-many\_state & AC\_adj & 0.9515 & 0.0287 & 0.0198\\
-many\_state & wspoissonTest & 0.9597 & 0.0246 & 0.0157\\
-many\_state & wspoissonTest\_midp & 0.9517 & 0.0281 & 0.0202\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-I have not found any scenarios that ``break" the AC methods, which appear to be on par with the wspoissonTest\_midp methods.
-There is no obvious pattern in coverage vs number of states with cases, other than that the wspoissonTest appears to do better with more evenly spread cases and both wspoissonTest methods do poorly in the one\_state scenario.
+% I have not found any scenarios that ``break" the AC methods, which appear to be on par with the wspoissonTest\_midp methods.
+% There is no obvious pattern in coverage vs number of states with cases, other than that the wspoissonTest appears to do better with more evenly spread cases and both wspoissonTest methods do poorly in the one\_state scenario.
 
 \section{Confidence Interval on $\beta$ with an Imperfect Assay}
 \label{sec-betaImperfect}
