@@ -146,7 +146,7 @@ experimental_design <-
   group_by(design) %>%
   filter(coef_var_rel_error == min(coef_var_rel_error)) %>%
   select(design, n_groups, coef_var = obs_coef_var, weights) %>%
-  mutate(weights = map(weights, sort)) %>%
+  mutate(weights = map(weights, ~sort(., decreasing = T))) %>%
   mutate(tests_per_group = case_when(
     n_groups == 50 ~ 200,
     n_groups == 8000 ~ 1
