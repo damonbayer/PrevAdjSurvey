@@ -75,16 +75,13 @@ generate_plot <- function(name_to_plot, n_groups_to_plot){
   }
 
 
-generate_plot(name_to_plot = "Lower Error Frequency", n_groups_to_plot = 8000)
-generate_plot(name_to_plot = "Lower Error Frequency", n_groups_to_plot = 50)
-
 
 
 results_summary %>%
   select(n_groups, name) %>%
   distinct() %>%
   mutate(plot = map2(name, n_groups, ~generate_plot(.x, .y))) %>%
-  mutate(file_name = map2_chr(name, n_groups, ~path(str_c(str_replace_all(str_to_lower(.x), "\\s", "_"), .y, sep = "_"), ext = "pdf"))) %>%
+  mutate(file_name = map2_chr(name, n_groups, ~path("figures", str_c(str_replace_all(str_to_lower(.x), "\\s", "_"), .y, sep = "_"), ext = "pdf"))) %>%
   # mutate(walk2(plot, file_name, ~save_plot(filename = .y, plot = .x, ncol = 5, nrow = 3, base_asp = (11 / 5) / (8.5 / 3), base_height = 8.5 / 3)))
 mutate(walk2(plot, file_name, ~save_plot(filename = .y, plot = .x, ncol = 5, nrow = 3, base_asp = (11 / 5) / (8.5 / 3), base_height = 4)))
 

@@ -5,7 +5,7 @@ library(cowplot)
 library(fs)
 library(furrr)
 
-results <- read_rds("code/simulations/confidence_interval_theta_star_fay_vs_LR/confidence_interval_theta_star_fay_vs_LR_results.rds")
+results <- read_csv("code/simulations/confidence_interval_theta_star_fay_vs_LR/confidence_interval_theta_star_fay_vs_LR_results.csv")
 
 # Process Results ---------------------------------------------------------
 coverage_results <-
