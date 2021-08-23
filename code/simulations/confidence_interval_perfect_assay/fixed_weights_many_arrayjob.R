@@ -152,7 +152,7 @@ experimental_design <-
     n_groups == 8000 ~ 1
   )) %>%
   crossing(
-    prev = 0.005,
+    prev = 0.05,
     prop_groups_with_prev = c(0.02, 0.05, 0.10, 0.25, 0.5, 0.75),
     group_distribution = c("high", "uniform", "low")) %>%
   mutate(n_groups_with_prev = round(prop_groups_with_prev * n_groups)) %>%
@@ -265,4 +265,4 @@ results_summary <-
     coverage = mean(covered),
     .groups = "drop")
 
-write_rds(x = results_summary, file = path(save_path, str_c("results_summary", sprintf("%04d", sjob), "of", n_partitions, sep = "_"), ext = "rds"))
+write_rds(x = results_summary, file = path(save_path, str_c("results_summary_005_prev_", sprintf("%04d", sjob), "of", n_partitions, sep = "_"), ext = "rds"))
