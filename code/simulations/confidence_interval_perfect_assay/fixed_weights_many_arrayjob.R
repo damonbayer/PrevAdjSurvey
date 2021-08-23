@@ -252,7 +252,7 @@ results <-
          covered = !(lower_error | upper_error))
 cat("results finished\n")
 
-write_rds(x = results, file = path(save_path, str_c("results_raw", sprintf("%04d", sjob), "of", n_partitions, sep = "_"), ext = "rds"))
+write_rds(x = results, file = path(save_path, str_c("results_raw_005_prev_", sprintf("%04d", sjob), "of", n_partitions, sep = "_"), ext = "rds"))
 
 cat("summarizing results\n")
 results_summary <-
