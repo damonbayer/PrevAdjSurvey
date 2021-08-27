@@ -2,14 +2,22 @@ library(tidyverse)
 library(scales)
 library(glue)
 library(cowplot)
+library(fs)
+
+ed1 <- read_csv("code/simulations/confidence_interval_perfect_assay/experimental_design.csv")
+ed2 <- read_csv("code/simulations/confidence_interval_perfect_assay/005_prev_experimental_design.csv")
+sum1 <- read_csv("code/simulations/confidence_interval_perfect_assay/combined_fixed_weights_many_summary.csv")
+sum2 <- read_csv("code/simulations/confidence_interval_perfect_assay/combined_fixed_weights_many_summary_005.csv")
+
 results_summary <-
-  read_csv("code/simulations/confidence_interval_perfect_assay/combined_fixed_weights_many_summary.csv") %>%
-  left_join(read_csv("code/simulations/confidence_interval_perfect_assay/experimental_design.csv") %>%
-              mutate(group_distribution = case_when( # Error because I labeled things wrong when setting up ex design
-                group_distribution == "low" ~ "high",
-                group_distribution == "high" ~ "low",
-                group_distribution == "uniform" ~ "uniform"
-              ))) %>%
+  left_join(sum1, ed1) %>%
+  mutate(group_distribution = case_when( # Error because I labeled things wrong when setting up ex design
+    group_distribution == "low" ~ "high",
+    group_distribution == "high" ~ "low",
+    group_distribution == "uniform" ~ "uniform"
+  )) %>%
+  bind_rows(left_join(sum2, ed2) %>%
+              mutate(design = design + max(ed1$design))) %>%
   pivot_longer(cols = c(lower_error_freq, upper_error_freq, coverage)) %>%
   mutate(name = fct_recode(name,
                            "Lower Error Frequency" = "lower_error_freq",
@@ -26,20 +34,21 @@ results_summary <-
            fct_relevel("high", "uniform", "low") %>%
            fct_relabel(str_to_title))
 
-name_to_plot <- "Coverage"
-n_groups_to_plot <- 8000
+rm(ed1, ed2, sum1, sum2)
 
-generate_plot <- function(name_to_plot, n_groups_to_plot){
+
+generate_plot <- function(name_to_plot, n_groups_to_plot, prev_to_plot){
   group_size <- if_else(n_groups_to_plot == 8000, 1, 200)
 
   generated_plot <-
     results_summary %>%
+    filter(n_groups == n_groups_to_plot,
+           name == name_to_plot,
+           prev == prev_to_plot) %>%
     mutate(
       tests = 10000,
       successes = as.integer(value * tests),
       failures = tests - successes) %>%
-    filter(n_groups == n_groups_to_plot,
-           name == name_to_plot) %>%
     ggplot(aes(x = coef_var,
                y = successes / tests,
                color = method,
@@ -60,7 +69,7 @@ generate_plot <- function(name_to_plot, n_groups_to_plot){
     geom_smooth(
       method="glm",
       method.args=list(family="binomial"),
-      formula = cbind(successes, failures) ~ splines::ns(x, 3),
+      formula = cbind(successes, failures) ~ splines::bs(x),
       se = F,
       alpha = 0.5, linetype = "dashed"
     ) +
@@ -69,21 +78,22 @@ generate_plot <- function(name_to_plot, n_groups_to_plot){
     scale_y_continuous(name = name_to_plot, label = ~percent(., accuracy = 1)) +
     scale_color_discrete(name = "Method") +
     theme(legend.position = "bottom") +
-    ggtitle(label = glue("{name_to_plot} Properties for Simulations with {comma(n_groups_to_plot)} Groups of {comma(group_size)}"),
+    ggtitle(label = glue("{name_to_plot} Properties for Simulations with {percent(prev_to_plot, accuracy = 0.1)} Prevalence Among {comma(n_groups_to_plot)} Groups of {comma(group_size)}"),
             subtitle = "Each Point = 10,000 Replications")
   generated_plot
   }
 
+generate_plot(name_to_plot = "Coverage", n_groups_to_plot = 50, prev_to_plot = 0.005)
 
-
-
+.Last.value$plot[[1]]
 results_summary %>%
-  select(n_groups, name) %>%
+  select(n_groups, name, prev) %>%
   distinct() %>%
-  mutate(plot = map2(name, n_groups, ~generate_plot(.x, .y))) %>%
-  mutate(file_name = map2_chr(name, n_groups, ~path("figures", str_c(str_replace_all(str_to_lower(.x), "\\s", "_"), .y, sep = "_"), ext = "pdf"))) %>%
-  # mutate(walk2(plot, file_name, ~save_plot(filename = .y, plot = .x, ncol = 5, nrow = 3, base_asp = (11 / 5) / (8.5 / 3), base_height = 8.5 / 3)))
-mutate(walk2(plot, file_name, ~save_plot(filename = .y, plot = .x, ncol = 5, nrow = 3, base_asp = (11 / 5) / (8.5 / 3), base_height = 4)))
-
-
+  mutate(plot = pmap(
+    list(name, n_groups, prev),
+    ~generate_plot(name_to_plot = ..1,
+                   n_groups_to_plot = ..2,
+                   prev_to_plot = ..3))) %>%
+  mutate(file_name = path("figures", str_c(str_replace_all(str_to_lower(name), "\\s", "_"), n_groups, str_replace_all(prev, "\\.", "_"), sep = "_"), ext = "pdf")) %>%
+  with(walk2(file_name, plot, ~save_plot(filename = .x, plot = .y, ncol = 5, nrow = 3, base_asp = (11 / 5) / (8.5 / 3), base_height = 4)))
 
