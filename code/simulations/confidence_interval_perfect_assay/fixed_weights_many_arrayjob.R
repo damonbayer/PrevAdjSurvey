@@ -181,7 +181,7 @@ experimental_design <-
 cat("experiments designed\n")
 
 if (sjob == 1) {
-  write_rds(experimental_design, path(save_path, "experimental_design.rds"))
+  write_rds(experimental_design, path(save_path, "005_experimental_design.rds"))
 }
 
 calculate_interval_results <- function(weights,
