@@ -5,12 +5,12 @@
 #SBATCH --ntasks-per-core=1
 #SBATCH --time=1:00:00
 #SBATCH --mem=4g
-#SBATCH --array=120-250
+#SBATCH --array=1-5
 #SBATCH --gres=lscratch:10
-#SBATCH --job-name="PrevAdjSurvey"
+#SBATCH --job-name="imperfect"
 
 module load R
 
-Rscript --vanilla fixed_weights_many_arrayjob.R ${SLURM_ARRAY_TASK_ID}
+Rscript --vanilla imperfect_assay_arrayjob.R ${SLURM_ARRAY_TASK_ID}
 
 

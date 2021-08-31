@@ -141,3 +141,81 @@ WprevSeSp_original <- function(AP, stdErrPrev, nP, Se, nSe, Sp, nSp, conf.level 
   class(output) <- "htest"
   output
 }
+
+# Also needs a midp option probably
+WprevSeSp_gamma <- function(apparent_positive_counts, w, nP, Se, nSe, Sp, nSp, conf.level = 0.95,
+                              neg.to.zero = TRUE, nmc = 1e5, seed = 49201) {
+  # by default set the seed so that we automatically have reproducible research
+  # if doing simulations, then set seed to NULL
+  if (!is.null(seed)) set.seed(seed)
+
+  x <- apparent_positive_counts
+  AP <- sum(apparent_positive_counts * w)
+  P <- prevAdj(AP, Se, Sp)
+
+  # Should probably handle something similar here, idk
+  # if (AP == 0) {
+  #   L <- list(a = 0, b = nP + 1)
+  #   U <- list(a = 1, b = nP)
+  # } else {
+  #   nstar <- AP * (1 - AP) / (stdErrPrev^2)
+  #   L <- list(a = AP * nstar, b = nstar - AP * nstar + 1)
+  #   U <- list(a = AP * nstar + 1, b = nstar - AP * nstar)
+  # }
+
+  alpha <- 1 - conf.level / 2
+  y <- sum(w * x)
+  v <- sum(x * w^2)
+  wm <- max(w)
+  ystar <- y + wm
+  vstar <- v + wm^2
+  # what if y = 0?
+
+  # use Gamma lower and upper confidence distributions
+  # for apparent prevalence
+  # defined using Poisson
+  if (y > 0) {
+    B_AP_L <- rgamma(nmc, y^2/v, scale = v/y)
+  } else {
+    B_AP_L <- rep(0, nmc)
+  }
+
+  B_AP_U <- rgamma(nmc, (ystar)^2/(vstar), scale = (vstar)/(ystar))
+
+  # use Beta lower and upper confidence distributions
+  # for sensitivity (from binomial assumptions)
+  B_sen_L <- rbeta(nmc, nSe * Se, nSe - nSe * Se + 1)
+  B_sen_U <- rbeta(nmc, nSe * Se + 1, nSe - nSe * Se)
+
+  # use Beta lower and upper confidence distributions
+  # for specificity (from binomial assumptions)
+  B_spec_L <- rbeta(nmc, nSp * Sp, nSp - nSp * Sp + 1)
+  B_spec_U <- rbeta(nmc, nSp * Sp + 1, nSp - nSp * Sp)
+
+  # Monte Carlo melding method
+  lo <- prevAdj(B_AP_L, B_sen_U, B_spec_L)
+  up <- prevAdj(B_AP_U, B_sen_L, B_spec_U)
+  alpha <- 1 - conf.level
+  LCL <- quantile(lo, prob = alpha / 2)
+  UCL <- quantile(up, prob = 1 - alpha / 2)
+
+  ci <- c(LCL, UCL)
+  attr(ci, "conf.level") <- conf.level
+  # when neg.to.zero=TRUE, set negative values to zero
+  if (neg.to.zero) {
+    if (P < 0) P <- 0
+    if (ci[1] < 0) ci[1] <- 0
+  }
+  estimate <- P
+  names(estimate) <- "adjusted prevalence"
+  data <- paste0("Unadjusted prevalence=", signif(AP, 4))
+  statistic <- Se
+  names(statistic) <- paste0("Sensitivity (using nSe=", nSe, ")")
+  parameter <- Sp
+  names(parameter) <- paste0("Specificity (using nSp=", nSp, ")")
+  method <- "Prevalence Adjusted for Sensitivity and Specificity (CI by Korn-Graubard with melding)"
+  if (neg.to.zero) method <- "Prevalence Adjusted for Sensitivity and Specificity (CI by Korn-Graubard with melding with negatives set to zero)"
+  output <- list(estimate = estimate, statistic = statistic, parameter = parameter, conf.int = ci, data.name = data, method = method, nPeff = nP)
+  class(output) <- "htest"
+  output
+}
