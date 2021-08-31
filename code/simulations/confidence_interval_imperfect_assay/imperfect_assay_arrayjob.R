@@ -13,14 +13,14 @@ suppressMessages({
   library(fs)
   library(parallelly)
 })
-source("code/WprevSeSp_SRS.R")
+source("WprevSeSp_SRS.R")
 
 save_path <- path("//", "data", "bayerdm", "confidence_interval_imperfect_assay")
 dir_create(save_path)
 
 plan(multisession, workers = parallelly::availableCores())
 cat("using", parallelly::availableCores(), "cores\n")
-n_partitions <- 500
+n_partitions <- 400
 n_replications <- 10000
 cat("session planned\n")
 
@@ -104,7 +104,7 @@ experimental_design <-
 cat("experiments designed\n")
 
 if (sjob == 1) {
-  write_rds(experimental_design, path(save_path, "005_experimental_design.rds"))
+  write_rds(experimental_design, path(save_path, "experimental_design.rds"))
 }
 
 calculate_interval_results <- function(weights,
@@ -173,9 +173,7 @@ results <-
          prop_groups_with_prev == 0.75,
          n_groups == 50,
          prev == 0.005) %>%
-  sample_n(5) %>%
-  # filter(coef_var == min(coef_var)) %>%
-  slice(rep(1:n(), 100)) %>%
+  slice(rep(1:n(), n_replications)) %>%
   group_by(design) %>%
   mutate(replication = row_number()) %>%
   mutate(interval_results = pmap(.l = list(weights, n_groups, n_groups_with_prev, groups_with_prev, group_prev, tests_per_group, n_tested_for_sensitivity, n_tested_for_specificity, sensitivity, specificity),
