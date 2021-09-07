@@ -153,5 +153,5 @@ results_summary %>%
     ~generate_plot_2(name_to_plot = ..1,
                    n_groups_to_plot = ..2,
                    prev_to_plot = ..3))) %>%
-  mutate(file_name = path("figures", str_c(str_replace_all(str_to_lower(name), "\\s", "_"), n_groups, str_replace_all(prev, "\\.", "_"), "reduced", sep = "_"), ext = "pdf")) %>%
+  mutate(file_name = path("figures", str_c("perfect", str_replace_all(str_to_lower(name), "\\s", "_"), n_groups, str_replace_all(prev, "\\.", "_"), "reduced", sep = "_"), ext = "pdf")) %>%
   with(walk2(file_name, plot, ~save_plot(filename = .x, plot = .y, ncol = 3, nrow = 2, base_width = 3.5)))
