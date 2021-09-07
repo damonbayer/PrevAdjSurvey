@@ -15,6 +15,9 @@ combined_imperfect_assay_summary
 
 write_csv(combined_imperfect_assay_summary, "~/PrevAdjSurvey/code/simulations/confidence_interval_imperfect_assay/combined_imperfect_assay_summary.csv")
 
+experimental_design <-read_rds("//data/bayerdm/confidence_interval_imperfect_assay/experimental_design.rds")
+experimental_design %>% select_if(~!is.list(.)) %>% write_csv("~/PrevAdjSurvey/code/simulations/confidence_interval_imperfect_assay/experimental_design.csv")
+
 
 dir_ls("~/PrevAdjSurvey/code/simulations/confidence_interval_imperfect_assay") %>%
   enframe(name = NULL) %>%
