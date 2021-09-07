@@ -111,7 +111,7 @@ To simplify the problem, suppose there is only one sampling unit, and let $X_1=X
 Further assume that $\phi_p$ and $\phi_n$ are known. Let $Y_1,\ldots,Y_n$ be the result of the assay from the $n$ individuals in the population
 ($Y_i=1$ is positive and $Y_i=0$ is negative). Let $Y_1^*,\ldots,Y_n^*$ be the true disease status ($Y_i^*=1$ is diseased, and $Y_i^*=0$ is not diseased).
 Then using the definition of sensitivity and specificity, we get:
-\begin{eqnarray*}
+\begin{eqnarray*}Hi M
 Pr[ Y_i =1 | Y_i^*=1] & = & \phi_p \\
 Pr[ Y_i=0 | Y_i^*=0] & = & 1- \phi_n
 \end{eqnarray*}
@@ -235,22 +235,22 @@ Results are presented on the next two pages.
 \end{itemize}
 
 
-\begin{landscape}
-\includepdf[angle=90]{coverage_50_0_005}
-\includepdf[angle=90]{coverage_8000_0_005}
-\includepdf[angle=90]{coverage_50_0_05}
-\includepdf[angle=90]{coverage_8000_0_05}
+% \begin{landscape}
+% \includepdf[angle=90]{coverage_50_0_005}
+% \includepdf[angle=90]{coverage_8000_0_005}
+% \includepdf[angle=90]{coverage_50_0_05}
+% \includepdf[angle=90]{coverage_8000_0_05}
 
-\includepdf[angle=90]{upper_error_frequency_50_0_005}
-\includepdf[angle=90]{upper_error_frequency_8000_0_005}
-\includepdf[angle=90]{upper_error_frequency_50_0_05}
-\includepdf[angle=90]{upper_error_frequency_8000_0_05}
+% \includepdf[angle=90]{upper_error_frequency_50_0_005}
+% \includepdf[angle=90]{upper_error_frequency_8000_0_005}
+% \includepdf[angle=90]{upper_error_frequency_50_0_05}
+% \includepdf[angle=90]{upper_error_frequency_8000_0_05}
 
-\includepdf[angle=90]{lower_error_frequency_50_0_005}
-\includepdf[angle=90]{lower_error_frequency_8000_0_005}
-\includepdf[angle=90]{lower_error_frequency_50_0_05}
-\includepdf[angle=90]{lower_error_frequency_8000_0_05}
-\end{landscape}
+% \includepdf[angle=90]{lower_error_frequency_50_0_005}
+% \includepdf[angle=90]{lower_error_frequency_8000_0_005}
+% \includepdf[angle=90]{lower_error_frequency_50_0_05}
+% \includepdf[angle=90]{lower_error_frequency_8000_0_05}
+% \end{landscape}
 
 % \begin{landscape}
 % \includepdf[angle=90]{coverage_8000}
@@ -425,7 +425,52 @@ n_e =   \frac{\hat{\beta}_a (1-\hat{\beta}_a)}{\widehat{Var}(\hat{\beta}_a)}
 Then the effective count is $x_e = n_e \hat{\beta}_a$, and the lower and upper confidence distributions for ${\beta}_a$ under the Korn-Graubard method are Beta$(x_e, n_e-x_e+1)$ and Beta$(x_e+1,n_e-x_e)$, respectively. 
 Then those confidence distributions are used in place of the confidence distributions for $\beta_a$ in the previous subsection. 
 
+\subsubsection{Damon's Response to 6.3}
 
+First, some notation corrections / clarifications:
+
+Because ${\beta}_a = \sum_{i=1}^{k} w_i \theta_i$, we should let $\hat{\beta}_a= \sum_{i=1}^{k} w_i \frac{X_i}{n_i}$.
+
+Because \( X_i \sim Binomial(n_i, \theta_i )\), we have:
+
+\begin{align*}
+	        &   \Var \left( \hat{\beta}_a \right)   =  \Var \left( \sum_{i=1}^k w_i \frac{X_i}{n_i}\right)\\
+	\implies&   \Var \left( \hat{\beta}_a \right)   =  \sum_{i=1}^k \left( \frac{w_i}{n_i} \right)^2 \Var X_i \\
+	\implies&   \Var \left( \hat{\beta}_a \right)   =  \sum_{i=1}^k \left( \frac{w_i}{n_i} \right)^2 n_i \theta_i (1 - \theta_i) \\
+	\implies&   \widehat{\Var} \left( \hat{\beta}_a \right)   =  \sum_{i=1}^k \left( \frac{w_i}{n_i} \right)^2 n_i \hat{\theta}_i (1 - \hat{\theta}_i) \\
+	\implies&   \widehat{\Var} \left( \hat{\beta}_a \right)   =  \sum_{i=1}^k \left( \frac{w_i}{n_i} \right)^2 n_i \left( \frac{X_i}{n_i} \right) \left(1 - \frac{X_i}{n_i}\right) \\
+\implies&   \widehat{\Var} \left( \hat{\beta}_a \right)   =  \sum_{i=1}^k \frac{w_i^2 \cdot X_i \cdot(1 - X_i) }{n_i^3}
+\end{align*}
+
+
+In some simulations where \( n_i = 200 \) and \( k = 50 \), we achieve a relative error comparing the estimator to empirical variance < 1\%.
+A problem with this estimator is that when \( n_i = 1 \forall i\), \( X_i \in \{0, 1 \} \forall i \). Therefore, the estimated variance is always exactly 0.
+
+\pagebreak
+
+If we instead assume \( X_i \sim Poisson(n_i \theta_i) \), we have:
+
+\begin{align*}
+	        &   \Var \left( \hat{\beta}_a \right)   =  \Var \left( \sum_{i=1}^k w_i \frac{X_i}{n_i}\right)\\
+	\implies&   \Var \left( \hat{\beta}_a \right)   =  \sum_{i=1}^k \left( \frac{w_i}{n_i} \right)^2 \Var X_i \\
+	\implies&   \Var \left( \hat{\beta}_a \right)   =  \sum_{i=1}^k \left( \frac{w_i}{n_i} \right)^2 n_i \theta_i \\
+	\implies&   \widehat{\Var} \left( \hat{\beta}_a \right)   =  \sum_{i=1}^k \left( \frac{w_i}{n_i} \right)^2 n_i \hat{\theta}_i \\
+	\implies&   \widehat{\Var} \left( \hat{\beta}_a \right)   =  \sum_{i=1}^k \left( \frac{w_i}{n_i} \right)^2 n_i \frac{X_i}{n_i} \\
+	\implies&   \widehat{\Var} \left( \hat{\beta}_a \right)   =  \sum_{i=1}^k \left( \frac{w_i}{n_i} \right)^2 X_i
+\end{align*}
+
+I think this is what Mike was trying to arrive at in section 6.3.
+
+Of course, \(X_i \) is not a Poisson random variable, so this estimator is also problematic.
+In some simulations where \( n_i = 200 \) and \( k = 50 \) and other simulations where \( n_i = 1 \) and \( k = 8000 \), we achieve a relative error comparing the estimator to empirical variance \( \approx \) 30\%.
+
+Thus, an alternative for  \( \widehat{\Var} \left( \hat{\beta}_a \right) \) seems like an obvious way to improve the overall estimator.
+
+One quick idea is to use \( \frac{X_i + 1}{n_i + 2} \) for \( \hat{\theta} \) instead of \( \frac{X_i}{n_i} \) when using the Binomial assumption.
+In simulation, this estimator performs much better than the Poisson assumption when \( n_i = 200 \), and a bit worse than the Poisson assumption when \( n_i = 1 \).
+Additionally, this estimator performs  much better than the Binomial assumption when \( n_i = 1 \), and a bit worse than the Poisson assumption when \( n_i = 200 \).
+
+I'm sure Mike has additional thoughts on this.
 
 %\bibliographystyle{agsm}
 \bibliographystyle{biom}
