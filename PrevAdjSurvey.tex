@@ -1,11 +1,13 @@
 \documentclass[AMA,STIX1COL]{WileyNJD-v2}
 \usepackage{moreverb}
-
+% just for todo notes
+\setlength {\marginparwidth }{2cm}
+\usepackage[colorinlistoftodos]{todonotes}
 
 \newcommand\BibTeX{{\rmfamily B\kern-.05em \textsc{i\kern-.025em b}\kern-.08em
 T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
-\articletype{Research Article}%
+\articletype{Article Type}%
 
 \received{<day> <Month>, <year>}
 \revised{<day> <Month>, <year>}
@@ -23,7 +25,7 @@ T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
 \author[3]{Barry I. Graubard}
 
-\authormark{AUTHOR ONE \textsc{et al}}
+\authormark{D. M. BAYER, M.P. FAY and B. I. Graubard \textsc{et al}}
 
 
 \address[1]{\orgdiv{Biostatistics Research Branch}, \orgname{National Institute of Allergy and Infectious Diseases}, \orgaddress{\state{Bethesda, Maryland}}}
@@ -34,7 +36,7 @@ T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
 \corres{*Michael P. Fay, Bethesda, MD 2089. \email{mfay@niaid.nih.gov}}
 
-% \presentaddress{Present address}
+\presentaddress{Present address}
 
 \abstract[Abstract]{This paper describes the use of the \LaTeXe\ \textsf{WileyNJD-v2.cls}
 class file for setting papers for \emph{Mathematical Methods in the Applied Sciences}.}
@@ -53,6 +55,77 @@ class file for setting papers for \emph{Mathematical Methods in the Applied Scie
 
 \footnotetext{\textbf{Abbreviations:} ANA, anti-nuclear antibodies; APC, antigen-presenting cells; IRF, interferon regulatory factor}
 
+\section{Introduction}
+
+\section{Methods}
+\todo[inline]{I’m struggling a bit with the overall message of the paper.
+
+In Part 1, we advocate for the Kalish Appendix aka the Korn-Graubard + CD method over the Lang-Reiczigel method in the case of a simple random sample / unweighted survey. This is sort of a special case of the / Korn-Graubard + CD method with k = 1 and the binomial variance assumption, rather than the Poisson variance assumption. 
+
+In Part 2, we advocate for Fay-Feuer over Korn-Graubard in the case where
+ }
+Suppose we have a survey with  \( k \) sampling units, with \( N_1, N_2, \ldots, N_k \) individuals in the population of unit \( i \).
+We sample \( n_1, n_2, \ldots, n_k \) individuals via a simple random sample from each population to have an assay performed to determine who has a disease.
+Let \( \theta_i \) be the population frequency of positive results for assays performed on individuals from sampling unit \( i \) and \( X_i \) be the number of positive results from an assay performed on \( n_i \) individuals from sampling unit \( i \).
+Also let \( \theta_i^* \) be the population frequency of cases in sampling unit \( i \) and \( X_i^* \) be the true number of people with the disease among the \( n_i \) individuals from sampling unit \( i \).
+Then \( X_i^* \sim \operatorname{Binomial}(n_i, \theta_i^*) \)
+In the case of a perfect assay, \( \theta_i = \theta_i^* \) and \( X_i = X_i^* \).
+
+Therefore, the population prevalence is 
+
+\begin{equation}
+    \beta = \frac{\sum_{i=1}^k N_i \theta_i^*}{\sum_{j=1}^k N_j} = \sum_{i=1}^k w_i \theta_i^*,
+\end{equation}
+
+where \( w_i = N_i / N \).
+
+Suppose the assay is measured on \( m_n \) individuals known to not have the disease and on \( m_p \) individuals known to have have the disease.
+Let \( C_n \) and \( C_p \) be the number who test positive from the respective samples.
+Assume that the negative and positive controls act like simple random samples from their respective populations and that \( C_n \sim \operatorname{Binomial}(m_n, \phi_n) \) and \( C_p \sim \operatorname{Binomial}(m_p, \phi_p) \), where \( 1 - \phi_n \) is the specificity of the assay and \( \phi_p \) is the sensitivity of the assay.
+
+Let \( \hat{AP} = \frac{\sum_{i=1}^k N_i \frac{X_i}{n_i}}{\sum_{j=1}^k N_j} = \sum_{i=1}^k w_i \frac{X_i}{n_i} \), \( \widehat{Sp} = 1 - \frac{C_n}{m_n} \), and \( \widehat{Se} = \frac{C_p}{m_p} \).
+
+The first method in this paper is concerned with estimating \( \beta \) in the case where \( k = 1 \), \( \phi_n > 0 \), \( \phi_p < 1 \), i.e. estimating prevalence from a simple random sample with an imperfect assay.
+The second method in this paper is concerned with estimating \( \beta \) in the case where \( k > 1 \), \( \phi_n = 0 \), \( \phi_p = 1 \), i.e. estimating prevalence from a weighted sample with a perfect assay.
+The final method in this paper is concerned with estimating \( \beta \) in the case where \( k > 1 \), \( \phi_n > 0 \), \( \phi_p < 1 \), i.e. estimating prevalence from a weighted sample with an imperfect assay.
+
+\subsection{Estimating Prevalence from a Simple Random Sample with an Imperfect Assay}
+
+First, we consider the scenario \( k = 1 \), \( \phi_n > 0 \), \( \phi_p < 1 \) and we are concerned with estimating 
+
+\begin{equation}
+    \beta = \frac{\sum_{i=1}^k N_i \theta_i^*}{\sum_{j=1}^k N_j} = \theta_1^*
+\end{equation}
+
+We use the method is described in the Appendix of \cite{Kali:2021}.
+This is a modification of the melding method, which uses lower and upper confidence distributions on functions of estimators independent estimators to create a confidence interval for prevalence that accounts for variability in \( \widehat{AP} \), \( \widehat{Se} \), and \( \widehat{Sp} \) \cite{FayP:2015}.
+
+For each of \( \widehat{AP} \), \( \widehat{Se} \), and \( \widehat{Sp} \), we use the lower and upper confidence distributions associated with the exact binomial confidence interval.
+In the case of a binomial random variable with \( x \) successes among \( n \) trials, the lower confidence distribution is \( \operatorname{Beta}(x, n - x + 1) \), and the upper confidence distribution is \( \operatorname{Beta}(x + 1, n - x) \).
+
+Letting \( B_{ap}^L, B_{ap}^U, B_{sp}^L, B_{sp}^U, B_{se}^L, B_{se}^U \) be the lower and upper confidence distribtuions associate with the estimators, and \( q(a, W) \) be the \( a \)th quantile of a random variable \( W \), the 95\% confidence interval for \( \beta \) is 
+
+
+\( \left\{ q \left( 0.025, \frac{B_{ap}^L + B_{sp}^L - 1}{B_{se}^U + B_{sp}^L - 1}  \right),  q \left( 0.975, \frac{B_{ap}^U + B_{sp}^U - 1}{B_{se}^L + B_{sp}^U - 1}  \right) \right\}.\)
+
+This method is compared to the method presented in \citet{Lang:2014}.
+
+\subsection{Estimating Prevalence from a Weighted Sample with a Perfect Assay}
+
+
+
+\subsection{Estimating Prevalence from a Weighted Sample with an  Imperfect Assay}
+
+\section{Results}
+\subsection{Estimating Prevalence from a Simple Random Sample with an Imperfect Assay}
+\subsection{Estimating Prevalence from a Weighted Sample with a Perfect Assay}
+\subsection{Estimating Prevalence from a Weighted Sample with an  Imperfect Assay}
+
+\section{Discussion}
+
+\section{Bibliography}
+\nocite{*}% Show all bib entries - both cited and uncited; comment this line to view only cited bib entries;
+\bibliography{refs}%
 
 \section{Introduction}\label{sec1}
 
@@ -75,10 +148,10 @@ In the following sections we describe how to lay out your code to
 use \textsf{WileyNJD-v2.cls} to reproduce the typographical look of
 \emph{Wiley NJD Journals}.
 
-\subsection{Procedure to install fonts}
+\subsection{Procedure to install fonts (not required on Overleaf)}
  
 \begin{enumerate}
-\item All font files are available under the Stix-fonts folder 
+\item All font files are available under the Stix-fonts folder in the zip download at \url{https://onlinelibrary.wiley.com/page/journal/10991476/homepage/latex_class_files.htm}
 \item Font installer is available under the same folder Windows-Stix-fontinstaller.exe
 \item Execute (double click the EXE file) the EXE file that will install all fonts/map files to your local drive.
 \end{enumerate}
@@ -394,7 +467,8 @@ WritE('Pascal keywords.');
 before the References.
 
 \subsection{Bibliography}
-
+% \nocite{*}% Show all bib entries - both cited and uncited; comment this line to view only cited bib entries;
+% \bibliography{WileyNJD-AMA}%
 \begin{enumerate}[1]
 \item Use \verb"\bibliography{wileyNJD-AMA}" BST file for AMA reference style
 \item Use \verb"\bibliography{wileyNJD-APA}" BST file for APA reference style
