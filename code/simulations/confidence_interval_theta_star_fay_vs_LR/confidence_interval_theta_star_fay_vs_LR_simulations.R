@@ -4,7 +4,7 @@ library(asht)
 library(cowplot)
 library(fs)
 library(furrr)
-source("WprevSeSp_SRS.R")
+source("WWprevSeSp_SRS_SRS.R")
 
 plan(multisession, workers = 40)
 furrr_options(seed = 200)
@@ -52,7 +52,7 @@ results <-
                                         n_tested_for_sensitivity,
                                         est_specificity,
                                         n_tested_for_specificity)
-                            prevSeSp(AP = est_prevalence,
+                            WprevSeSp_SRS(AP = est_prevalence,
                                      nP = n_tested_for_prevalence,
                                      Se = est_sensitivity,
                                      nSe = n_tested_for_sensitivity,
@@ -71,7 +71,7 @@ results <-
                                          n_tested_for_sensitivity,
                                          est_specificity,
                                          n_tested_for_specificity)
-                             WprevSeSp_SRS(AP = est_prevalence,
+                             WWprevSeSp_SRS_SRS(AP = est_prevalence,
                                            nP = n_tested_for_prevalence,
                                            Se = est_sensitivity,
                                            nSe = n_tested_for_sensitivity,

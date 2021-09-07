@@ -20,7 +20,7 @@ dir_create(save_path)
 
 plan(multisession, workers = parallelly::availableCores())
 cat("using", parallelly::availableCores(), "cores\n")
-n_partitions <- 400
+n_partitions <- 550
 n_replications <- 10000
 cat("session planned\n")
 
@@ -75,7 +75,7 @@ experimental_design <-
     prev = c(0.005, 0.05),
     sensitivity = 0.95,
     specificity = seq(0.75, 1, by = 0.05),
-    prop_groups_with_prev = c(0.02, 0.05, 0.10, 0.25, 0.5, 0.75),
+    prop_groups_with_prev = c(0.75),
     group_distribution = c("high", "uniform", "low")) %>%
   mutate(n_groups_with_prev = round(prop_groups_with_prev * n_groups)) %>%
   filter(n_groups_with_prev > 0) %>%
@@ -133,7 +133,6 @@ calculate_interval_results <- function(weights,
   false_positive_counts <- known_negative_counts - true_negative_counts
 
   apparent_positive_counts <- true_positive_counts + false_positive_counts
-  apparent_positive_counts <- 0
   apparent_prevalence <- sum(apparent_positive_counts / tests_per_group * weights)
   var_hat_p_hat <- sum((weights / tests_per_group)^2 * apparent_positive_counts)
   stdErrPrev <- sqrt(var_hat_p_hat)
@@ -168,11 +167,7 @@ cat("starting results\n")
 set.seed(200)
 results <-
   experimental_design %>%
-  filter(specificity == max(specificity),
-         group_distribution == "high",
-         prop_groups_with_prev == 0.75,
-         n_groups == 50,
-         prev == 0.005) %>%
+  filter(partition == sjob) %>%
   slice(rep(1:n(), n_replications)) %>%
   group_by(design) %>%
   mutate(replication = row_number()) %>%

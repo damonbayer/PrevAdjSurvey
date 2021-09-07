@@ -1,11 +1,11 @@
 #!/bin/bash
 
-#SBATCH --partition=norm,quick
+#SBATCH --partition=norm
 #SBATCH --ntasks=1
 #SBATCH --ntasks-per-core=1
-#SBATCH --time=1:00:00
+#SBATCH --time=100:00:00
 #SBATCH --mem=4g
-#SBATCH --array=1-2
+#SBATCH --array=1-550
 #SBATCH --gres=lscratch:10
 #SBATCH --job-name="imperfect"
 
