@@ -1,5 +1,8 @@
 \documentclass[AMA,STIX1COL]{WileyNJD-v2}
 \usepackage{moreverb}
+
+\DeclareMathOperator{\Var}{Var}
+
 % just for todo notes
 \setlength {\marginparwidth }{2cm}
 \usepackage[colorinlistoftodos]{todonotes}
@@ -17,7 +20,7 @@ T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
 \begin{document}
 
-\title{A demonstration of the \LaTeX\ class file for Wiley NJD Journals\protect\thanks{This is an example for title footnote.}}
+\title{Confidence Intervals for Prevalence Estimates from Complex Surveys with Imperfect Assays}
 
 \author[1,2]{Damon M. Bayer}
 
@@ -67,69 +70,217 @@ class file for setting papers for \emph{Mathematical Methods in the Applied Scie
 \end{itemize}
 
 \section{Methods}
-\todo[inline]{I’m struggling a bit with the overall message of the paper.
 
-In Part 1, we advocate for the Kalish Appendix aka the Korn-Graubard + CD method over the Lang-Reiczigel method in the case of a simple random sample / unweighted survey. This is sort of a special case of the / Korn-Graubard + CD method with k = 1 and the binomial variance assumption, rather than the Poisson variance assumption. 
-
-In Part 2, we advocate for Fay-Feuer over Korn-Graubard in the case where
- }
 Suppose we have a survey with  \( k \) sampling units, with \( N_1, N_2, \ldots, N_k \) individuals in the population of unit \( i \).
 We sample \( n_1, n_2, \ldots, n_k \) individuals via a simple random sample from each population to have an assay performed to determine who has a disease.
-Let \( \theta_i \) be the population frequency of positive results for assays performed on individuals from sampling unit \( i \) and \( X_i \) be the number of positive results from an assay performed on \( n_i \) individuals from sampling unit \( i \).
-Also let \( \theta_i^* \) be the population frequency of cases in sampling unit \( i \) and \( X_i^* \) be the true number of people with the disease among the \( n_i \) individuals from sampling unit \( i \).
-Then \( X_i^* \sim \operatorname{Binomial}(n_i, \theta_i^*) \)
-In the case of a perfect assay, \( \theta_i = \theta_i^* \) and \( X_i = X_i^* \).
+Let \( X_i \) be the number of positive results from an assay performed on the \( n_i \) individuals from sampling unit \( i \) and assume \( X_i \sim \operatorname{Binomial}(n_i, \theta_i) \), where \( \theta_i \) is the population frequency of positive results for assays performed on individuals from sampling unit \( i \).
+Similarly, let \( X_i^* \) be the true number of people with the disease among the \( n_i \) individuals from sampling unit \( i \) and assume \( X_i^* \sim \operatorname{Binomial}(n_i, \theta_i^*) \), where \( \theta_i^* \) is the population frequency of cases in sampling unit \( i \).
+In the case of a perfect assay, \( \theta_i = \theta_i^* \).
 
 Therefore, the population prevalence is 
 
 \begin{equation}
-    \beta = \frac{\sum_{i=1}^k N_i \theta_i^*}{\sum_{j=1}^k N_j} = \sum_{i=1}^k w_i \theta_i^*,
+    \beta^* = \frac{\sum_{i=1}^k N_i \theta_i^*}{\sum_{j=1}^k N_j} = \sum_{i=1}^k w_i \theta_i^*,
+    \label{eq:pop-prev}
 \end{equation}
 
-where \( w_i = N_i / \sum_{j=1}^n N_j \).
+where \( w_i = N_i / \sum_{j=1}^n N_j \) and, therefore, \( \sum_{i=1}^k w_i = 1 \).
 
 Suppose the assay is measured on \( m_n \) individuals known to not have the disease and on \( m_p \) individuals known to have have the disease.
 Let \( C_n \) and \( C_p \) be the number who test positive from the respective samples.
-Assume that the negative and positive controls act like simple random samples from their respective populations and that \( C_n \sim \operatorname{Binomial}(m_n, \phi_n) \) and \( C_p \sim \operatorname{Binomial}(m_p, \phi_p) \), where \( 1 - \phi_n \) is the specificity of the assay and \( \phi_p \) is the sensitivity of the assay.
+Assume that the negative and positive controls act like simple random samples from their respective populations.
+Thus, \( C_n \sim \operatorname{Binomial}(m_n, \phi_n) \) where \( 1 - \phi_n \) is the specificity of the assay, and \( C_p \sim \operatorname{Binomial}(m_p, \phi_p) \), where  \( \phi_p \) is the sensitivity of the assay.
 
-Let \( \widehat{AP} = \frac{\sum_{i=1}^k N_i \frac{X_i}{n_i}}{\sum_{j=1}^k N_j} = \sum_{i=1}^k w_i \frac{X_i}{n_i} \), \( \widehat{Sp} = 1 - \frac{C_n}{m_n} \), and \( \widehat{Se} = \frac{C_p}{m_p} \).
+Note the relationship between these parameters:
 
-The first method in this paper is concerned with estimating \( \beta \) in the case where \( k = 1 \), \( \phi_n > 0 \), \( \phi_p < 1 \), i.e. estimating prevalence from a simple random sample with an imperfect assay.
-The second method in this paper is concerned with estimating \( \beta \) in the case where \( k > 1 \), \( \phi_n = 0 \), \( \phi_p = 1 \), i.e. estimating prevalence from a weighted sample with a perfect assay.
-The final method in this paper is concerned with estimating \( \beta \) in the case where \( k > 1 \), \( \phi_n > 0 \), \( \phi_p < 1 \), i.e. estimating prevalence from a weighted sample with an imperfect assay.
+\begin{align}
+\begin{split}
+  \beta^*   =&   \sum_{i=1}^k w_i \theta_i^* \\
+            =&  \sum_{i=1}^k w_i \left( \frac{\theta_i - \phi_n}{\phi_p - \phi_n} \right) \\
+            =&   \frac{\sum_{i=1}^k w_i \theta_i}{\phi_p - \phi_n} - \frac{\phi_n \sum_{i=1}^k w_i}{\phi_p - \phi_n} \\
+            =&   \frac{\sum_{i=1}^k w_i \theta_i}{\phi_p - \phi_n} - \frac{\phi_n}{\phi_p - \phi_n}
+            \label{eq:long-beta}
+\end{split}
+\end{align}
 
-\subsection{Estimating Prevalence from a Simple Random Sample with an Imperfect Assay}
-
-First, we consider the scenario \( k = 1 \), \( \phi_n > 0 \), \( \phi_p < 1 \) and we are concerned with estimating 
+Let \( \hat{\theta}_i = \frac{X_i}{n_i} \), \( \hat{\phi}_n = \frac{C_n}{m_n} \), and \( \hat{\phi}_p = \frac{C_p}{m_p} \).
+Then a natural estimator for \( \beta^* \) is 
 
 \begin{equation}
-    \beta = \frac{\sum_{i=1}^k N_i \theta_i^*}{\sum_{j=1}^k N_j} = \theta_1^*
+    \hat{\beta}^* = \frac{\sum_{i=1}^k w_i \hat{\theta}_i}{\hat{\phi}_p - \hat{\phi}_n} - \frac{\hat{\phi}_n}{\hat{\phi}_p - \hat{\phi}_n}.
 \end{equation}
 
-\begin{itemize}
-    \item We propose a modification of the melding method described in Fay 2015.
-    \item which uses lower and upper confidence distributions on functions of estimators independent estimators to create a confidence interval for prevalence that accounts for variability in \( \widehat{AP} \), \( \widehat{Se} \), and \( \widehat{Sp} \)
-    \item We assume all of these come from Binomial distributions.
-\end{itemize}
+This estimator serves as important basis for developing confidence intervals in this work.
+Section~\ref{sec:srs-imperfect} is concerned with confidence intervals for  \( \beta^* \) in the case where \( k = 1 \), \( \phi_n > 0 \), \( \phi_p < 1 \), i.e. estimating prevalence from a simple random sample with an imperfect assay.
+Section~\ref{sec:weight-perfect} is concerned with confidence intervals for  \( \beta^* \) in the case where \( k > 1 \), \( \phi_n = 0 \), \( \phi_p = 1 \), i.e. estimating prevalence from a weighted sample with a perfect assay.
+Section~\ref{sec:weight-imperfect} is concerned with confidence intervals for  \( \beta^* \) in the case where \( k > 1 \), \( \phi_n > 0 \), \( \phi_p < 1 \), i.e. estimating prevalence from a weighted sample with an imperfect assay.
 
-We use the method is described in the Appendix of \cite{Kali:2021}.
-This is a modification of the melding method, which uses lower and upper confidence distributions on functions of estimators independent estimators to create a confidence interval for prevalence that accounts for variability in \( \widehat{AP} \), \( \widehat{Se} \), and \( \widehat{Sp} \) \cite{FayP:2015}.
+\subsection{Estimating Prevalence from a Simple Random Sample with an Imperfect Assay}
+\label{sec:srs-imperfect}
 
-For each of \( \widehat{AP} \), \( \widehat{Se} \), and \( \widehat{Sp} \), we use the lower and upper confidence distributions associated with the exact binomial confidence interval.
-In the case of a binomial random variable with \( x \) successes among \( n \) trials, the lower confidence distribution is \( \operatorname{Beta}(x, n - x + 1) \), and the upper confidence distribution is \( \operatorname{Beta}(x + 1, n - x) \).
+First, we consider the scenario \( k = 1 \), \( \phi_n > 0 \), and \( \phi_p < 1 \).
+We develop a confidence interval for the population prevalence, \( \beta^* \).
+Because \( k = 1 \), the estimator in Equation~\ref{eq:long-beta} becomes 
 
-Letting \( B_{ap}^L, B_{ap}^U, B_{sp}^L, B_{sp}^U, B_{se}^L, B_{se}^U \) be the lower and upper confidence distribtuions associate with the estimators, and \( q(a, W) \) be the \( a \)th quantile of a random variable \( W \), the 95\% confidence interval for \( \beta \) is 
+\begin{equation}
+\hat{\beta}^* = \frac{\hat{\theta}_1 - \hat{\phi}_n}{\hat{\phi}_p - \hat{\phi}_n}.
+\label{eq:srs-beta-est}
+\end{equation}
 
+To create a confidence interval for \( \hat{\beta}^* \), we use a generalization of the melding method \cite{FayP:2015}, which makes use of lower and upper confidence distributions on functions of independent estimators to account for variability in \( \hat{\theta}_1 \), \( \hat{\phi}_n \), and \( \hat{\phi}_p \).
 
-\( \left\{ q \left( 0.025, \frac{B_{ap}^L + B_{sp}^L - 1}{B_{se}^U + B_{sp}^L - 1}  \right),  q \left( 0.975, \frac{B_{ap}^U + B_{sp}^U - 1}{B_{se}^L + B_{sp}^U - 1}  \right) \right\}.\)
+Each estimated component in Equation~\ref{eq:srs-beta-est} is a binomial parameter.
+For each of these, we use distributions associated with  the exact binomial confidence interval.
+For a binomial experiment with \( x \) successes out of \( n \) trials, the lower confidence distribution \( (B^L) \) is \( \operatorname{Beta}(x, n - x + 1) \), and the upper confidence distribution \( (B^U) \) is \( \operatorname{Beta}(x + 1, n - x)\).
 
-This method is compared to the method presented in \citet{Lang:2014}.
+Let \( q(a, W) \) be the \( a \)th quantile of a random variable \( W \).
+
+Then the \( a \)\% confidence interval for \( \beta^* \) is 
+
+\begin{equation}
+    \left\{ q \left( \frac{1 - a}{2}, \frac{B_{\theta_1}^L + B_{\phi_n}^L }{B_{\phi_p}^U + B_{\phi_n}^L }  \right),  q \left( \frac{1 + a}{2}, \frac{B_{\theta_1}^U + B_{\phi_n}^U}{B_{\phi_p}^L + B_{\phi_n}^U}  \right) \right\}.
+\end{equation}
+
+We compare this method to one described in \cite{Lang:2014} as implemented in prevSeSp function in \cite{asht}, which provides approximate confidence intervals for true prevalence when sensitivity and specificity are estimated from independent samples, as they are in the in this section.
+
+This interval is given by
+\begin{equation}
+\beta_1^{*\prime} + d\beta \pm q\left( \frac{1 + a}{2}, Z \right) \cdot \Var(\beta_1^{*\prime})^{1/2}    
+\end{equation}
+
+where
+\begin{equation}
+   Z \sim N(0,1) 
+\end{equation}
+
+\begin{equation}
+    d\beta = 2 \cdot q\left( \frac{1 + a}{2}, Z \right)^2 \cdot\left\{ \beta_1^{*\prime} \cdot \frac{\phi_p^\prime (1 - \phi_p^\prime)}{m_p^\prime} - (1 - \beta_1^{*\prime}) \cdot \frac{(1 - \phi_n^\prime) \phi_n^\prime}{m_n^\prime}  \right\}
+\end{equation}
+
+\begin{equation}
+    \Var(\beta_1^{*\prime}) = \frac{ \frac{\beta_1^{*\prime}(1 - \beta_1^{*\prime})}{n_1} + \left(\beta_1^{*\prime}\right)^2 \frac{\phi_p^\prime (1 - \phi_p^\prime)}{m_p} + \left(1 + \beta_1^{*\prime}\right)^2 \frac{(1 - \phi_n^\prime) \phi_n^\prime}{ m_n}}{(\phi_p^\prime - \phi_n^\prime)^2}
+\end{equation}
+
+\begin{equation}
+    m_p^\prime = m_p +2
+\end{equation}
+
+\begin{equation}
+    m_n^\prime = m_n + 2
+\end{equation}
+
+\begin{equation}
+    \phi_p^\prime = \frac{m_p \cdot \hat{\phi}_p + 1}{m_p + 2}
+\end{equation}
+
+\begin{equation}
+   1 - \phi_n^\prime = \frac{m_n \cdot (1 - \hat{\phi}_n) + 1}{m_n + 2} 
+\end{equation}
+
+\begin{equation}
+   \beta_1^{*\prime} = \frac{\beta_1^\prime - \phi_n^\prime}{\phi_p^\prime - \phi_n^\prime} 
+\end{equation}
+
+\begin{equation}
+    \beta_1^\prime = \frac{n_1 \cdot \hat{\theta}_1 + q\left( \frac{1 + a}{2}, Z \right)^2 / 2}{n_1 + q\left( \frac{1 + a}{2}, Z \right)^2}
+\end{equation}
 
 \subsection{Estimating Prevalence from a Weighted Sample with a Perfect Assay}
+\label{sec:weight-perfect}
+Next, we develop a confidence interval for the population prevalence, \( \beta^* \), in the scenario \( k > 1 \), \( \phi_n = 0 \), \( \phi_p = 1 \).
+Our method is a straightforward adaptation of the one presented in \cite{FayF:1997}, which was developed to create confidence intervals for a population rate which is assumed to a weighted sum of Poisson rate parameters.
+We note that for sufficiently large sample size \( n \) and small rate \( \lambda \), a \( \operatorname{Poisson}(n\lambda) \) distribution is approximately equal in distribution to a \( \operatorname{Binomial}(n, \lambda) \) distribution.
+Under this assumption, we suggest the confidence interval for \( \beta^* \):
+
+\begin{equation}
+    \left( q\left( \frac{1 - a}{2}, G_{\beta^*}^L \right), q \left( \frac{1 + a}{2},  G_{\beta^*}^U \right) \right)
+\end{equation}
 
 
+Where
+
+\begin{equation}
+    G_{\beta^*}^L \sim \operatorname{Gamma}\left( \frac{y^2}{v}, \frac{v}{y} \right)
+\end{equation}
+
+\begin{equation}
+    G_{\beta^*}^U \sim \operatorname{Gamma}\left( \frac{y^{*2}}{v^*}, \frac{v^*}{y^*} \right)
+\end{equation}
+
+\begin{equation}
+    y = \sum_{i=1}^k \frac{w_i}{n_i} x_i
+\end{equation}
+
+\begin{equation}
+    v = \sum_{i=1}^k \left( \frac{w_i}{n_i}\right)^2 x_i
+\end{equation}
+
+\begin{equation}
+    y^* = y + \max\left(\frac{w_1}{n_1}, \ldots, \frac{w_k}{n_k} \right)
+\end{equation}
+
+\begin{equation}
+    v^* = v + \left\{ \max\left(\frac{w_1}{n_1}, \ldots, \frac{w_k}{n_k} \right) \right\}^2
+\end{equation}
+
+We compare this confidence interval to two methods presented in \cite{Dean:2015}.
+
+The first of these is an adaptation of \cite{AgrestiCoull} for the survey setting.
+The interval for \( \beta^* \) is given by:
+
+\begin{equation}
+    \tilde{p} \pm q\left( \frac{1 + a}{2}, Z \right) \sqrt{\tilde{p}(1 - \tilde{p}) / \tilde{n}}
+\end{equation}
+
+where 
+
+\begin{equation}
+   \tilde{x} = \left( \sum_{i=1}^k w_i \hat{\theta}_i \right) n_{\text{eff}} + c 
+\end{equation}
+
+\begin{equation}
+   \tilde{n} = n_{\text{eff}} + 2c 
+\end{equation}
+
+\begin{equation}
+    \tilde{p} = \tilde{x} / \tilde{n}
+\end{equation}
+
+\begin{equation}
+   c = q\left( \frac{1 + a}{2}, Z \right)^2/2 
+\end{equation}
+
+\begin{equation}
+   n_{\text{eff}} = \frac{\left( \sum_{i=1}^k w_i \hat{\theta}_i \right) \left(1 - \sum_{i=1}^k w_i \hat{\theta}_i \right)}{\sum_{i=1}^k \frac{w_i^2}{n_i}\hat{\theta}_i} 
+   \label{eq:neff}
+\end{equation}
+ 
+In the case where \( \sum_{i=1}^k \frac{w_i^2}{n_i}\hat{\theta}_i = 0 \), we instead let \( n_{\text{eff}} = \sum_{i=1}^k n_i \).
+
+We also compare our suggested method to a modification of \cite{Korn:1998} presented in \cite{Dean:2015}.
+This interval is given by 
+
+\begin{equation}
+    \left( q \left( \frac{1 - a}{2}, B^L_{CP} \right), q \left( \frac{1 + a}{2}, B^U_{CP} \right)  \right)
+\end{equation}
+
+where 
+
+\begin{equation}
+    B^L_{CP} \sim \operatorname{Binomial}\left(n_{\text{eff}} \sum_{i=1}^k w_i \hat{\theta}_i, n_{\text{eff}} \left(1 -  \sum_{i=1}^k w_i \hat{\theta}_i\right) + 1\right)
+\end{equation}
+
+\begin{equation}
+    B^U_{CP} \sim \operatorname{Binomial}\left(\left(n_{\text{eff}} \sum_{i=1}^k w_i \hat{\theta}_i\right) + 1, n_{\text{eff}} \left(1 - \sum_{i=1}^k w_i \hat{\theta}_i \right)\right)
+\end{equation}
+
+with \( n_{\text{eff}} \) defined in Equation~\ref{eq:neff}.
 
 \subsection{Estimating Prevalence from a Weighted Sample with an  Imperfect Assay}
+
+
+
+\label{sec:weight-imperfect}
 
 \section{Results}
 \subsection{Estimating Prevalence from a Simple Random Sample with an Imperfect Assay}
@@ -227,6 +378,8 @@ This method is compared to the method presented in \citet{Lang:2014}.
 \end{figure}
 
 \subsection{Estimating Prevalence from a Weighted Sample with an  Imperfect Assay}
+
+THERE IS A SMALL ERROR IN THESE RESULTS. RERUNNING ON BIOWULF NOW. I DON'T EXPECT THE SUBSTANCE TO CHANGE.
 
 \begin{figure}
     \centering
