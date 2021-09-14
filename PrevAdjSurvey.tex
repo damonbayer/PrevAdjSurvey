@@ -57,6 +57,15 @@ class file for setting papers for \emph{Mathematical Methods in the Applied Scie
 
 \section{Introduction}
 
+\begin{itemize}
+    \item This paper is concerned with methods for creating confidence intervals for estimating disease prevalence in a variety of scenarios.
+    \begin{itemize}
+        \item First, we improve confidence intervals for simple random samples where prevalence is assessed with an assay with imperfect sensitivity and/or specificity.
+        \item Next, we improve confidence intervals for weighted samples where prevalence is assessed with an assay with perfect sensitivity and/or specificity.
+        \item In the final scenario, we improve confidence intervals for weighted samples prevalence is assessed with an assay with imperfect sensitivity and/or specificity.
+    \end{itemize}
+\end{itemize}
+
 \section{Methods}
 \todo[inline]{I’m struggling a bit with the overall message of the paper.
 
@@ -77,13 +86,13 @@ Therefore, the population prevalence is
     \beta = \frac{\sum_{i=1}^k N_i \theta_i^*}{\sum_{j=1}^k N_j} = \sum_{i=1}^k w_i \theta_i^*,
 \end{equation}
 
-where \( w_i = N_i / N \).
+where \( w_i = N_i / \sum_{j=1}^n N_j \).
 
 Suppose the assay is measured on \( m_n \) individuals known to not have the disease and on \( m_p \) individuals known to have have the disease.
 Let \( C_n \) and \( C_p \) be the number who test positive from the respective samples.
 Assume that the negative and positive controls act like simple random samples from their respective populations and that \( C_n \sim \operatorname{Binomial}(m_n, \phi_n) \) and \( C_p \sim \operatorname{Binomial}(m_p, \phi_p) \), where \( 1 - \phi_n \) is the specificity of the assay and \( \phi_p \) is the sensitivity of the assay.
 
-Let \( \hat{AP} = \frac{\sum_{i=1}^k N_i \frac{X_i}{n_i}}{\sum_{j=1}^k N_j} = \sum_{i=1}^k w_i \frac{X_i}{n_i} \), \( \widehat{Sp} = 1 - \frac{C_n}{m_n} \), and \( \widehat{Se} = \frac{C_p}{m_p} \).
+Let \( \widehat{AP} = \frac{\sum_{i=1}^k N_i \frac{X_i}{n_i}}{\sum_{j=1}^k N_j} = \sum_{i=1}^k w_i \frac{X_i}{n_i} \), \( \widehat{Sp} = 1 - \frac{C_n}{m_n} \), and \( \widehat{Se} = \frac{C_p}{m_p} \).
 
 The first method in this paper is concerned with estimating \( \beta \) in the case where \( k = 1 \), \( \phi_n > 0 \), \( \phi_p < 1 \), i.e. estimating prevalence from a simple random sample with an imperfect assay.
 The second method in this paper is concerned with estimating \( \beta \) in the case where \( k > 1 \), \( \phi_n = 0 \), \( \phi_p = 1 \), i.e. estimating prevalence from a weighted sample with a perfect assay.
@@ -96,6 +105,12 @@ First, we consider the scenario \( k = 1 \), \( \phi_n > 0 \), \( \phi_p < 1 \) 
 \begin{equation}
     \beta = \frac{\sum_{i=1}^k N_i \theta_i^*}{\sum_{j=1}^k N_j} = \theta_1^*
 \end{equation}
+
+\begin{itemize}
+    \item We propose a modification of the melding method described in Fay 2015.
+    \item which uses lower and upper confidence distributions on functions of estimators independent estimators to create a confidence interval for prevalence that accounts for variability in \( \widehat{AP} \), \( \widehat{Se} \), and \( \widehat{Sp} \)
+    \item We assume all of these come from Binomial distributions.
+\end{itemize}
 
 We use the method is described in the Appendix of \cite{Kali:2021}.
 This is a modification of the melding method, which uses lower and upper confidence distributions on functions of estimators independent estimators to create a confidence interval for prevalence that accounts for variability in \( \widehat{AP} \), \( \widehat{Se} \), and \( \widehat{Sp} \) \cite{FayP:2015}.
@@ -303,6 +318,16 @@ This method is compared to the method presented in \citet{Lang:2014}.
     \caption{Caption}
     \label{fig:imperfect_upper_error_frequency_8000_0_05_reduced.pdf}
 \end{figure}
+
+Misc quotes from Mike to incorporate:
+
+\begin{itemize}
+    \item For sharing the data from the Kalish, et al study, we thank Matthew Memoli and the LID Clinical Studies Unit of the National Institute of Allergy and Infectious Diseases, NIH,  Kaitlyn Sadtler from the National Institute of Biomedical Imaging and Bioengineering, NIH,   Matthew Hall from the National Center for Advancing Translational Sciences, NIH, and Dominic Esposito from the Fredrick National Laboratory for Cancer Research, NCI, NIH.
+    \item The last time we met, you mentioned that it would be nice to report the weights in terms of coefficient of variation. I went back to the data from the COVID seroprevalence paper in undiagnosed adults, and I calculated a coefficient of variation  of 2.52 = 252\% for all 8058 individuals, and looking at subsets, I found that the Hispanics had a CV=306\%.  
+    \item For some weighting for surveys to adjust for selection bias, the coefficient of variation may be large.  For example, the coefficient of variation of the weights (CVW) for the main estimate of seroprevalence in Kalish, et al (2021) had CVW=252\%, and it could be even larger for subsets of the population (e.g., Hispanics had CVW=306\%). 
+\end{itemize}
+
+
 
 \section{Discussion}
 
