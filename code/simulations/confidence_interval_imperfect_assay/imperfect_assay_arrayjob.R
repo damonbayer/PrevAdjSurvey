@@ -146,7 +146,7 @@ calculate_interval_results <- function(weights,
                        nP = n_tested_for_prevalence,
                        Se = est_sensitivity,
                        nSe = n_tested_for_sensitivity,
-                       Sp = specificity,
+                       Sp = est_specificity,
                        nSp = n_tested_for_specificity)
   w <- weights / tests_per_group
   WprevSeSp_gamma_result <- WprevSeSp_gamma(apparent_positive_counts = apparent_positive_counts,
@@ -154,7 +154,7 @@ calculate_interval_results <- function(weights,
                   nP = n_tested_for_prevalence,
                   Se = est_sensitivity,
                   nSe = n_tested_for_sensitivity,
-                  Sp = specificity,
+                  Sp = est_specificity,
                   nSp = n_tested_for_specificity)
  # Need to implement other method
   list(conf_int_WprevSeSp = as.vector(WprevSeSp_result$conf.int),
