@@ -12,11 +12,6 @@ kalish_data <-
 dir_create("data")
 write_csv(kalish_data, "data/kalish_data.csv")
 
-n_groups <- nrow(kalish_data)
-tests_per_group <- 1
-
-n_tested_for_prevalence <- n_groups * tests_per_group
-
 n_tested_for_specificity <- 300
 n_tested_for_sensitivity <- 56
 # https://github.com/niaid/SARSCoV2-US-serosurvey-2020/blob/09ef4d285e2519e0501c9f80d4f9251595e97305/Figure3_Figure4/R/ForestPlots.R
@@ -25,6 +20,13 @@ est_sensitivity <- 1
 
 
 # Full Data ---------------------------------------------------------------
+n_groups <- nrow(kalish_data)
+n_groups
+8058
+tests_per_group <- 1
+
+n_tested_for_prevalence <- n_groups * tests_per_group
+
 apparent_positive_counts <- kalish_data$y
 weights <- kalish_data$w
 apparent_prevalence <- sum(apparent_positive_counts / tests_per_group * weights)
@@ -78,6 +80,13 @@ WprevSeSp_gamma_result$conf.int
 kalish_data <-
   kalish_data %>%
   filter(hispanic)
+n_groups <- nrow(kalish_data)
+n_groups
+1281
+tests_per_group <- 1
+
+n_tested_for_prevalence <- n_groups * tests_per_group
+
 apparent_positive_counts <- kalish_data$y
 weights <- kalish_data$w / sum(kalish_data$w)
 apparent_prevalence <- sum(apparent_positive_counts / tests_per_group * weights)
@@ -107,7 +116,7 @@ structure(list(estimate = c(`adjusted prevalence` = 0.0612791931338004),
                conf.int = structure(c(`2.5%` = 0.0234604022334971, `97.5%` = 0.11753836349672
                ), conf.level = 0.95), data.name = "Unadjusted prevalence=0.06128(se=0.02045)",
                method = "Prevalence Adjusted for Sensitivity and Specificity (CI by Korn-Graubard with melding with negatives set to zero)",
-               nPeff = 8058), class = "htest")
+               nPeff = 1281), class = "htest")
 
 
 
@@ -126,6 +135,6 @@ structure(list(estimate = c(`adjusted prevalence` = 0.0612791931338004),
                conf.int = structure(c(`2.5%` = 0.023961917726667, `97.5%` = 0.200151985872185
                ), conf.level = 0.95), data.name = "Unadjusted prevalence=0.06128",
                method = "Prevalence Adjusted for Sensitivity and Specificity (CI by Korn-Graubard with melding with negatives set to zero)",
-               nPeff = 8058), class = "htest")
+               nPeff = 1281), class = "htest")
 WprevSeSp_result$conf.int
 WprevSeSp_gamma_result$conf.int
