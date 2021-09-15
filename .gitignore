@@ -8,3 +8,5 @@
 *.rds
 
 code/simulations/confidence_interval_theta_star_fay_vs_LR/confidence_interval_theta_star_fay_vs_LR_results.csv
+
+data/kalish_data.csv
