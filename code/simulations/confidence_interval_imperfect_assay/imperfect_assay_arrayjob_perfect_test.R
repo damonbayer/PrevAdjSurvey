@@ -156,9 +156,13 @@ calculate_interval_results <- function(weights,
                   nSe = n_tested_for_sensitivity,
                   Sp = est_specificity,
                   nSp = n_tested_for_specificity)
- # Need to implement other method
+
+  # What if we treat it as perfect?
+  result_wspoissonTest <- wspoissonTest(x = apparent_positive_counts, w = w, midp = F)
+
   list(conf_int_WprevSeSp = as.vector(WprevSeSp_result$conf.int),
-       conf_int_WprevSeSp_gamma_result = as.vector(WprevSeSp_gamma_result$conf.int))
+       conf_int_WprevSeSp_gamma_result = as.vector(WprevSeSp_gamma_result$conf.int),
+       conf_int_wspoissonTest = as.vector(result_wspoissonTest$conf.int))
 }
 
 plan(multisession, workers = parallelly::availableCores() / 2)

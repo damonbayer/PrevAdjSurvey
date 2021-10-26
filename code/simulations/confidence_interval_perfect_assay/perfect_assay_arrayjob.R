@@ -20,7 +20,7 @@ dir_create(save_path)
 plan(multisession, workers = parallelly::availableCores())
 cat("using", parallelly::availableCores(), "cores\n")
 # n_partitions <- 100
-n_partitions <- 250
+n_partitions <- 400
 n_replications <- 10000
 cat("session planned\n")
 
