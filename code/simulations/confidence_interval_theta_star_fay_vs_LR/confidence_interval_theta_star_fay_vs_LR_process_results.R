@@ -5,7 +5,7 @@ library(cowplot)
 library(fs)
 library(furrr)
 
-results <- read_csv("code/simulations/confidence_interval_theta_star_fay_vs_LR/confidence_interval_theta_star_fay_vs_LR_results.csv")
+results <- read_rds("code/simulations/confidence_interval_theta_star_fay_vs_LR/confidence_interval_theta_star_fay_vs_LR_results.rds")
 
 # Process Results ---------------------------------------------------------
 coverage_results <-
@@ -121,26 +121,10 @@ upper_error_frequency_comparison_plot <-
   ggtitle("Upper Error Frequency Comparison", subtitle = "10,000 replications each, nP = 100, nSp = 300, nSe = 60") +
   theme(legend.position = "bottom")
 
-plot_save_dir <- "figures"
-dir_create(plot_save_dir)
-
-ls()[str_ends(ls(), "_plot")]
-
-combined_plot <-
-  plot_grid(coverage_comparison_plot,
-            upper_error_frequency_comparison_plot,
-            lower_error_frequency_comparison_plot,
-            nrow = 3,
-            ncol = 1,
-            align = "hv")
-
-
-save_plot(filename = path(plot_save_dir, "Combined_comparison_plots.pdf"), plot = combined_plot, ncol = 4, nrow = 6, base_height = 2.5)
-
-
-
+plot_sav_dir <- "code/simulations/confidence_interval_theta_star_fay_vs_LR/figures"
+dir_create(plot_sav_dir)
 sapply(ls()[str_ends(ls(), "_plot")],
-       function(plot_name) save_plot(filename = path(plot_save_dir, plot_name, ext = "pdf"),
+       function(plot_name) save_plot(filename = path(plot_sav_dir, plot_name, ext = "pdf"),
                                      plot = get(plot_name),
                                      base_height = 8,
                                      base_asp = 16/9))

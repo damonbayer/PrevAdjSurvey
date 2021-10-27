@@ -4,7 +4,7 @@ library(asht)
 library(cowplot)
 library(fs)
 library(furrr)
-source("code/simulations/confidence_interval_imperfect_assay/WprevSeSp_SRS.R")
+source("WprevSeSp_SRS.R")
 
 plan(multisession, workers = 40)
 furrr_options(seed = 200)
