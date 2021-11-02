@@ -17,13 +17,11 @@ results_summary <-
                            "Coverage" = "coverage")) %>%
   mutate(method = fct_recode(method,
                              "WprevSeSp Binomial" = "WprevSeSp",
-                             "WprevSeSp Poisson" = "WprevSeSp_gamma")) %>%
+                             "WprevSeSp Poisson" = "WprevSeSp_gamma",
+                             "wspoissonTest" = "wspoissonTest")) %>%
   mutate(group_distribution = group_distribution %>%
            fct_relevel("high", "uniform", "low") %>%
            fct_relabel(str_to_title))
-
-
-
 
 
 
@@ -71,7 +69,7 @@ generate_plot_2 <- function(name_to_plot, n_groups_to_plot, prev_to_plot){
     scale_color_discrete(name = "Method") +
     theme(legend.position = "bottom") +
     ggtitle(label = glue("{name_to_plot} Properties for Simulations with {percent(prev_to_plot, accuracy = 0.1)} Prevalence Among {comma(n_groups_to_plot)} Groups of {comma(group_size)}"),
-            subtitle = "Each Point = 10,000 Replications")
+            subtitle = "Each Facet = 95% Sensitivity, Each Point = 10,000 Replications")
   generated_plot
 }
 
@@ -83,5 +81,21 @@ results_summary %>%
     ~generate_plot_2(name_to_plot = ..1,
                      n_groups_to_plot = ..2,
                      prev_to_plot = ..3))) %>%
-  mutate(file_name = path("figures", str_c("imperfect", str_replace_all(str_to_lower(name), "\\s", "_"), n_groups, str_replace_all(prev, "\\.", "_"), "reduced", sep = "_"), ext = "pdf")) %>%
-  with(walk2(file_name, plot, ~save_plot(filename = .x, plot = .y, ncol = 3, nrow = 2, base_width = 3.5)))
+  mutate(file_name = path("figures", str_c("imperfect", str_replace_all(str_to_lower(name), "\\s", "_"), n_groups, "groups", str_replace_all(prev, "\\.", "_"), "prev", sep = "_"), ext = "pdf")) %>%
+  # head(1) %>%
+  with(walk2(file_name, plot, ~save_plot(filename = .x, plot = .y, ncol = 3, nrow = 3, base_asp = 1)))
+
+
+# dir_ls("figures/") %>%
+#   enframe(name = NULL, value = "fig_path") %>%
+#   mutate(fig_name = fig_path %>% path_file() %>% path_ext_remove()) %>%
+#   mutate(latex_code = map2(fig_path, fig_name,
+#                            ~c("\\begin{figure}",
+#                               "\\centering",
+#                               str_c("\\includegraphics[width=\\textwidth]{", .x, "}"),
+#                               "\\caption{Caption}",
+#                               str_c("\\label{fig:", .y, "}"),
+#                               "\\end{figure}", ""))) %>%
+#   pull(latex_code) %>%
+#   unlist() %>%
+#   write_lines("~/Desktop/untitled.txt")
