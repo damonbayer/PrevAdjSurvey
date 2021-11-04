@@ -1,5 +1,7 @@
 library(tidyverse)
 library(fs)
+library(asht)
+
 source("code/simulations/confidence_interval_imperfect_assay/WprevSeSp_SRS.R")
 load("C:/Users/bayerdm/Downloads/dataForDamon.RData")
 
@@ -76,6 +78,14 @@ WprevSeSp_result$conf.int
 WprevSeSp_gamma_result$conf.int
 
 
+wspoissonTest_result <- wspoissonTest(x = apparent_positive_counts, w = w, midp = F)
+dput(wspoissonTest_result)
+structure(list(statistic = c(`number of summands` = 8058L), parameter = c(`standardized Variance of Weights` = 6.368723849747),
+               p.value = NA_real_, conf.int = structure(c(0.0303500764310842,
+                                                          0.0739250045223186), conf.level = 0.95), estimate = c(`Weighted Sum` = 0.0455598302324495),
+               null.value = NULL, alternative = "two.sided", method = "Gamma Method for Weighted Sum of Poissons",
+               data.name = "x= apparent_positive_counts and w= w"), class = "htest")
+
 # Hispanic Data -----------------------------------------------------------
 kalish_data <-
   kalish_data %>%
@@ -138,3 +148,11 @@ structure(list(estimate = c(`adjusted prevalence` = 0.0612791931338004),
                nPeff = 1281), class = "htest")
 WprevSeSp_result$conf.int
 WprevSeSp_gamma_result$conf.int
+
+wspoissonTest_result <- wspoissonTest(x = apparent_positive_counts, w = w, midp = F)
+dput(wspoissonTest_result)
+structure(list(statistic = c(`number of summands` = 1281L), parameter = c(`standardized Variance of Weights` = 9.36002157276879),
+               p.value = NA_real_, conf.int = structure(c(0.0279906783975764,
+                                                          0.19628461563915), conf.level = 0.95), estimate = c(`Weighted Sum` = 0.0612791931338005),
+               null.value = NULL, alternative = "two.sided", method = "Gamma Method for Weighted Sum of Poissons",
+               data.name = "x= apparent_positive_counts and w= w"), class = "htest")
