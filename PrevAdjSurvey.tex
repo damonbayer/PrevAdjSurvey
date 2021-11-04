@@ -126,7 +126,7 @@ Note the relationship between these parameters:
 \end{split}
 \end{align}
 
-Let \( \hat{\theta}_i = \frac{X_i}{n_i} \), \( \hat{\phi}_n = \frac{C_n}{m_n} \), and \( \hat{\phi}_p = \frac{C_p}{m_p} \).
+Let \( \hat{\theta}_i = \frac{X_i}{n_i} \), \( \hat{\phi}_n = 1 - \frac{C_n}{m_n} \), and \( \hat{\phi}_p = \frac{C_p}{m_p} \).
 Then a natural estimator for \( \beta^* \) is 
 
 \begin{equation}
@@ -141,7 +141,7 @@ Section~\ref{sec:weight-imperfect} is concerned with confidence intervals for  \
 \subsection{Estimating Prevalence from a Simple Random Sample with an Imperfect Assay}
 \label{sec:srs-imperfect}
 
-First, we consider the scenario \( k = 1 \), \( \phi_n > 0 \), and \( \phi_p < 1 \).
+First, we consider the scenario0 \( k = 1 \), \( \phi_n > 0 \), and \( \phi_p < 1 \).
 We develop a confidence interval for the population prevalence, \( \beta^* \).
 Because \( k = 1 \), the estimator in Equation~\ref{eq:long-beta} becomes 
 
@@ -165,6 +165,10 @@ Then the \( a \)\% confidence interval for \( \beta^* \) is
 \label{eq:srs-conf-int}
 \end{equation}
 
+
+\todo[inline]{Can Mike provide some explanation for the form of this interval? Or some citation? Does it follow from Fay, Proschan, and Brittain (2015), or is there an intermediate reference?}
+
+The quantiles of these melded distributions are calculated by Monte Carlo sampling from each of the component distributions.
 We compare this method to one described in \cite{Lang:2014} as implemented in prevSeSp function in \cite{asht}, which provides approximate confidence intervals for true prevalence when sensitivity and specificity are estimated from independent samples, as they are in the in this section.
 
 This interval is given by
@@ -214,7 +218,7 @@ where
 Next, we develop a confidence interval for the population prevalence, \( \beta^* \), in the scenario \( k > 1 \), \( \phi_n = 0 \), \( \phi_p = 1 \).
 Our method is a straightforward adaptation of the one presented in \cite{FayF:1997}, which was developed to create confidence intervals for a population rate which is assumed to a weighted sum of Poisson rate parameters.
 We note that for sufficiently large sample size \( n \) and small rate \( \lambda \), a \( \operatorname{Poisson}(n\lambda) \) distribution is approximately equal in distribution to a \( \operatorname{Binomial}(n, \lambda) \) distribution.
-Under this assumption, we suggest the confidence interval for \( \beta^* \):
+Under this assumption, we suggest the \( a \)\% confidence interval for \( \beta^* \):
 
 \begin{equation}
     \left( q\left( \frac{1 - a}{2}, G_{\beta^*}^L \right), q \left( \frac{1 + a}{2},  G_{\beta^*}^U \right) \right)
@@ -302,7 +306,7 @@ where
 
 with \( x_{\text{eff}} = n_{\text{eff}} \sum_{i=1}^k w_i \hat{\theta}_i \), and \( n_{\text{eff}} \) defined in Equation~\ref{eq:neff}.
 
-\subsection{Estimating Prevalence from a Weighted Sample with an  Imperfect Assay}
+\subsection{Estimating Prevalence from a Weighted Sample with an Imperfect Assay}
 
 Lastly, we develop a confidence interval for the population prevalence, \( \beta^* \), in the case where \( k > 1 \), \( \phi_n > 0 \), \( \phi_p < 1 \).
 
@@ -399,7 +403,7 @@ The coverage properties for these simulations are presented in Figures~\ref{fig:
 
 
 
-\subsection{Estimating Prevalence from a Weighted Sample with an  Imperfect Assay}
+\subsection{Estimating Prevalence from a Weighted Sample with an Imperfect Assay}
 \todo[inline]{THERE IS A SMALL ERROR IN THE SIMULATION RESULTS. RERUNNING ON BIOWULF NOW. I DON'T EXPECT THE SUBSTANCE TO CHANGE.}
 
 We also apply these two methods to a real data set from \cite{Kali:2021}.
@@ -409,6 +413,7 @@ The Korn and Graubard type confidence distributions produce the 95\% confidence 
 
 We also apply the methods to the subset of only hispanic participants (\( n = 1281, \text{weight coefficient of variation} = 306\% \)).
 The Korn and Graubard type confidence distributions produce the 95\% confidence interval for population prevalence (2.35\%, 11.75\%), while the wsPoisson type confidence distributions produce the 95\% confidence interval (2.40\%, 20.02\%).
+\todo[inline] Maybe also compute with the non sensitivity/specificity adjusted interval.
 
 \begin{figure}
     \centering
