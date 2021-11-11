@@ -28,7 +28,7 @@ T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
 \author[3]{Barry I. Graubard}
 
-\authormark{D. M. BAYER, M.P. FAY and B. I. GRAUBARD \textsc{et al}}
+\authormark{D. M. BAYER, M.P. FAY and B. I. GRAUBARD}
 
 
 \address[1]{\orgdiv{Biostatistics Research Branch}, \orgname{National Institute of Allergy and Infectious Diseases}, \orgaddress{\state{Bethesda, Maryland}}}
@@ -39,51 +39,39 @@ T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
 \corres{*Michael P. Fay, Bethesda, MD 2089. \email{mfay@niaid.nih.gov}}
 
-\presentaddress{Present address}
+% \presentaddress{Present address}
 
-\abstract[Abstract]{This paper describes the use of the \LaTeXe\ \textsf{WileyNJD-v2.cls}
-class file for setting papers for \emph{Mathematical Methods in the Applied Sciences}.}
+\abstract[Abstract]{To be written.}
 
 \keywords{Class file; \LaTeXe; \emph{Wiley NJD}}
 
-\jnlcitation{\cname{%
-\author{Williams K.}, 
-\author{B. Hoskins}, 
-\author{R. Lee}, 
-\author{G. Masato}, and 
-\author{T. Woollings}} (\cyear{2016}), 
-\ctitle{A regime analysis of Atlantic winter jet variability applied to evaluate HadGEM3-GC2}, \cjournal{Q.J.R. Meteorol. Soc.}, \cvol{2017;00:1--6}.}
+% \jnlcitation{\cname{%
+% \author{Williams K.}, 
+% \author{B. Hoskins}, 
+% \author{R. Lee}, 
+% \author{G. Masato}, and 
+% \author{T. Woollings}} (\cyear{2016}), 
+% \ctitle{A regime analysis of Atlantic winter jet variability applied to evaluate HadGEM3-GC2}, \cjournal{Q.J.R. Meteorol. Soc.}, \cvol{2017;00:1--6}.}
 
 \maketitle
 
 \footnotetext{\textbf{Abbreviations:} ANA, anti-nuclear antibodies; APC, antigen-presenting cells; IRF, interferon regulatory factor}
 
-\section{To Do List}
-\begin{itemize}
-    \item Write abstract
-    \item Write introduction
-    \item Write discussion
-    \item Figure revisions:
-    \begin{itemize}
-        \item Part 1: Rename "Fay" to "Melding"?
-        \item Part 1: Increase font size
-        \item Part 2: Rename Clopper-Pearson to Korn-Graubard
-        \item Part 3: Replace simulations results with corrected results (still running on Biowulf)
-    \end{itemize}
-    \item Fix acknowledgements \LaTeX
-    \item Fix bibiliogrpahy \LaTeX
-\end{itemize}
-
 \section{Introduction}
 
-\begin{itemize}
-    \item This paper is concerned with methods for creating confidence intervals for estimating disease prevalence in a variety of scenarios.
-    \begin{itemize}
-        \item First, we improve confidence intervals for simple random samples where prevalence is assessed with an assay with imperfect sensitivity and/or specificity.
-        \item Next, we improve confidence intervals for weighted samples where prevalence is assessed with an assay with perfect sensitivity and/or specificity.
-        \item In the final scenario, we improve confidence intervals for weighted samples prevalence is assessed with an assay with imperfect sensitivity and/or specificity.
-    \end{itemize}
-\end{itemize}
+Estimating and quantifying uncertainty for disease prevalence is a standard task in epidemiology.
+For rare events, these estimates are highly sensitive to misclassification \cite{hemenwaySelfDefense}, making adjustments for sensitivity and specificity critically important.
+While estimating prevalence in complex surveys and adjusting estimates for misclassification have been well studied separately, performing both of these tasks simultaneously remains relatively unexplored.
+A recent overview of methods for estimating prevalence in surveys without misclassification is provided in \cite{Dean:2015}.
+For simple surveys with imperfect sensitivity and specificity, \cite{Lang:2014} is the most recent advancement.
+To our knowledge \cite{Kali:2021} presents the only available method for constructing frequentist confidence intervals for prevalence estimates from complex surveys while adjusting for sensitivity and specificity; however,
+this problem has previously been addressed in Bayesian literature, recently in \cite{GelmanBayes}.
+
+We work up to our ultimate goal in stages.
+First, in Section~\ref{sec:srs-imperfect}, we propose confidence intervals for simple random samples where prevalence is assessed with an assay with imperfect sensitivity and/or specificity.
+Next, in Section~\ref{sec:weight-perfect}, we present confidence intervals for weighted samples where prevalence is assessed with an assay without misclassification.
+Finally, in Section~\ref{sec:weight-imperfect}, we combine these methods to create confidence intervals for weighted samples where prevalence is assessed with an assay with imperfect sensitivity and specificity.
+
 
 \section{Methods}
 
@@ -133,7 +121,7 @@ Then a natural estimator for \( \beta^* \) is
     \hat{\beta}^* = \frac{\sum_{i=1}^k w_i \hat{\theta}_i}{\hat{\phi}_p - \hat{\phi}_n} - \frac{\hat{\phi}_n}{\hat{\phi}_p - \hat{\phi}_n}.
 \end{equation}
 
-This estimator serves as important basis for developing confidence intervals in this work.
+This estimator serves as an important basis for developing confidence intervals in this work.
 Section~\ref{sec:srs-imperfect} is concerned with confidence intervals for  \( \beta^* \) in the case where \( k = 1 \), \( \phi_n > 0 \), \( \phi_p < 1 \), i.e. estimating prevalence from a simple random sample with an imperfect assay.
 Section~\ref{sec:weight-perfect} is concerned with confidence intervals for  \( \beta^* \) in the case where \( k > 1 \), \( \phi_n = 0 \), \( \phi_p = 1 \), i.e. estimating prevalence from a weighted sample with a perfect assay.
 Section~\ref{sec:weight-imperfect} is concerned with confidence intervals for  \( \beta^* \) in the case where \( k > 1 \), \( \phi_n > 0 \), \( \phi_p < 1 \), i.e. estimating prevalence from a weighted sample with an imperfect assay.
@@ -161,7 +149,7 @@ Let \( q(a, W) \) be the \( a \)th quantile of a random variable \( W \).
 Then the \( a \)\% confidence interval for \( \beta^* \) is 
 
 \begin{equation}
-    \left\{ q \left( \frac{1 - a}{2}, \frac{B_{\theta_1}^L + B_{\phi_n}^L }{B_{\phi_p}^U + B_{\phi_n}^L }  \right),  q \left( \frac{1 + a}{2}, \frac{B_{\theta_1}^U + B_{\phi_n}^U}{B_{\phi_p}^L + B_{\phi_n}^U}  \right) \right\}.
+    \left\{ q \left( \frac{1 - a}{2}, \frac{B_{\theta_1}^L - B_{\phi_n}^L }{B_{\phi_p}^U - B_{\phi_n}^L }  \right),  q \left( \frac{1 + a}{2}, \frac{B_{\theta_1}^U - B_{\phi_n}^U}{B_{\phi_p}^L - B_{\phi_n}^U}  \right) \right\}.
 \label{eq:srs-conf-int}
 \end{equation}
 
@@ -215,9 +203,10 @@ where
 
 \subsection{Estimating Prevalence from a Weighted Sample with a Perfect Assay}
 \label{sec:weight-perfect}
-Next, we develop a confidence interval for the population prevalence, \( \beta^* \), in the scenario \( k > 1 \), \( \phi_n = 0 \), \( \phi_p = 1 \).
+Next, we present a confidence interval for the population prevalence, \( \beta^* \), in the scenario \( k > 1 \), \( \phi_n = 0 \), \( \phi_p = 1 \).
 Our method is a straightforward adaptation of the one presented in \cite{FayF:1997}, which was developed to create confidence intervals for a population rate which is assumed to a weighted sum of Poisson rate parameters.
 We note that for sufficiently large sample size \( n \) and small rate \( \lambda \), a \( \operatorname{Poisson}(n\lambda) \) distribution is approximately equal in distribution to a \( \operatorname{Binomial}(n, \lambda) \) distribution.
+\todo[inline]{Is this a good enough justification? We certainly don't have a large sample size, but we do have small rates.}
 Under this assumption, we suggest the \( a \)\% confidence interval for \( \beta^* \):
 
 \begin{equation}
@@ -251,7 +240,7 @@ Where
     v^* = v + \left\{ \max\left(\frac{w_1}{n_1}, \ldots, \frac{w_k}{n_k} \right) \right\}^2
 \end{equation}
 
-We compare this confidence interval to two methods presented in \cite{Dean:2015}.
+We compare this confidence interval to two methods presented in \cite{Dean:2015}, which were recommended for scenarios with low prevalence.
 
 The first of these is an adaptation of \cite{AgrestiCoull} for the survey setting.
 The interval for \( \beta^* \) is given by:
@@ -307,6 +296,7 @@ where
 with \( x_{\text{eff}} = n_{\text{eff}} \sum_{i=1}^k w_i \hat{\theta}_i \), and \( n_{\text{eff}} \) defined in Equation~\ref{eq:neff}.
 
 \subsection{Estimating Prevalence from a Weighted Sample with an Imperfect Assay}
+\label{sec:weight-imperfect}
 
 Lastly, we develop a confidence interval for the population prevalence, \( \beta^* \), in the case where \( k > 1 \), \( \phi_n > 0 \), \( \phi_p < 1 \).
 
@@ -336,7 +326,7 @@ where \( B_{CP}^L \) and \( B_{CP}^U \) are as defined in Section~\ref{sec:weigh
 
 \subsection{Estimating Prevalence from a Simple Random Sample with an Imperfect Assay}
 
-We assess and compare our new method (Fay) to that of Lang and Reiczigel (LR) in a variety of simulated settings.
+We assess and compare our new method (Melding) to that of Lang and Reiczigel (LR) in a variety of simulated settings.
 In each simulation, 100 subjects are tested to estimate prevalence, 60 are tested to estimate sensitivity, and 300 are tested to estimate specificity.
 Several combinations of prevalences (0.5\%--2\%), sensitivities (75\%--100\%) and specificities (75\%--100\%) are assessed.
 Each simulated scenario is replicated 10,000 times.
@@ -344,125 +334,193 @@ Figure~\ref{fig:coverage_comparison_plot} compares the two methods based on cove
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/coverage_comparison_plot}
-    \caption{Coverage properties for our new method (Fay) and the state of the art method (LR) in a variety of settings, each simulated 10,000 times.}
+    \includegraphics[width=0.8\textwidth]{figures/simple_coverage_comparison_plot.pdf}
+    \caption{Coverage properties of 95\% confidence intervals for our new method (Melding) and the state of the art method (Lang-Reiczigel) in a variety of settings, each simulated 10,000 times.}
     \label{fig:coverage_comparison_plot}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/lower_error_frequency_comparison_plot}
-    \caption{Lower error properties for our new method (Fay) and the state of the art method (LR) in a variety of settings, each simulated 10,000 times.}
+    \includegraphics[width=0.8\textwidth]{figures/simple_lower_error_frequency_comparison_plot.pdf}
+    \caption{Lower error properties of 95\% confidence intervals for our new method (Melding) and the state of the art method (Lang-Reiczigel) in a variety of settings, each simulated 10,000 times.}
     \label{fig:lower_error_frequency_comparison_plot}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/upper_error_frequency_comparison_plot}
-    \caption{Upper error properties for our new method (Fay) and the state of the art method (LR) in a variety of settings, each simulated 10,000 times.}
+    \includegraphics[width=0.8\textwidth]{figures/simple_upper_error_frequency_comparison_plot.pdf}
+    \caption{Upper error properties of 95\% confidence intervals for our new method (Melding) and the state of the art method (Lang-Reiczigel) in a variety of settings, each simulated 10,000 times.}
     \label{fig:upper_error_frequency_comparison_plot}
 \end{figure}
 
+Figure~\ref{fig:coverage_comparison_plot} shows that, when specificity is less than perfect, both methods achieve approximately nominal coverage, with the melding method being somewhat more conservative.
+When specificity is 100\%, both methods are conservative.
+Figure~\ref{fig:upper_error_frequency_comparison_plot} shows that both methods make upper errors with roughly the same frequency.
+Figure~\ref{fig:lower_error_frequency_comparison_plot} demonstrates that while the melding procedure leads bounds the lower error frequency below 2.5\%, the Lang-Reiczigel method is much more likely to lead to lower errors than it is to result in upper errors, which may be undesirable for applications that are particularly sensitive to making lower errors.
+
+
 \subsection{Estimating Prevalence from a Weighted Sample with a Perfect Assay}
 
-We compare the wsPoisson method to the more traditional Agresti-Coull and Korn-Graubard methods in a variety of settings.
-Our simulations examine varying levels of disease prevalence (0.5\% or 5\%), types of groups surveyed (50 groups 200 subjects or 8000 groups of 1 subject), distributions of weights among the groups (coefficient of variation from 0-6), the number of groups with non-zero prevalence, and the weights of the groups with non-zero prevalence.
+We compare the wsPoisson method to the more traditional Agresti-Coull and Korn-Graubard methods for survey proportions in a variety of settings.
+Our simulations examine varying levels of disease prevalence (0.5\% or 5\%), types of groups surveyed (50 groups 200 subjects or 8000 groups of 1 subject), distributions of weights among the groups (coefficient of variation from approximately 0\% to nearly 6\%), the number of groups with non-zero prevalence, and the weights of the groups with non-zero prevalence.
 For each scenario, 10,000 data sets are simulated and assessed.
 
-The coverage properties for these simulations are presented in Figures~\ref{fig:perfect_coverage_50_0_005_reduced}--\ref{fig:perfect_coverage_8000_0_05_reduced.pdf}.
+\todo[inline]{Since our method is so conservative, I should look at the widths of the confidence intervals. Unfortunately, I have to re-reun simulations to do this.}
+
+The coverage properties for these simulations are presented in Figures~\ref{fig:perfect_coverage_50_groups_0_005_prev}--\ref{fig:perfect_coverage_8000_groups_0_05_prev}.
+Additional properties for these simulations are presented in Figures~\ref{fig:perfect_lower_error_frequency_50_groups_0_005_prev}--\ref{fig:perfect_upper_error_frequency_8000_groups_0_05_prev}.
+
+From Figures~\ref{fig:perfect_coverage_50_groups_0_005_prev}--\ref{fig:perfect_coverage_8000_groups_0_05_prev}, we note that the two competitor methods generally exhibit lower coverage as the coefficient of variation among the weights increases.
+In Figure~\ref{fig:perfect_coverage_50_groups_0_005_prev}, this coverage falls below 60\% when the prevalence very low and is concentrated among the highest weights, and the coefficient of variation among the weights exceeds 4.
+Uniform distribution of prevalence among the weights, increased overall prevalence, and larger sample sizes among fewer groups all appear to lessen the severity of this problem.
+In contrast, the wsPoisson method tends to become more conservative when the coefficient of variation among the weights increases.
+In all cases, the wsPoisson method is more conservative than the competitor methods.
+This is similar to the behavior observed in \cite{FayF:1997}, where, in simulations, the overall error rate decreased as the variance of the weights increased.
 
 \begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figures/perfect_coverage_50_0_005_reduced.pdf}
-    \caption{Caption}
-    \label{fig:perfect_coverage_50_0_005_reduced}
-\end{figure}
-
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figures/perfect_coverage_50_0_05_reduced.pdf}
-    \caption{Caption}
-    \label{fig:perfect_coverage_50_0_05_reduced}
-\end{figure}
-
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figures/perfect_coverage_8000_0_005_reduced.pdf}
-    \caption{Caption}
-    \label{fig:perfect_coverage_8000_0_005_reduced}
+\centering
+\includegraphics[width=0.8\textwidth]{figures/perfect_coverage_50_groups_0_005_prev.pdf}
+\caption{Coverage properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+Each point represents 10,000 simulations of datasets from a population with 0.5\% Prevalence where 50 groups of 200 people are sampled.
+The horizontal dashed line indicates the nominal coverage, 95\%.
+Colored dashed lines are estimates from a logistic regression model using cubic splines.}
+\label{fig:perfect_coverage_50_groups_0_005_prev}
 \end{figure}
 
 \begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figures/perfect_coverage_8000_0_05_reduced.pdf}
-    \caption{Caption}
-    \label{fig:perfect_coverage_8000_0_05_reduced.pdf}
+\centering
+\includegraphics[width=0.8\textwidth]{figures/perfect_coverage_8000_groups_0_005_prev.pdf}
+\caption{Coverage properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+Each point represents 10,000 simulations of datasets from a population with 0.5\% Prevalence where 8000 individuals are sampled.
+The horizontal dashed line indicates the nominal coverage, 95\%.
+Colored dashed lines are estimates from a logistic regression model using cubic splines.}
+\label{fig:perfect_coverage_8000_groups_0_005_prev}
 \end{figure}
 
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{figures/perfect_coverage_50_groups_0_05_prev.pdf}
+\caption{Coverage properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+Each point represents 10,000 simulations of datasets from a population with 5\% Prevalence where 50 groups of 200 people are sampled.
+The horizontal dashed line indicates the nominal coverage, 95\%.
+Colored dashed lines are estimates from a logistic regression model using cubic splines.}
+\label{fig:perfect_coverage_50_groups_0_05_prev}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{figures/perfect_coverage_8000_groups_0_05_prev.pdf}
+\caption{Coverage properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+Each point represents 10,000 simulations of datasets from a population with 5\% Prevalence where 8000 individuals are sampled.
+The horizontal dashed line indicates the nominal coverage, 95\%.
+Colored dashed lines are estimates from a logistic regression model using cubic splines.}
+\label{fig:perfect_coverage_8000_groups_0_05_prev}
+\end{figure}
 
 
 \subsection{Estimating Prevalence from a Weighted Sample with an Imperfect Assay}
-\todo[inline]{THERE IS A SMALL ERROR IN THE SIMULATION RESULTS. RERUNNING ON BIOWULF NOW. I DON'T EXPECT THE SUBSTANCE TO CHANGE.}
+
+
+We compare properties our melded confidence interval WprevSeSp Poisson, to anotother melded confidence interval method WprevSeSp Binomial, and one method, wspoissonTest, which does not account for the imperfect assay.
+The methods are assessed in a several simulated scenarios with varying levels of disease prevalence (0.5\% or 5\%), types of groups surveyed (50 groups 200 subjects or 8000 groups of 1 subject), distributions of weights among the groups (coefficient of variation from approximately 0\% to nearly 6\%), the number of groups with non-zero prevalence, and the specificity of the assay (80\% - 100\%).
+In each scenario, the assay has 95\% sensitivity.
+Each scenario is simulated 10,000 times, with new prevalence, sensitivity, and specificity surveys generated and 95\% confidence intervals are created.
+Simulated sensitivity is assessed based on 60 tests, while specificity is based on 300 tests.
+
+\todo[inline]{Since our method is so conservative, I should look at the widths of the confidence intervals. Unfortunately, I have to re-reun simulations to do this.}
+
+The coverage properties for these simulations are presented in Figures~\ref{fig:imperfect_coverage_50_groups_0_005_prev}--\ref{fig:imperfect_coverage_8000_groups_0_05_prev}.
+Additional properties for these simulations are presented in Figures~\ref{fig:imperfect_lower_error_frequency_50_groups_0_05_prev}--\ref{fig:imperfect_upper_error_frequency_8000_groups_0_05_prev}.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{figures/imperfect_coverage_50_groups_0_005_prev.pdf}
+\caption{Coverage properties for the two melded confidence interval procedures, WprevSeSp Binomial and WprevSeSp Poisson, and one method, wspoissonTest, which does not account for the imperfect assay.
+Each point represents 10,000 simulations of datasets from a population with 0.5\% Prevalence where 50 groups of 200 people are sampled.
+Each datasets also includes simulated results of tests to evaluate the sensitivity and specificity of the assay performed on 60 and 300 individuals, respectively.
+The horizontal dashed line indicates the nominal coverage, 95\%.
+Colored dashed lines are estimates from a logistic regression model using cubic splines.}
+\label{fig:imperfect_coverage_50_groups_0_005_prev}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{figures/imperfect_coverage_8000_groups_0_005_prev.pdf}
+\caption{Coverage properties for the two melded confidence interval procedures, WprevSeSp Binomial and WprevSeSp Poisson, and one method, wspoissonTest, which does not account for the imperfect assay.
+Each point represents 10,000 simulations of datasets from a population with 0.5\% Prevalence where 8000 individuals are sampled.
+Each datasets also includes simulated results of tests to evaluate the sensitivity and specificity of the assay performed on 60 and 300 individuals, respectively.
+The horizontal dashed line indicates the nominal coverage, 95\%.
+Colored dashed lines are estimates from a logistic regression model using cubic splines.}
+\label{fig:imperfect_coverage_8000_groups_0_005_prev}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{figures/imperfect_coverage_50_groups_0_05_prev.pdf}
+\caption{Coverage properties for the two melded confidence interval procedures, WprevSeSp Binomial and WprevSeSp Poisson, and one method, wspoissonTest, which does not account for the imperfect assay.
+Each point represents 10,000 simulations of datasets from a population with 5\% Prevalence where 50 groups of 200 people are sampled.
+Each datasets also includes simulated results of tests to evaluate the sensitivity and specificity of the assay performed on 60 and 300 individuals, respectively.
+The horizontal dashed line indicates the nominal coverage, 95\%.
+Colored dashed lines are estimates from a logistic regression model using cubic splines.}
+\label{fig:imperfect_coverage_50_groups_0_05_prev}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{figures/imperfect_coverage_8000_groups_0_05_prev.pdf}
+\caption{Coverage properties for the two melded confidence interval procedures, WprevSeSp Binomial and WprevSeSp Poisson, and one method, wspoissonTest, which does not account for the imperfect assay.
+Each point represents 10,000 simulations of datasets from a population with 5\% Prevalence where 8000 individuals are sampled.
+Each datasets also includes simulated results of tests to evaluate the sensitivity and specificity of the assay performed on 60 and 300 individuals, respectively.
+The horizontal dashed line indicates the nominal coverage, 95\%.
+Colored dashed lines are estimates from a logistic regression model using cubic splines.}
+\label{fig:imperfect_coverage_8000_groups_0_05_prev}
+\end{figure}
+
+Based on Figures~\ref{fig:imperfect_lower_error_frequency_50_groups_0_05_prev}--\ref{fig:imperfect_upper_error_frequency_8000_groups_0_05_prev}, we note that, in most settings, the naive wspoissonTest procedure results in extremely poor coverage, around 0\%, while the two melding procedures result in conservative confidence intervals, often nearing 100\% coverage.
+With perfect specificity, the issue of poor coverage for the wspoissonTest procedure is less prominent, but the WprevSeSp Binomial method fails to maintain nominal coverage when the coefficient of variation among the weights is high.
+Only our proposed WprevSeSp Poisson method maintains or exceed the desired coverage in all scenarios.
 
 We also apply these two methods to a real data set from \cite{Kali:2021}.
 This data set was collected to estimate seroprevalence of SARS-CoV-2 in the United States between May and July 2020.
+This test used in this data is estimated to have perfect sensitivity, based on 56 tests on individuals with confirmed SARS-CoV-2 and perfect specificity based on 300 tests on individuals confirmed to not have SARS-CoV-2.
 First we apply the methods to the full data set (\( n =  8058, \text{weight coefficient of variation} = 252\%\)).
-The Korn and Graubard type confidence distributions produce the 95\% confidence interval for population prevalence (2.53\%, 6.68\%), while the wsPoisson type confidence distributions produce the 95\% confidence interval (2.56\%, "7.54\%).
-
-We also apply the methods to the subset of only hispanic participants (\( n = 1281, \text{weight coefficient of variation} = 306\% \)).
-The Korn and Graubard type confidence distributions produce the 95\% confidence interval for population prevalence (2.35\%, 11.75\%), while the wsPoisson type confidence distributions produce the 95\% confidence interval (2.40\%, 20.02\%).
-\todo[inline] Maybe also compute with the non sensitivity/specificity adjusted interval.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figures/imperfect_coverage_50_0_005_reduced.pdf}
-    \caption{Caption}
-    \label{fig:imperfect_coverage_50_0_005_reduced}
-\end{figure}
+The Korn and Graubard type melded confidence interval (WprevSeSp Binomial) produced the 95\% confidence interval for population prevalence (2.53\%, 6.68\%), while the wsPoisson type melded confidence interval (WprevSeSp Poisson) produce the 95\% confidence interval (2.56\%, 7.54\%).
+We also apply the wspoissonTest method from Section~\ref{sec:weight-perfect}, which does not account for imperfections in the assay, resulting in a 95\% confidence interval of (3.04\%, 7.39\%).
+While all three intervals overlap to a large degree, the wsPoisson type melded confidence interval is the widest.
+Our simulations show that the three procdures have similar coverage when specificity and weight coefficient of variation are both high, so this is unsurprising.
 
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figures/imperfect_coverage_50_0_05_reduced.pdf}
-    \caption{Caption}
-    \label{fig:imperfect_coverage_50_0_05_reduced}
-\end{figure}
+We also apply the methods to the subset of only Hispanic participants (\( n = 1281, \text{weight coefficient of variation} = 306\% \)).
+The Korn and Graubard type confidence distributions (WprevSeSp Binomial) produce the 95\% confidence interval for population prevalence (2.35\%, 11.75\%), while the wsPoisson type confidence distributions (WprevSeSp Poisson) produce the 95\% confidence interval (2.40\%, 20.02\%).
+The wspoissonTest method produces a 95\% confidence interval of (2.80\%, 19.63\%).
+In this case, the two melded confidence intervals are much wider than the naive interval, as expected.
+This is somewhat unexpected, but may be because prevalence is concentrated among respondents with lower weights, or be related to the smaller sample size used to measure prevalence, which is not reflected in our simulations.
 
+\pagebreak
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figures/imperfect_coverage_8000_0_005_reduced.pdf}
-    \caption{Caption}
-    \label{fig:imperfect_coverage_8000_0_005_reduced}
-\end{figure}
+% Misc quotes from Mike to incorporate:
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figures/imperfect_coverage_8000_0_05_reduced.pdf}
-    \caption{Caption}
-    \label{fig:imperfect_coverage_8000_0_05_reduced.pdf}
-\end{figure}
-
-
-
-
-Misc quotes from Mike to incorporate:
-
-\begin{itemize}
-    \item The last time we met, you mentioned that it would be nice to report the weights in terms of coefficient of variation. I went back to the data from the COVID seroprevalence paper in undiagnosed adults, and I calculated a coefficient of variation  of 2.52 = 252\% for all 8058 individuals, and looking at subsets, I found that the Hispanics had a CV=306\%.  
-    \item For some weighting for surveys to adjust for selection bias, the coefficient of variation may be large.  For example, the coefficient of variation of the weights (CVW) for the main estimate of seroprevalence in Kalish, et al (2021) had CVW=252\%, and it could be even larger for subsets of the population (e.g., Hispanics had CVW=306\%). 
-\end{itemize}
+% \begin{itemize}
+%     \item The last time we met, you mentioned that it would be nice to report the weights in terms of coefficient of variation. I went back to the data from the COVID seroprevalence paper in undiagnosed adults, and I calculated a coefficient of variation  of 2.52 = 252\% for all 8058 individuals, and looking at subsets, I found that the Hispanics had a CV=306\%.  
+%     \item For some weighting for surveys to adjust for selection bias, the coefficient of variation may be large.  For example, the coefficient of variation of the weights (CVW) for the main estimate of seroprevalence in Kalish, et al (2021) had CVW=252\%, and it could be even larger for subsets of the population (e.g., Hispanics had CVW=306\%). 
+% \end{itemize}
 
 
 
 \section{Discussion}
 
-\acks
-\begin{acks}
+We presented several methods for creating confidence to assess disease prevalence in variety of settings, including simple random samples with imperfect tests, weighted sampling with perfect tests, and weighted sampling with imperfect tests.
+As a general theme, these confidence intervals tend to demonstrate higher coverage than competitor methods.
+In the case of the simple random sample with an imperfect test, we are able to bound the lower error rate for a 95\% confidence interval at 2.5\%, while the state-of-the-art method maintains 95\% coverage by allowing a higher lower error rate.
+Our methods' conservative properties are especially advantageous in settings where the competitor methods exhibit much lower than nominal coverage.
+For example, there is high variance among the sample weights and prevalence is concentrated among the highest-weighted samples competitor coverage of 95\% confidence intervals can fall to 60\% for competitor methods, while our method exhibits > 95\% coverage.
+Thus, we suggest that our melding methods be employed when working with survey settings which involve high variance among the weights or lower errors are particularly undesirable.
+
+% \acks
+% \begin{acks}
+\section{Acknowledgements}
 For sharing the data from the Kalish, et al study, we thank Matthew Memoli and the LID Clinical Studies Unit of the National Institute of Allergy and Infectious Diseases, NIH,  Kaitlyn Sadtler from the National Institute of Biomedical Imaging and Bioengineering, NIH,   Matthew Hall from the National Center for Advancing Translational Sciences, NIH, and Dominic Esposito from the Fredrick National Laboratory for Cancer Research, NCI, NIH.
-\end{acks}
+% \end{acks}
 
 \section{Bibliography}
 \nocite{*}% Show all bib entries - both cited and uncited; comment this line to view only cited bib entries;
@@ -473,198 +531,179 @@ For sharing the data from the Kalish, et al study, we thank Matthew Memoli and t
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{figures/imperfect_coverage_50_groups_0_005_prev.pdf}
-\caption{Caption}
-\label{fig:imperfect_coverage_50_groups_0_005_prev}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{figures/imperfect_coverage_50_groups_0_05_prev.pdf}
-\caption{Caption}
-\label{fig:imperfect_coverage_50_groups_0_05_prev}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{figures/imperfect_coverage_8000_groups_0_005_prev.pdf}
-\caption{Caption}
-\label{fig:imperfect_coverage_8000_groups_0_005_prev}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{figures/imperfect_coverage_8000_groups_0_05_prev.pdf}
-\caption{Caption}
-\label{fig:imperfect_coverage_8000_groups_0_05_prev}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{figures/imperfect_lower_error_frequency_50_groups_0_005_prev.pdf}
-\caption{Caption}
-\label{fig:imperfect_lower_error_frequency_50_groups_0_005_prev}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{figures/imperfect_lower_error_frequency_50_groups_0_05_prev.pdf}
-\caption{Caption}
-\label{fig:imperfect_lower_error_frequency_50_groups_0_05_prev}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{figures/imperfect_lower_error_frequency_8000_groups_0_005_prev.pdf}
-\caption{Caption}
-\label{fig:imperfect_lower_error_frequency_8000_groups_0_005_prev}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{figures/imperfect_lower_error_frequency_8000_groups_0_05_prev.pdf}
-\caption{Caption}
-\label{fig:imperfect_lower_error_frequency_8000_groups_0_05_prev}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{figures/imperfect_upper_error_frequency_50_groups_0_005_prev.pdf}
-\caption{Caption}
-\label{fig:imperfect_upper_error_frequency_50_groups_0_005_prev}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{figures/imperfect_upper_error_frequency_50_groups_0_05_prev.pdf}
-\caption{Caption}
-\label{fig:imperfect_upper_error_frequency_50_groups_0_05_prev}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{figures/imperfect_upper_error_frequency_8000_groups_0_005_prev.pdf}
-\caption{Caption}
-\label{fig:imperfect_upper_error_frequency_8000_groups_0_005_prev}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{figures/imperfect_upper_error_frequency_8000_groups_0_05_prev.pdf}
-\caption{Caption}
-\label{fig:imperfect_upper_error_frequency_8000_groups_0_05_prev}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{figures/perfect_coverage_50_groups_0_005_prev.pdf}
-\caption{Caption}
-\label{fig:perfect_coverage_50_groups_0_005_prev}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{figures/perfect_coverage_50_groups_0_05_prev.pdf}
-\caption{Caption}
-\label{fig:perfect_coverage_50_groups_0_05_prev}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{figures/perfect_coverage_8000_groups_0_005_prev.pdf}
-\caption{Caption}
-\label{fig:perfect_coverage_8000_groups_0_005_prev}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{figures/perfect_coverage_8000_groups_0_05_prev.pdf}
-\caption{Caption}
-\label{fig:perfect_coverage_8000_groups_0_05_prev}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{figures/perfect_lower_error_frequency_50_groups_0_005_prev.pdf}
-\caption{Caption}
+\includegraphics[width=0.8\textwidth]{figures/perfect_lower_error_frequency_50_groups_0_005_prev.pdf}
+\caption{Lower error properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+Each point represents 10,000 simulations of datasets from a population with 0.5\% Prevalence where 50 groups of 200 people are sampled.
+The horizontal dashed line indicates the nominal lower error rate, 2.5\%.
+Colored dashed lines are estimates from a logistic regression model using cubic splines.}
 \label{fig:perfect_lower_error_frequency_50_groups_0_005_prev}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{figures/perfect_lower_error_frequency_50_groups_0_05_prev.pdf}
-\caption{Caption}
-\label{fig:perfect_lower_error_frequency_50_groups_0_05_prev}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{figures/perfect_lower_error_frequency_8000_groups_0_005_prev.pdf}
-\caption{Caption}
+\includegraphics[width=0.8\textwidth]{figures/perfect_lower_error_frequency_8000_groups_0_005_prev.pdf}
+\caption{Lower error properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+Each point represents 10,000 simulations of datasets from a population with 0.5\% Prevalence where 8000 individuals are sampled.
+The horizontal dashed line indicates the nominal lower error rate, 2.5\%.
+Colored dashed lines are estimates from a logistic regression model using cubic splines.}
 \label{fig:perfect_lower_error_frequency_8000_groups_0_005_prev}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{figures/perfect_lower_error_frequency_8000_groups_0_05_prev.pdf}
-\caption{Caption}
+\includegraphics[width=0.8\textwidth]{figures/perfect_lower_error_frequency_50_groups_0_05_prev.pdf}
+\caption{Lower error properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+Each point represents 10,000 simulations of datasets from a population with 5\% Prevalence where 50 groups of 200 people are sampled.
+The horizontal dashed line indicates the nominal lower error rate, 2.5\%.
+Colored dashed lines are estimates from a logistic regression model using cubic splines.}
+\label{fig:perfect_lower_error_frequency_50_groups_0_05_prev}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{figures/perfect_lower_error_frequency_8000_groups_0_05_prev.pdf}
+\caption{Lower error properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+Each point represents 10,000 simulations of datasets from a population with 5\% Prevalence where 8000 individuals are sampled.
+The horizontal dashed line indicates the nominal lower error rate, 2.5\%.
+Colored dashed lines are estimates from a logistic regression model using cubic splines.}
 \label{fig:perfect_lower_error_frequency_8000_groups_0_05_prev}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{figures/perfect_upper_error_frequency_50_groups_0_005_prev.pdf}
-\caption{Caption}
+\includegraphics[width=0.8\textwidth]{figures/perfect_upper_error_frequency_50_groups_0_005_prev.pdf}
+\caption{Upper error properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+Each point represents 10,000 simulations of datasets from a population with 0.5\% Prevalence where 50 groups of 200 people are sampled.
+The horizontal dashed line indicates the nominal upper error rate, 2.5\%.
+Colored dashed lines are estimates from a logistic regression model using cubic splines.}
 \label{fig:perfect_upper_error_frequency_50_groups_0_005_prev}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{figures/perfect_upper_error_frequency_50_groups_0_05_prev.pdf}
-\caption{Caption}
-\label{fig:perfect_upper_error_frequency_50_groups_0_05_prev}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{figures/perfect_upper_error_frequency_8000_groups_0_005_prev.pdf}
-\caption{Caption}
+\includegraphics[width=0.8\textwidth]{figures/perfect_upper_error_frequency_8000_groups_0_005_prev.pdf}
+\caption{Upper error properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+Each point represents 10,000 simulations of datasets from a population with 0.5\% Prevalence where 8000 individuals are sampled.
+The horizontal dashed line indicates the nominal upper error rate, 2.5\%.
+Colored dashed lines are estimates from a logistic regression model using cubic splines.}
 \label{fig:perfect_upper_error_frequency_8000_groups_0_005_prev}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{figures/perfect_upper_error_frequency_8000_groups_0_05_prev.pdf}
-\caption{Caption}
+\includegraphics[width=0.8\textwidth]{figures/perfect_upper_error_frequency_50_groups_0_05_prev.pdf}
+\caption{Upper error properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+Each point represents 10,000 simulations of datasets from a population with 5\% Prevalence where 50 groups of 200 people are sampled.
+The horizontal dashed line indicates the nominal upper error rate, 2.5\%.
+Colored dashed lines are estimates from a logistic regression model using cubic splines.}
+\label{fig:perfect_upper_error_frequency_50_groups_0_05_prev}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{figures/perfect_upper_error_frequency_8000_groups_0_05_prev.pdf}
+\caption{Upper error properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+Each point represents 10,000 simulations of datasets from a population with 5\% Prevalence where 8000 individuals are sampled.
+The horizontal dashed line indicates the nominal upper error rate, 2.5\%.
+Colored dashed lines are estimates from a logistic regression model using cubic splines.}
 \label{fig:perfect_upper_error_frequency_8000_groups_0_05_prev}
 \end{figure}
 
+% Start of Imperfect
+
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{figures/simple_coverage_comparison_plot.pdf}
-\caption{Caption}
-\label{fig:simple_coverage_comparison_plot}
+\includegraphics[width=0.8\textwidth]{figures/imperfect_lower_error_frequency_50_groups_0_05_prev.pdf}
+\caption{Lower error properties for the two melded confidence interval procedures, WprevSeSp Binomial and WprevSeSp Poisson, and one method, wspoissonTest, which does not account for the imperfect assay.
+Each point represents 10,000 simulations of datasets from a population with 0.5\% Prevalence where 50 groups of 200 people are sampled.
+Each datasets also includes simulated results of tests to evaluate the sensitivity and specificity of the assay performed on 60 and 300 individuals, respectively.
+The horizontal dashed line indicates the nominal lower error rate, 2.5\%.
+Colored dashed lines are estimates from a logistic regression model using cubic splines.}
+\label{fig:imperfect_lower_error_frequency_50_groups_0_05_prev}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{figures/simple_coverage_error_comparison_plot.pdf}
-\caption{Caption}
-\label{fig:simple_coverage_error_comparison_plot}
+\includegraphics[width=0.8\textwidth]{figures/imperfect_lower_error_frequency_50_groups_0_005_prev.pdf}
+\caption{Lower error properties for the two melded confidence interval procedures, WprevSeSp Binomial and WprevSeSp Poisson, and one method, wspoissonTest, which does not account for the imperfect assay.
+Each point represents 10,000 simulations of datasets from a population with 0.5\% Prevalence where 8000 individuals are sampled.
+Each datasets also includes simulated results of tests to evaluate the sensitivity and specificity of the assay performed on 60 and 300 individuals, respectively.
+The horizontal dashed line indicates the nominal lower error rate, 2.5\%.
+Colored dashed lines are estimates from a logistic regression model using cubic splines.}
+\label{fig:imperfect_lower_error_frequency_50_groups_0_005_prev}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{figures/simple_lower_error_frequency_comparison_plot.pdf}
-\caption{Caption}
-\label{fig:simple_lower_error_frequency_comparison_plot}
+\includegraphics[width=0.8\textwidth]{figures/imperfect_lower_error_frequency_8000_groups_0_05_prev.pdf}
+\caption{Lower error properties for the two melded confidence interval procedures, WprevSeSp Binomial and WprevSeSp Poisson, and one method, wspoissonTest, which does not account for the imperfect assay.
+Each point represents 10,000 simulations of datasets from a population with 5\% Prevalence where 50 groups of 200 people are sampled.
+Each datasets also includes simulated results of tests to evaluate the sensitivity and specificity of the assay performed on 60 and 300 individuals, respectively.
+The horizontal dashed line indicates the nominal lower error rate, 2.5\%.
+Colored dashed lines are estimates from a logistic regression model using cubic splines.}
+\label{fig:imperfect_lower_error_frequency_8000_groups_0_05_prev}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{figures/simple_upper_error_frequency_comparison_plot.pdf}
-\caption{Caption}
-\label{fig:simple_upper_error_frequency_comparison_plot}
+\includegraphics[width=0.8\textwidth]{figures/imperfect_lower_error_frequency_8000_groups_0_005_prev.pdf}
+\caption{Lower error properties for the two melded confidence interval procedures, WprevSeSp Binomial and WprevSeSp Poisson, and one method, wspoissonTest, which does not account for the imperfect assay.
+Each point represents 10,000 simulations of datasets from a population with 5\% Prevalence where 8000 individuals are sampled.
+Each datasets also includes simulated results of tests to evaluate the sensitivity and specificity of the assay performed on 60 and 300 individuals, respectively.
+The horizontal dashed line indicates the nominal lower error rate, 2.5\%.
+Colored dashed lines are estimates from a logistic regression model using cubic splines.}
+\label{fig:imperfect_lower_error_frequency_8000_groups_0_005_prev}
 \end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{figures/imperfect_upper_error_frequency_50_groups_0_005_prev.pdf}
+\caption{Upper error properties for the two melded confidence interval procedures, WprevSeSp Binomial and WprevSeSp Poisson, and one method, wspoissonTest, which does not account for the imperfect assay.
+Each point represents 10,000 simulations of datasets from a population with 0.5\% Prevalence where 50 groups of 200 people are sampled.
+Each datasets also includes simulated results of tests to evaluate the sensitivity and specificity of the assay performed on 60 and 300 individuals, respectively.
+The horizontal dashed line indicates the nominal upper error rate, 2.5\%.
+Colored dashed lines are estimates from a logistic regression model using cubic splines.}
+\label{fig:imperfect_upper_error_frequency_50_groups_0_005_prev}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{figures/imperfect_upper_error_frequency_8000_groups_0_005_prev.pdf}
+\caption{Upper error properties for the two melded confidence interval procedures, WprevSeSp Binomial and WprevSeSp Poisson, and one method, wspoissonTest, which does not account for the imperfect assay.
+Each point represents 10,000 simulations of datasets from a population with 0.5\% Prevalence where 8000 individuals are sampled.
+Each datasets also includes simulated results of tests to evaluate the sensitivity and specificity of the assay performed on 60 and 300 individuals, respectively.
+The horizontal dashed line indicates the nominal upper error rate, 2.5\%.
+Colored dashed lines are estimates from a logistic regression model using cubic splines.}
+\label{fig:imperfect_upper_error_frequency_8000_groups_0_005_prev}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{figures/imperfect_upper_error_frequency_50_groups_0_05_prev.pdf}
+\caption{Upper error properties for the two melded confidence interval procedures, WprevSeSp Binomial and WprevSeSp Poisson, and one method, wspoissonTest, which does not account for the imperfect assay.
+Each point represents 10,000 simulations of datasets from a population with 5\% Prevalence where 50 groups of 200 people are sampled.
+Each datasets also includes simulated results of tests to evaluate the sensitivity and specificity of the assay performed on 60 and 300 individuals, respectively.
+The horizontal dashed line indicates the nominal upper error rate, 2.5\%.
+Colored dashed lines are estimates from a logistic regression model using cubic splines.}
+\label{fig:imperfect_upper_error_frequency_50_groups_0_05_prev}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{figures/imperfect_upper_error_frequency_8000_groups_0_05_prev.pdf}
+\caption{Upper error properties for the two melded confidence interval procedures, WprevSeSp Binomial and WprevSeSp Poisson, and one method, wspoissonTest, which does not account for the imperfect assay.
+Each point represents 10,000 simulations of datasets from a population with 5\% Prevalence where 8000 individuals are sampled.
+Each datasets also includes simulated results of tests to evaluate the sensitivity and specificity of the assay performed on 60 and 300 individuals, respectively.
+The horizontal dashed line indicates the nominal upper error rate, 2.5\%.
+Colored dashed lines are estimates from a logistic regression model using cubic splines.}
+\label{fig:imperfect_upper_error_frequency_8000_groups_0_05_prev}
+\end{figure}
+
+% \begin{figure}
+% \centering
+% \includegraphics[width=0.8\textwidth]{figures/simple_coverage_error_comparison_plot.pdf}
+% \caption{Caption}
+% \label{fig:simple_coverage_error_comparison_plot}
+% \end{figure}
 
 \end{document}
