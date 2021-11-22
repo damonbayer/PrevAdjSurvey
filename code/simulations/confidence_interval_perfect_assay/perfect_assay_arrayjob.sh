@@ -5,7 +5,7 @@
 #SBATCH --ntasks-per-core=1
 #SBATCH --time=1:00:00
 #SBATCH --mem=4g
-#SBATCH --array=6-100
+#SBATCH --array=205
 #SBATCH --gres=lscratch:10
 #SBATCH --job-name="perfect"
 

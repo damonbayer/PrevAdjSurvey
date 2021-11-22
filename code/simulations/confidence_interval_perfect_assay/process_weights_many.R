@@ -23,31 +23,19 @@ results_summary <-
                            "Lower Error Frequency" = "lower_error_freq",
                            "Upper Error Frequency" = "upper_error_freq",
                            "Coverage" = "coverage"),
-         # method = fct_recode(method,
-         #                     "Agresti-Coull (Unadjusted)" = "AC",
-         #                     "Agresti-Coull (Adjusted)" = "AC_adjusted",
-         #                     "Clopper-Pearson (Unadjusted)" = "CP",
-         #                     "Clopper-Pearson (Adjusted)" = "CP_adjusted",
-         #                     "wsPoisson" = "wspoissonTest",
-         #                     "wsPoisson with mid-p" = "wspoissonTest_midp"),
          method = fct_recode(method,
-                             "Agresti-Coull" = "AC",
-                             "Clopper-Pearson" = "CP",
+                             "Agresti-Coull (Unadjusted)" = "AC",
+                             "Agresti-Coull (Adjusted)" = "AC_adjusted",
+                             "Clopper-Pearson (Unadjusted)" = "CP",
+                             "Clopper-Pearson (Adjusted)" = "CP_adjusted",
                              "wsPoisson" = "wspoissonTest",
                              "wsPoisson with mid-p" = "wspoissonTest_midp"),
          group_distribution = group_distribution %>%
            fct_relevel("high", "uniform", "low") %>%
            fct_relabel(str_to_title))
 
-
-
 rm(ed1, ed2, sum1, sum2)
 
-desired_prop_groups_with_prev <- c(0.05, 0.25, 0.75)
-
-results_summary <- results_summary %>%
-  filter(prop_groups_with_prev %in% desired_prop_groups_with_prev,
-         method != "wsPoisson with mid-p")
 
 generate_plot <- function(name_to_plot, n_groups_to_plot, prev_to_plot){
   group_size <- if_else(n_groups_to_plot == 8000, 1, 200)
@@ -97,7 +85,7 @@ generate_plot <- function(name_to_plot, n_groups_to_plot, prev_to_plot){
 
 generate_plot(name_to_plot = "Coverage", n_groups_to_plot = 50, prev_to_plot = 0.005)
 
-
+.Last.value$plot[[1]]
 results_summary %>%
   select(n_groups, name, prev) %>%
   distinct() %>%
@@ -106,12 +94,6 @@ results_summary %>%
     ~generate_plot(name_to_plot = ..1,
                    n_groups_to_plot = ..2,
                    prev_to_plot = ..3))) %>%
-  mutate(file_name = path("figures", str_c("perfect", str_replace_all(str_to_lower(name), "\\s", "_"), n_groups, "groups", str_replace_all(prev, "\\.", "_"), "prev", sep = "_"), ext = "pdf")) %>%
-  with(walk2(file_name, plot, ~save_plot(filename = .x, plot = .y,
-                                         ncol = length(desired_prop_groups_with_prev),
-                                         nrow = 3,
-                                         # base_asp = (11 / length(desired_prop_groups_with_prev)) / (8.5 / 3),
-                                         # base_height = 4,
-                                         base_asp = 1
-                                         )))
+  mutate(file_name = path("figures", str_c(str_replace_all(str_to_lower(name), "\\s", "_"), n_groups, str_replace_all(prev, "\\.", "_"), sep = "_"), ext = "pdf")) %>%
+  with(walk2(file_name, plot, ~save_plot(filename = .x, plot = .y, ncol = 5, nrow = 3, base_asp = (11 / 5) / (8.5 / 3), base_height = 4)))
 
