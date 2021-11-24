@@ -67,7 +67,8 @@ generate_plot_2 <- function(name_to_plot, n_groups_to_plot, prev_to_plot){
     scale_x_continuous(name = "Weight Coefficient of Variation", labels = scales::percent) +
     scale_y_continuous(name = name_to_plot, label = ~percent(., accuracy = 1)) +
     scale_color_discrete(name = "Method") +
-    theme(legend.position = "bottom") +
+    theme(legend.position = "bottom",
+          panel.border = element_rect(color = "black", fill = NA, size = 1)) +
     ggtitle(label = glue("{name_to_plot} Properties for Simulations with {percent(prev_to_plot, accuracy = 0.1)} Prevalence Among {comma(n_groups_to_plot)} Groups of {comma(group_size)}"),
             subtitle = "Each Facet = 95% Sensitivity, Each Point = 10,000 Replications")
   generated_plot
