@@ -95,7 +95,7 @@ and the apparent prevalence is
     \label{eq:app-prev}
 \end{equation}
 
-where \( w_i = N_i / \sum_{j=1}^n N_j \) and, therefore, \( \sum_{i=1}^k w_i = 1 \).
+where \( w_i = N_i / \sum_{j=1}^k N_j \) and, therefore, \( \sum_{i=1}^k w_i = 1 \).
 
 Suppose the assay is measured on \( m_n \) individuals known to not have the disease and on \( m_p \) individuals known to have have the disease.
 Let \( C_n \) and \( C_p \) be the number who test positive from the respective samples.
@@ -118,7 +118,7 @@ Let \( \hat{\theta}_i = \frac{X_i}{n_i} \), \( \hat{\phi}_n = 1 - \frac{C_n}{m_n
 Then a natural estimator for \( \beta^* \) is 
 
 \begin{equation}
-    \hat{\beta}^* = \frac{\sum_{i=1}^k w_i \hat{\theta}_i}{\hat{\phi}_p - \hat{\phi}_n} - \frac{\hat{\phi}_n}{\hat{\phi}_p - \hat{\phi}_n}.
+    \hat{\beta}^* = \frac{\sum_{i=1}^k w_i \hat{\theta}_i}{\hat{\phi}_p - \hat{\phi}_n} - \frac{\hat{\phi}_n}{\hat{\phi}_p - \hat{\phi}_n}. \label{eq:betastarhat}
 \end{equation}
 
 This estimator serves as an important basis for developing confidence intervals in this work.
@@ -131,25 +131,45 @@ Section~\ref{sec:weight-imperfect} is concerned with confidence intervals for  \
 
 First, we consider the scenario0 \( k = 1 \), \( \phi_n > 0 \), and \( \phi_p < 1 \).
 We develop a confidence interval for the population prevalence, \( \beta^* \).
-Because \( k = 1 \), the estimator in Equation~\ref{eq:long-beta} becomes 
+When \( k = 1 \), the estimand in Equation~\ref{eq:long-beta} becomes $\beta^* = (\theta_1 - \phi_n)/(\phi_p-\phi_n)$. We have $\phi_p > \phi_n$ for any useful assay, and when the sample is a mixture of individuals with and without the disease of interest, $\phi_p > \theta_1 > \phi_n$. The estimator of $\beta^*$ is 
+%in Equation~\ref{eq:betastarhat} becomes 
 
 \begin{equation}
-\hat{\beta}^* = \frac{\hat{\theta}_1 - \hat{\phi}_n}{\hat{\phi}_p - \hat{\phi}_n}.
+\hat{\beta}^* \equiv 
+g(\hat{\theta}_1, \hat{\phi}_n, \hat{\phi}_p)
+\equiv 
+\left\{ 
+\begin{array}{ll}
+1 & \mbox{ if $\hat{\phi}_n < \hat{\phi}_p \leq \hat{\theta}_1$ }  \\
+\frac{\hat{\theta}_1 - \hat{\phi}_n}{\hat{\phi}_p - \hat{\phi}_n} & 
+\mbox{ if $\hat{\phi}_p > \hat{\theta}_1 > \hat{\phi}_n$ } \\
+0 & \mbox{ otherwise} 
+\end{array}
+\right.
 \label{eq:srs-beta-est}
 \end{equation}
+where we define $0/0=0$.
+% Damon, that definition is arbitrary, it is just used so that everything is defined
 
-To create a confidence interval for \( \hat{\beta}^* \), we use a generalization of the melding method \cite{FayP:2015}, which makes use of lower and upper confidence distributions on functions of independent estimators to account for variability in \( \hat{\theta}_1 \), \( \hat{\phi}_n \), and \( \hat{\phi}_p \).
+
+
+To create a confidence interval for \( \hat{\beta}^* \), we use a generalization of the melding method \cite{FayP:2015}, which makes use of lower and upper confidence distributions on functions of independent estimators to account for variability in \( \hat{\theta}_1 \), \( \hat{\phi}_n \), and \( \hat{\phi}_p \). Confidence distributions are like frequentist posterior distributions
+\cite{}.  The lower and upper confidence distributions are used with discrete responses to ensure the validity of the resulting inferences, and for the binomial case they are equivalent to the posterior distributions that result from using well-calibrated null preference priors \cite{}.
 
 Each estimated component in Equation~\ref{eq:srs-beta-est} is a binomial probability parameter.
 For each of these, we use distributions associated with  the exact binomial confidence interval.
 For a binomial experiment with \( x \) successes out of \( n \) trials, the lower confidence distribution \( (B^L) \) is \( \operatorname{Beta}(x, n - x + 1) \), and the upper confidence distribution \( (B^U) \) is \( \operatorname{Beta}(x + 1, n - x)\).
+Let \( q(a, W) \) be the \( a \)th quantile of a random variable \( W \). Then the exact \( a \)\% central confidence interval of Clopper-Pearson for the binomial parameter is 
+\[
+\left\{ q \left( \frac{1-a}{2}, B^L \right), q \left( \frac{1+a}{2}, B^U \right\}.
+\]
 
-Let \( q(a, W) \) be the \( a \)th quantile of a random variable \( W \).
-
+Fay et al \cite{FayP:2015} proposed a method for obtaining confidence intervals for functions of two parameters that are monotonic within the allowable range  for each parameter given the other is fixed. Here we generalize that to $\beta^*$, which is a function of 3 parameters. When $1 \geq \phi_p > \theta_1 > \phi_n \geq 0$ then $\beta^*$ is monotonically increasing in $\theta_1$, monotonically decreasing in $\phi_p$, and monotonically decreasing in $\phi_n$.
 Then the \( a \)\% confidence interval for \( \beta^* \) is 
 
 \begin{equation}
-    \left\{ q \left( \frac{1 - a}{2}, \frac{B_{\theta_1}^L - B_{\phi_n}^L }{B_{\phi_p}^U - B_{\phi_n}^L }  \right),  q \left( \frac{1 + a}{2}, \frac{B_{\theta_1}^U - B_{\phi_n}^U}{B_{\phi_p}^L - B_{\phi_n}^U}  \right) \right\}.
+    \left\{ q \left( \frac{1 - a}{2}, g \left\{ B_{\theta_1}^L, B_{\phi_n}^U, B_{\phi_p}^U \right\}   \right),  
+            q \left( \frac{1 + a}{2},  g \left\{ B_{\theta_1}^U, B_{\phi_n}^L, B_{\phi_p}^L \right\}   \right) \right\}.
 \label{eq:srs-conf-int}
 \end{equation}
 
@@ -699,11 +719,6 @@ Colored dashed lines are estimates from a logistic regression model using cubic 
 \label{fig:imperfect_upper_error_frequency_8000_groups_0_05_prev}
 \end{figure}
 
-% \begin{figure}
-% \centering
-% \includegraphics[width=0.8\textwidth]{figures/simple_coverage_error_comparison_plot.pdf}
-% \caption{Caption}
-% \label{fig:simple_coverage_error_comparison_plot}
-% \end{figure}
+
 
 \end{document}
