@@ -18,13 +18,18 @@ results_summary <-
                            "Lower Confidence Limit" = "conf_int_1",
                            "Upper Confidence Limit" = "conf_int_2",
                            "Confidence Interval Width" = "width")) %>%
+  # mutate(method = fct_recode(method,
+  #                            "Agresti-Coull (Unadjusted)" = "AC",
+  #                            "Agresti-Coull (Adjusted)" = "AC_adjusted",
+  #                            "Clopper-Pearson (Unadjusted)" = "CP",
+  #                            "Clopper-Pearson (Adjusted)" = "CP_adjusted",
+  #                            "wsPoisson" = "wspoissonTest",
+  #                            "wsPoisson with mid-p" = "wspoissonTest_midp")) %>%
+  filter(method != "wspoissonTest_midp") %>%
   mutate(method = fct_recode(method,
-                             "Agresti-Coull (Unadjusted)" = "AC",
-                             "Agresti-Coull (Adjusted)" = "AC_adjusted",
-                             "Clopper-Pearson (Unadjusted)" = "CP",
-                             "Clopper-Pearson (Adjusted)" = "CP_adjusted",
-                             "wsPoisson" = "wspoissonTest",
-                             "wsPoisson with mid-p" = "wspoissonTest_midp")) %>%
+                             "Agresti-Coull" = "AC",
+                             "Clopper-Pearson" = "CP",
+                             "wsPoisson" = "wspoissonTest")) %>%
   mutate(group_distribution = group_distribution %>%
            fct_relevel("high", "uniform", "low") %>%
            fct_relabel(str_to_title))
