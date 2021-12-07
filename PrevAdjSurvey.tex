@@ -62,10 +62,13 @@ T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 Estimating and quantifying uncertainty for disease prevalence is a standard task in epidemiology.
 For rare events, these estimates are highly sensitive to misclassification \cite{hemenwaySelfDefense}, making adjustments for sensitivity and specificity critically important.
 While estimating prevalence in complex surveys and adjusting estimates for misclassification have been well studied separately, performing both of these tasks simultaneously remains relatively unexplored.
-A recent overview of methods for estimating prevalence in surveys without misclassification is provided in \cite{Dean:2015}.
-For simple surveys with imperfect sensitivity and specificity, \cite{Lang:2014} is the most recent advancement.
-To our knowledge \cite{Kali:2021} presents the only available method for constructing frequentist confidence intervals for prevalence estimates from complex surveys while adjusting for sensitivity and specificity; however,
-this problem has previously been addressed in Bayesian literature, recently in \cite{GelmanBayes}.
+A recent overview of methods for estimating prevalence in surveys without misclassification is provided by Dean and Pagano\cite{Dean:2015}.
+For simple surveys with imperfect sensitivity and specificity, the method of Lang and Reiczigel\cite{Lang:2014} is the most recent advancement\cite{Flor2020}.
+Fewer methods are available for for constructing frequentist confidence intervals for prevalence estimates from complex surveys while adjusting for sensitivity and specificity.
+One such method, which is closely related to the method presented here is developed by Kalish et al\cite{Kali:2021}.
+Another recent advancement is developed by Rosin et al \cite{rosin2021estimating}.
+This method makes use of asymptotic normal appriximations which reduce to the Wald interval when sensitivity and specificity are perfect.
+This problem has also previously been addressed in Bayesian literature, recently by Gelman and Carpenter\cite{GelmanBayes}.
 
 We work up to our ultimate goal in stages.
 First, in Section~\ref{sec:srs-imperfect}, we propose confidence intervals for simple random samples where prevalence is assessed with an assay with imperfect sensitivity and/or specificity.
@@ -73,7 +76,7 @@ Next, in Section~\ref{sec:weight-perfect}, we present confidence intervals for w
 Finally, in Section~\ref{sec:weight-imperfect}, we combine these methods to create confidence intervals for weighted samples where prevalence is assessed with an assay with imperfect sensitivity and specificity.
 
 
-\section{Methods}
+\section{Confidence Interval Methods}
 
 \subsection{Notation and Problem Set-up}
 
@@ -165,44 +168,40 @@ where we define $0/0=0$.
 
 
 
-To create a confidence interval for \( \hat{\beta}^* \), we use a generalization of the melding method \cite{FayP:2015}, which makes use of lower and upper confidence distributions on functions of independent estimators to account for variability in \( \hat{\theta}_1 \), \( \hat{\phi}_n \), and \( \hat{\phi}_p \). Confidence distributions are like frequentist posterior distributions
-\cite{}.  The lower and upper confidence distributions are used with discrete responses to ensure the validity of the resulting inferences, and for the binomial case they are equivalent to the posterior distributions that result from using well-calibrated null preference priors \cite{}.
+To create a confidence interval for \( \hat{\beta}^* \), we use a generalization of the melding method \cite{FayP:2015}, which makes use of lower and upper confidence distributions on functions of independent estimators to account for variability in \( \hat{\theta}_1 \), \( \hat{\phi}_n \), and \( \hat{\phi}_p \). Confidence distributions are like frequentist posterior distributions\cite{Xie2013}.
+The lower and upper confidence distributions are used with discrete responses to ensure the validity of the resulting inferences, and for the binomial case they are equivalent to the posterior distributions that result from using well-calibrated null preference priors \cite{Fay2021}.
 
 Each estimated component in Equation~\ref{eq:srs-beta-est} is a binomial probability parameter.
 For each of these, we use distributions associated with  the exact binomial confidence interval.
 For a binomial experiment with \( x \) successes out of \( n \) trials, the lower confidence distribution \( (B^L) \) is \( \operatorname{Beta}(x, n - x + 1) \), and the upper confidence distribution \( (B^U) \) is \( \operatorname{Beta}(x + 1, n - x)\).
-Let \( q(a, W) \) be the \( a \)th quantile of a random variable \( W \). Then the exact \( a \)\% central confidence interval of Clopper-Pearson for the binomial parameter is 
+Let \( q(a, W) \) be the \( a \)th quantile of a random variable \( W \). Then the exact \( 1 - \alpha \)\% central confidence interval of Clopper-Pearson for the binomial parameter is 
 \begin{equation}
-\left\{ q \left( \frac{1-a}{2}, B^L \right), q \left( \frac{1+a}{2}, B^U \right\}.
+\left\{ q \left( \frac{\alpha}{2}, B^L \right), q \left( 1 - \frac{\alpha}{2}, B^U, \right) \right\}.
 \label{eq:C-P}
 \end{equation}
 
 Fay et al \cite{FayP:2015} proposed a method for obtaining confidence intervals for functions of two parameters that are monotonic within the allowable range  for each parameter given the other is fixed. Here we generalize that to $\beta^*$, which is a function of 3 parameters. When $1 \geq \phi_p > \theta_1 > \phi_n \geq 0$ then $\beta^*$ is monotonically increasing in $\theta_1$, monotonically decreasing in $\phi_p$, and monotonically decreasing in $\phi_n$.
-Then the \( a \)\% confidence interval for \( \beta^* \) is 
+Then the \( 1-\alpha \)\% confidence interval for \( \beta^* \) is 
 
 \begin{equation}
-    \left\{ q \left( \frac{1 - a}{2}, g \left\{ B_{\theta_1}^L, B_{\phi_n}^U, B_{\phi_p}^U \right\}   \right),  
-            q \left( \frac{1 + a}{2},  g \left\{ B_{\theta_1}^U, B_{\phi_n}^L, B_{\phi_p}^L \right\}   \right) \right\}.
+    \left\{ q \left( \frac{\alpha}{2}, g \left\{ B_{\theta_1}^L, B_{\phi_n}^U, B_{\phi_p}^U \right\}   \right),  
+            q \left( 1 - \frac{\alpha}{2},  g \left\{ B_{\theta_1}^U, B_{\phi_n}^L, B_{\phi_p}^L \right\}   \right) \right\}.
 \label{eq:srs-conf-int}
 \end{equation}
 where $g(\cdot)$ is defined in equation~\ref{eq:srs-beta-est}.
 
-%\todo[inline]{Can Mike provide some explanation for the form of this interval? Or some citation? Does it follow from Fay, Proschan, and Brittain (2015), or is there an intermediate reference?}
 
 The quantiles of these melded distributions are calculated by Monte Carlo sampling from each of the component distributions.
 We compare this method to one described in Lang and Reiczigel \cite{Lang:2014} as implemented in prevSeSp function in \cite{asht}, which provides approximate confidence intervals for true prevalence when sensitivity and specificity are estimated from independent samples, as they are  in this section.
 The Lang-Reiczigel interval is given by
 \begin{equation}
-\beta_1^{*\prime} + d\beta \pm q\left( \frac{1 + a}{2}, Z \right) \cdot \Var(\beta_1^{*\prime})^{1/2}    
+\beta_1^{*\prime} + d\beta \pm q\left( 1 - \frac{\alpha}{2}, Z \right) \cdot \Var(\beta_1^{*\prime})^{1/2}    
 \end{equation}
 
-where
-\begin{equation}
-   Z \sim N(0,1) 
-\end{equation}
+where \( q_Z \equiv q\left( 1 - \frac{\alpha}{2}, Z \right)\) and \( Z \sim N(0,1) \).
 
 \begin{equation}
-    d\beta = 2 \cdot q\left( \frac{1 + a}{2}, Z \right)^2 \cdot\left\{ \beta_1^{*\prime} \cdot \frac{\phi_p^\prime (1 - \phi_p^\prime)}{m_p^\prime} - (1 - \beta_1^{*\prime}) \cdot \frac{(1 - \phi_n^\prime) \phi_n^\prime}{m_n^\prime}  \right\}
+    d\beta = 2 \cdot q_Z^2 \cdot\left\{ \beta_1^{*\prime} \cdot \frac{\phi_p^\prime (1 - \phi_p^\prime)}{m_p^\prime} - (1 - \beta_1^{*\prime}) \cdot \frac{(1 - \phi_n^\prime) \phi_n^\prime}{m_n^\prime}  \right\}
 \end{equation}
 
 \begin{equation}
@@ -230,19 +229,19 @@ where
 \end{equation}
 
 \begin{equation}
-    \beta_1^\prime = \frac{n_1 \cdot \hat{\theta}_1 + q\left( \frac{1 + a}{2}, Z \right)^2 / 2}{n_1 + q\left( \frac{1 + a}{2}, Z \right)^2}
+    \beta_1^\prime = \frac{n_1 \cdot \hat{\theta}_1 + q_Z^2 / 2}{n_1 + q_Z^2}
 \end{equation}
 
 \subsection{Estimating Prevalence from a Weighted Sample with a Perfect Assay}
 \label{sec:weight-perfect}
+
 Next, we present a confidence interval for the population prevalence, \( \beta^* \), in the scenario \( k > 1 \), \( \phi_n = 0 \), \( \phi_p = 1 \).
 Our method is a straightforward adaptation of the gamma confidence interval presented in Fay and Feuer\cite{FayF:1997}, which was developed to create confidence intervals for a population rate which is assumed to a weighted sum of Poisson rate parameters.
 We note that for sufficiently large sample size \( n \) and small rate \( \lambda \), a \( \operatorname{Poisson}(n\lambda) \) distribution is approximately equal in distribution to a \( \operatorname{Binomial}(n, \lambda) \) distribution.
-\todo[inline]{Is this a good enough justification? We certainly don't have a large sample size, but we do have small rates. Mike: It seems good enough to me.}
-Under this Poisson assumption, we suggest the \( a \)\% gamma confidence interval for \( \beta^* \):
+Under this Poisson assumption, we suggest the \( 1 - \alpha \)\% gamma confidence interval for \( \beta^* \):
 
 \begin{equation}
-    \left( q\left( \frac{1 - a}{2}, G_{\beta^*}^L \right), q \left( \frac{1 + a}{2},  G_{\beta^*}^U \right) \right)
+    \left( q\left( \frac{\alpha}{2}, G_{\beta^*}^L \right), q \left( 1 - \frac{\alpha}{2},  G_{\beta^*}^U \right) \right)
 \end{equation}
 
 
@@ -273,13 +272,15 @@ where
 \end{equation*}
 
 We call this the wsPoison method, since it assumes a weighted sum of Poissons.
-We compare the wsPoisson confidence interval to two methods presented in Dean and Pagano\cite{Dean:2015}, which were recommended for scenarios with low prevalence.
+We compare the wsPoisson confidence interval to two methods presented in Dean and Pagano\cite{Dean:2015}, which were recommended for scenarios with low prevalence
+Dean and Pagano showed in simulations that the standard Wald interval had poor coverage with low prevalence (e.g., Fig. 1 of that paper showed 95\% confidence intervals with coverage of less than 85\% for prevalence values less than 2\%).
+Since the confidence interval of Rosin, et al \cite{rosin2021estimating} reduces to the Wald interval with perfect assays, we will not include that method in the simulation comparisons.
 
-The first of these is an adaptation of the method of Agresti and Coull\cite{AgrestiCoull} for the survey setting.
+The first recommended method of Dean and Pagano is an adaptation of the method of Agresti and Coull\cite{AgrestiCoull} for the survey setting.
 The interval for \( \beta^* \) is given by:
 
 \begin{equation}
-    \tilde{p} \pm q\left( \frac{1 + a}{2}, Z \right) \sqrt{\tilde{p}(1 - \tilde{p}) / \tilde{n}}
+    \tilde{p} \pm q_Z \sqrt{\tilde{p}(1 - \tilde{p}) / \tilde{n}}
 \end{equation}
 
 where 
@@ -297,7 +298,7 @@ where
 \end{equation*}
 
 \begin{equation*}
-   c = q\left( \frac{1 + a}{2}, Z \right)^2/2
+   c = q_Z^2/2
 \end{equation*}
 
 \begin{equation}
@@ -307,22 +308,22 @@ where
  
 In the case where \( \sum_{i=1}^k \frac{w_i^2}{n_i}\hat{\theta}_i = 0 \), we instead let \( n_{\text{eff}} = \sum_{i=1}^k n_i \).
 
-We also compare our suggested method to a modification of the method of Korn and Graubard\cite{Korn:1998} presented in \cite{Dean:2015}.
+We also compare our suggested method to Dean and Pagano's modification of the method of Korn and Graubard\cite{Korn:1998,Dean:2015}.
 This interval is given by 
 
 \begin{equation}
-    \left( q \left( \frac{1 - a}{2}, B^L_{CP} \right), q \left( \frac{1 + a}{2}, B^U_{CP} \right)  \right)
+    \left( q \left( \frac{\alpha}{2}, B^L_{KG} \right), q \left( 1 - \frac{\alpha}{2}, B^U_{KG} \right)  \right)
 \end{equation}
 
 where analogously to the Clopper-Pearson interval (see equation~\ref{eq:C-P}),
 \begin{equation*}
-    % B^L_{CP} \sim \operatorname{Beta}\left(n_{\text{eff}} \sum_{i=1}^k w_i \hat{\theta}_i, n_{\text{eff}} \left(1 -  \sum_{i=1}^k w_i \hat{\theta}_i\right) + 1\right)
-    B^L_{CP} \sim \operatorname{Beta}\left(x_{\text{eff}},  n_{\text{eff}} -  x_{\text{eff}} + 1 \right)
+    % B^L_{KG} \sim \operatorname{Beta}\left(n_{\text{eff}} \sum_{i=1}^k w_i \hat{\theta}_i, n_{\text{eff}} \left(1 -  \sum_{i=1}^k w_i \hat{\theta}_i\right) + 1\right)
+    B^L_{KG} \sim \operatorname{Beta}\left(x_{\text{eff}},  n_{\text{eff}} -  x_{\text{eff}} + 1 \right)
 \end{equation*}
 
 \begin{equation*}
-    % B^U_{CP} \sim \operatorname{Beta}\left(\left(n_{\text{eff}} \sum_{i=1}^k w_i \hat{\theta}_i\right) + 1, n_{\text{eff}} \left(1 - \sum_{i=1}^k w_i \hat{\theta}_i \right)\right)
-    B^U_{CP} \sim \operatorname{Beta}\left(x_{\text{eff}} + 1, n_{\text{eff}} - x_{\text{eff}} \right)
+    % B^U_{KG} \sim \operatorname{Beta}\left(\left(n_{\text{eff}} \sum_{i=1}^k w_i \hat{\theta}_i\right) + 1, n_{\text{eff}} \left(1 - \sum_{i=1}^k w_i \hat{\theta}_i \right)\right)
+    B^U_{KG} \sim \operatorname{Beta}\left(x_{\text{eff}} + 1, n_{\text{eff}} - x_{\text{eff}} \right)
 \end{equation*}
 
 with \( x_{\text{eff}} = n_{\text{eff}} \sum_{i=1}^k w_i \hat{\theta}_i \), and \( n_{\text{eff}} \) defined in Equation~\ref{eq:neff}.
@@ -333,16 +334,16 @@ with \( x_{\text{eff}} = n_{\text{eff}} \sum_{i=1}^k w_i \hat{\theta}_i \), and 
 Lastly, we develop a confidence interval for the population prevalence, \( \beta^* \), in the case where \( k > 1 \), \( \phi_n > 0 \), \( \phi_p < 1 \).
 
 The two methods we discuss are closely related to each other and the methods discussed in Sections~\ref{sec:srs-imperfect} and \ref{sec:weight-perfect}.
-As in Section~\ref{sec:srs-imperfect}, we use the melding method \cite{FayP:2015} to create \( a \)\% confidence interval very similar to Equation~\ref{eq:srs-conf-int}.
+As in Section~\ref{sec:srs-imperfect}, we use the melding method \cite{FayP:2015} to create \( 1 - \alpha \)\% confidence interval very similar to Equation~\ref{eq:srs-conf-int}.
 The confidence distributions for \( \phi_p \) and \( \phi_n \) are the same Beta distributions as in Section~\ref{sec:srs-imperfect}.
 The two methods differ in their confidence distributions for the apparent prevalence \( \beta \).
 
-In the first case, we use the adaptation of \cite{FayF:1997} presented in Section~\ref{sec:weight-perfect} to derive the \( a \)\% confidence interval for \( \beta^* \):
+In the first case, we use the adaptation of \cite{FayF:1997} presented in Section~\ref{sec:weight-perfect} to derive the \( 1 - \alpha \)\% confidence interval for \( \beta^* \):
 
 \begin{equation}
-    \left\{ q \left( \frac{1 - a}{2}, %\frac{G_{\beta}^L + B_{\phi_n}^L }{B_{\phi_p}^U + B_{\phi_n}^L } 
+    \left\{ q \left( \frac{\alpha}{2}, %\frac{G_{\beta}^L + B_{\phi_n}^L }{B_{\phi_p}^U + B_{\phi_n}^L } 
     g \left[ G^L_{\beta^*}, B^U_{\phi_n}, B^U_{\phi_p} \right]
-    \right),  q \left( \frac{1 + a}{2}, %\frac{G_{\beta}^U + B_{\phi_n}^U}{B_{\phi_p}^L + B_{\phi_n}^U}  \right) \right\}.
+    \right),  q \left( 1 - \frac{\alpha}{2}, %\frac{G_{\beta}^U + B_{\phi_n}^U}{B_{\phi_p}^L + B_{\phi_n}^U}  \right) \right\}.
        g \left[G^U_{\beta^*}, B^L_{\phi_n}, B^L_{\phi_p} \right] \right)
        \right\}
 \end{equation}
@@ -350,15 +351,15 @@ In the first case, we use the adaptation of \cite{FayF:1997} presented in Sectio
 where  \( G_{\beta^*}^L \) and \( G_{\beta^*}^U \) are defined in Section~\ref{sec:weight-perfect}.
 
 The alternative method is that used in \cite{Kali:2021}.
-We use the  modification of \cite{Korn:1998} presented in \cite{Dean:2015}, as in Section~\ref{sec:weight-perfect}, to derive the \( a \)\% confidence interval for \( \beta^* \):
+We use the  modification of \cite{Korn:1998} presented in \cite{Dean:2015}, as in Section~\ref{sec:weight-perfect}, to derive the \( 1 - \alpha \)\% confidence interval for \( \beta^* \):
 
 \begin{equation}
-    \left\{ q \left( \frac{1 - a}{2}, \frac{B_{CP}^L + B_{\phi_n}^L }{B_{\phi_p}^U + B_{\phi_n}^L }  \right),  q \left( \frac{1 + a}{2}, \frac{B_{CP}^U + B_{\phi_n}^U}{B_{\phi_p}^L + B_{\phi_n}^U}  \right) \right\}.
+    \left\{ q \left( \frac{\alpha}{2}, \frac{B_{KG}^L + B_{\phi_n}^L }{B_{\phi_p}^U + B_{\phi_n}^L }  \right),  q \left( 1 - \frac{\alpha}{2}, \frac{B_{KG}^U + B_{\phi_n}^U}{B_{\phi_p}^L + B_{\phi_n}^U}  \right) \right\}.
 \end{equation}
 
-where \( B_{CP}^L \) and \( B_{CP}^U \) are as defined in Section~\ref{sec:weight-perfect}.
+where \( B_{KG}^L \) and \( B_{KG}^U \) are as defined in Section~\ref{sec:weight-perfect}.
 
-\section{Results}
+\section{Simulations}
 
 \subsection{Estimating Prevalence from a Simple Random Sample with an Imperfect Assay}
 
@@ -401,8 +402,6 @@ We compare the wsPoisson method to the more traditional Agresti-Coull and Korn-G
 Our simulations examine varying levels of disease prevalence (0.5\% or 5\%), types of groups surveyed (50 groups 200 subjects or 8000 groups of 1 subject), distributions of weights among the groups (coefficient of variation from approximately 0\% to nearly 6\%), the number of groups with non-zero prevalence, and the weights of the groups with non-zero prevalence.
 For each scenario, 10,000 data sets are simulated and assessed.
 
-\todo[inline]{Since our method is so conservative, I should look at the widths of the confidence intervals. Unfortunately, I have to re-reun simulations to do this.}
-
 The coverage properties for these simulations are presented in Figures~\ref{fig:perfect_coverage_50_groups_0_005_prev}--\ref{fig:perfect_coverage_8000_groups_0_05_prev}.
 Additional properties for these simulations are presented in Figures~\ref{fig:perfect_lower_error_frequency_50_groups_0_005_prev}--\ref{fig:perfect_confidence_interval_width_8000_groups_0_05_prev}.
 
@@ -412,6 +411,9 @@ Uniform distribution of prevalence among the weights, increased overall prevalen
 In contrast, the wsPoisson method appears to guarantee coverage in all scenarios. The wsPoisson method tends to become more conservative when the coefficient of variation among the weights increases. 
 In all cases, the wsPoisson method is more conservative than the competitor methods.
 This is similar to the behavior observed in Fay and Feuer\cite{FayF:1997}, where, in simulations, the overall error rate for the gamma intervals decreased as the variance of the weights increased.
+Because our methods appear to be very conservative, with coverage near 100\% in some cases, we present the widths of the confidence intervals in Figures~\ref{fig:perfect_confidence_interval_width_50_groups_0_005_prev}--\ref{fig:perfect_confidence_interval_width_8000_groups_0_05_prev}.
+In scenarios where coefficient of variation among the survey weights is high, the wsPoisson intervals are often two or three times wider than intervals produced by competing methods.
+
 
 \begin{figure}
 \centering
@@ -463,8 +465,6 @@ In each scenario, the assay has 95\% sensitivity.
 Each scenario is simulated 10,000 times, with new prevalence, sensitivity, and specificity surveys generated and 95\% confidence intervals are created.
 Simulated sensitivity is assessed based on 60 tests, while specificity is based on 300 tests.
 
-\todo[inline]{Since our method is so conservative, I should look at the widths of the confidence intervals. Unfortunately, I have to re-reun simulations to do this.}
-
 The coverage properties for these simulations are presented in Figures~\ref{fig:imperfect_coverage_50_groups_0_005_prev}--\ref{fig:imperfect_coverage_8000_groups_0_05_prev}.
 Additional properties for these simulations are presented in Figures~\ref{fig:imperfect_lower_error_frequency_50_groups_0_05_prev}--\ref{fig:imperfect_confidence_interval_width_8000_groups_0_05_prev}.
 
@@ -515,6 +515,11 @@ Colored dashed lines are estimates from a logistic regression model using cubic 
 Based on Figures~\ref{fig:imperfect_lower_error_frequency_50_groups_0_05_prev}--\ref{fig:imperfect_upper_error_frequency_8000_groups_0_05_prev}, we note that, in most settings, the naive wspoissonTest procedure results in extremely poor coverage, around 0\%, while the two melding procedures result in conservative confidence intervals, often nearing 100\% coverage.
 With perfect specificity, the issue of poor coverage for the wspoissonTest procedure is less prominent, but the WprevSeSp Binomial method fails to maintain nominal coverage when the coefficient of variation among the weights is high.
 Only our proposed WprevSeSp Poisson method maintains or exceed the desired coverage in all scenarios.
+Because our methods appear to be very conservative, with coverage near 100\% in some cases, we present the widths of the confidence intervals in Figures~\ref{fig:imperfect_confidence_interval_width_50_groups_0_005_prev}--\ref{fig:imperfect_confidence_interval_width_8000_groups_0_05_prev}.
+The WprevSeSp Binomial and  WprevSeSp Poisson methods typically produce wide intervals of approximately the same size - sometimes as wide as 12\%, even when true prevalence is 0.05\%.
+One notable exception to this is presented in Figure \ref{fig:imperfect_confidence_interval_width_8000_groups_0_005_prev}, which shows that for tests with perfect specificity, the WprevSeSP produces much narrower confidence intervals than the other methods.
+
+\section{Applications}
 
 We also apply these two methods to a real data set from \cite{Kali:2021}.
 This data set was collected to estimate seroprevalence of SARS-CoV-2 in the United States between May and July 2020.
