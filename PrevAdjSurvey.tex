@@ -174,7 +174,7 @@ The lower and upper confidence distributions are used with discrete responses to
 Each estimated component in Equation~\ref{eq:srs-beta-est} is a binomial probability parameter.
 For each of these, we use distributions associated with  the exact binomial confidence interval.
 For a binomial experiment with \( x \) successes out of \( n \) trials, the lower confidence distribution \( (B^L) \) is \( \operatorname{Beta}(x, n - x + 1) \), and the upper confidence distribution \( (B^U) \) is \( \operatorname{Beta}(x + 1, n - x)\).
-Let \( q(a, W) \) be the \( a \)th quantile of a random variable \( W \). Then the exact \( 1 - \alpha \)\% central confidence interval of Clopper-Pearson for the binomial parameter is 
+Let \( q(a, W) \) be the \( a \)th quantile of a random variable \( W \). Then the exact \( 1 - \alpha \)\% central confidence interval of Korn-Graubard for the binomial parameter is 
 \begin{equation}
 \left\{ q \left( \frac{\alpha}{2}, B^L \right), q \left( 1 - \frac{\alpha}{2}, B^U, \right) \right\}.
 \label{eq:C-P}
@@ -315,7 +315,7 @@ This interval is given by
     \left( q \left( \frac{\alpha}{2}, B^L_{KG} \right), q \left( 1 - \frac{\alpha}{2}, B^U_{KG} \right)  \right)
 \end{equation}
 
-where analogously to the Clopper-Pearson interval (see equation~\ref{eq:C-P}),
+where analogously to the Korn-Graubard interval (see equation~\ref{eq:C-P}),
 \begin{equation*}
     % B^L_{KG} \sim \operatorname{Beta}\left(n_{\text{eff}} \sum_{i=1}^k w_i \hat{\theta}_i, n_{\text{eff}} \left(1 -  \sum_{i=1}^k w_i \hat{\theta}_i\right) + 1\right)
     B^L_{KG} \sim \operatorname{Beta}\left(x_{\text{eff}},  n_{\text{eff}} -  x_{\text{eff}} + 1 \right)
@@ -398,7 +398,7 @@ Figure~\ref{fig:lower_error_frequency_comparison_plot} demonstrates that while t
 
 \subsection{Estimating Prevalence from a Weighted Sample with a Perfect Assay}
 
-We compare the wsPoisson method to the more traditional Agresti-Coull and Korn-Graubard methods for survey proportions in a variety of settings.
+We compare the wsPoisson method to the more traditional Dean-Pagano modification of the Agresti-Coull (DPAC) method and the Korn-Graubard (KG) method for survey proportions in a variety of settings.
 Our simulations examine varying levels of disease prevalence (0.5\% or 5\%), types of groups surveyed (50 groups 200 subjects or 8000 groups of 1 subject), distributions of weights among the groups (coefficient of variation from approximately 0\% to nearly 6\%), the number of groups with non-zero prevalence, and the weights of the groups with non-zero prevalence.
 For each scenario, 10,000 data sets are simulated and assessed.
 
@@ -418,7 +418,7 @@ In scenarios where coefficient of variation among the survey weights is high, th
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{figures/perfect_coverage_50_groups_0_005_prev.pdf}
-\caption{Coverage properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+\caption{Coverage properties for the wsPoisson model and two standard methods, the Dean-Pagano modification of Agresti-Coull and Korn-Graubard
 Each point represents 10,000 simulations of datasets from a population with 0.5\% Prevalence where 50 groups of 200 people are sampled.
 The horizontal dashed line indicates the nominal coverage, 95\%.
 Colored dashed lines are estimates from a logistic regression model using cubic splines.}
@@ -428,7 +428,7 @@ Colored dashed lines are estimates from a logistic regression model using cubic 
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{figures/perfect_coverage_8000_groups_0_005_prev.pdf}
-\caption{Coverage properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+\caption{Coverage properties for the wsPoisson model and two standard methods, the Dean-Pagano modification of Agresti-Coull and Korn-Graubard
 Each point represents 10,000 simulations of datasets from a population with 0.5\% Prevalence where 8000 individuals are sampled.
 The horizontal dashed line indicates the nominal coverage, 95\%.
 Colored dashed lines are estimates from a logistic regression model using cubic splines.}
@@ -438,7 +438,7 @@ Colored dashed lines are estimates from a logistic regression model using cubic 
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{figures/perfect_coverage_50_groups_0_05_prev.pdf}
-\caption{Coverage properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+\caption{Coverage properties for the wsPoisson model and two standard methods, the Dean-Pagano modification of Agresti-Coull and Korn-Graubard
 Each point represents 10,000 simulations of datasets from a population with 5\% Prevalence where 50 groups of 200 people are sampled.
 The horizontal dashed line indicates the nominal coverage, 95\%.
 Colored dashed lines are estimates from a logistic regression model using cubic splines.}
@@ -448,7 +448,7 @@ Colored dashed lines are estimates from a logistic regression model using cubic 
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{figures/perfect_coverage_8000_groups_0_05_prev.pdf}
-\caption{Coverage properties for the wsPoisson model and two standard methods, Agresti-Coull and Korn-Graubard.
+\caption{Coverage properties for the wsPoisson model and two standard methods, the Dean-Pagano modification of Agresti-Coull and Korn-Graubard
 Each point represents 10,000 simulations of datasets from a population with 5\% Prevalence where 8000 individuals are sampled.
 The horizontal dashed line indicates the nominal coverage, 95\%.
 Colored dashed lines are estimates from a logistic regression model using cubic splines.}
@@ -573,7 +573,7 @@ For sharing the data from the Kalish, et al study, we thank Matthew Memoli and t
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{figures/perfect_lower_error_frequency_50_groups_0_005_prev.pdf}
-\caption{Lower error properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+\caption{Lower error properties for the wsPoisson model and two standard methods, the Dean-Pagano modification of Agresti-Coull and Korn-Graubard
 Each point represents 10,000 simulations of datasets from a population with 0.5\% Prevalence where 50 groups of 200 people are sampled.
 The horizontal dashed line indicates the nominal lower error rate, 2.5\%.
 Colored dashed lines are estimates from a logistic regression model using cubic splines.}
@@ -583,7 +583,7 @@ Colored dashed lines are estimates from a logistic regression model using cubic 
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{figures/perfect_lower_error_frequency_8000_groups_0_005_prev.pdf}
-\caption{Lower error properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+\caption{Lower error properties for the wsPoisson model and two standard methods, the Dean-Pagano modification of Agresti-Coull and Korn-Graubard
 Each point represents 10,000 simulations of datasets from a population with 0.5\% Prevalence where 8000 individuals are sampled.
 The horizontal dashed line indicates the nominal lower error rate, 2.5\%.
 Colored dashed lines are estimates from a logistic regression model using cubic splines.}
@@ -593,7 +593,7 @@ Colored dashed lines are estimates from a logistic regression model using cubic 
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{figures/perfect_lower_error_frequency_50_groups_0_05_prev.pdf}
-\caption{Lower error properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+\caption{Lower error properties for the wsPoisson model and two standard methods, the Dean-Pagano modification of Agresti-Coull and Korn-Graubard
 Each point represents 10,000 simulations of datasets from a population with 5\% Prevalence where 50 groups of 200 people are sampled.
 The horizontal dashed line indicates the nominal lower error rate, 2.5\%.
 Colored dashed lines are estimates from a logistic regression model using cubic splines.}
@@ -603,7 +603,7 @@ Colored dashed lines are estimates from a logistic regression model using cubic 
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{figures/perfect_lower_error_frequency_8000_groups_0_05_prev.pdf}
-\caption{Lower error properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+\caption{Lower error properties for the wsPoisson model and two standard methods, the Dean-Pagano modification of Agresti-Coull and Korn-Graubard
 Each point represents 10,000 simulations of datasets from a population with 5\% Prevalence where 8000 individuals are sampled.
 The horizontal dashed line indicates the nominal lower error rate, 2.5\%.
 Colored dashed lines are estimates from a logistic regression model using cubic splines.}
@@ -613,7 +613,7 @@ Colored dashed lines are estimates from a logistic regression model using cubic 
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{figures/perfect_upper_error_frequency_50_groups_0_005_prev.pdf}
-\caption{Upper error properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+\caption{Upper error properties for the wsPoisson model and two standard methods, the Dean-Pagano modification of Agresti-Coull and Korn-Graubard
 Each point represents 10,000 simulations of datasets from a population with 0.5\% Prevalence where 50 groups of 200 people are sampled.
 The horizontal dashed line indicates the nominal upper error rate, 2.5\%.
 Colored dashed lines are estimates from a logistic regression model using cubic splines.}
@@ -623,7 +623,7 @@ Colored dashed lines are estimates from a logistic regression model using cubic 
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{figures/perfect_upper_error_frequency_8000_groups_0_005_prev.pdf}
-\caption{Upper error properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+\caption{Upper error properties for the wsPoisson model and two standard methods, the Dean-Pagano modification of Agresti-Coull and Korn-Graubard
 Each point represents 10,000 simulations of datasets from a population with 0.5\% Prevalence where 8000 individuals are sampled.
 The horizontal dashed line indicates the nominal upper error rate, 2.5\%.
 Colored dashed lines are estimates from a logistic regression model using cubic splines.}
@@ -633,7 +633,7 @@ Colored dashed lines are estimates from a logistic regression model using cubic 
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{figures/perfect_upper_error_frequency_50_groups_0_05_prev.pdf}
-\caption{Upper error properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+\caption{Upper error properties for the wsPoisson model and two standard methods, the Dean-Pagano modification of Agresti-Coull and Korn-Graubard
 Each point represents 10,000 simulations of datasets from a population with 5\% Prevalence where 50 groups of 200 people are sampled.
 The horizontal dashed line indicates the nominal upper error rate, 2.5\%.
 Colored dashed lines are estimates from a logistic regression model using cubic splines.}
@@ -643,7 +643,7 @@ Colored dashed lines are estimates from a logistic regression model using cubic 
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{figures/perfect_upper_error_frequency_8000_groups_0_05_prev.pdf}
-\caption{Upper error properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+\caption{Upper error properties for the wsPoisson model and two standard methods, the Dean-Pagano modification of Agresti-Coull and Korn-Graubard
 Each point represents 10,000 simulations of datasets from a population with 5\% Prevalence where 8000 individuals are sampled.
 The horizontal dashed line indicates the nominal upper error rate, 2.5\%.
 Colored dashed lines are estimates from a logistic regression model using cubic splines.}
@@ -653,7 +653,7 @@ Colored dashed lines are estimates from a logistic regression model using cubic 
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{figures/perfect_confidence_interval_width_50_groups_0_005_prev}
-\caption{Confidence interval width properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+\caption{Confidence interval width properties for the wsPoisson model and two standard methods, the Dean-Pagano modification of Agresti-Coull and Korn-Graubard
 Each point represents 10,000 simulations of datasets from a population with 0.5\% Prevalence where 50 groups of 200 people are sampled.
 Colored dashed lines are estimates from a logistic regression model using cubic splines.}
 \label{fig:perfect_confidence_interval_width_50_groups_0_005_prev}
@@ -663,7 +663,7 @@ Colored dashed lines are estimates from a logistic regression model using cubic 
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{figures/perfect_confidence_interval_width_50_groups_0_05_prev}
-\caption{Confidence interval width properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+\caption{Confidence interval width properties for the wsPoisson model and two standard methods, the Dean-Pagano modification of Agresti-Coull and Korn-Graubard
 Each point represents 10,000 simulations of datasets from a population with 5\% Prevalence where 50 groups of 200 people are sampled.
 Colored dashed lines are estimates from a logistic regression model using cubic splines.}
 \label{fig:perfect_confidence_interval_width_50_groups_0_05_prev}
@@ -673,7 +673,7 @@ Colored dashed lines are estimates from a logistic regression model using cubic 
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{figures/perfect_confidence_interval_width_8000_groups_0_005_prev}
-\caption{Confidence interval width properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+\caption{Confidence interval width properties for the wsPoisson model and two standard methods, the Dean-Pagano modification of Agresti-Coull and Korn-Graubard
 Each point represents 10,000 simulations of datasets from a population with 0.5\% Prevalence where 8000 individuals are sampled.
 Colored dashed lines are estimates from a logistic regression model using cubic splines.}
 \label{fig:perfect_confidence_interval_width_8000_groups_0_005_prev}
@@ -683,7 +683,7 @@ Colored dashed lines are estimates from a logistic regression model using cubic 
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{figures/perfect_confidence_interval_width_8000_groups_0_05_prev}
-\caption{Confidence interval width properties for the wsPoisson model and two standard methods, Agresti-Coull and Clopper-Pearson.
+\caption{Confidence interval width properties for the wsPoisson model and two standard methods, the Dean-Pagano modification of Agresti-Coull and Korn-Graubard
 Each point represents 10,000 simulations of datasets from a population with 5\% Prevalence where 8000 individuals are sampled.
 Colored dashed lines are estimates from a logistic regression model using cubic splines.}
 \label{fig:perfect_confidence_interval_width_8000_groups_0_05_prev}
