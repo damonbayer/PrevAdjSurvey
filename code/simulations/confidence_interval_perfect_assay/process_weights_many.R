@@ -28,7 +28,7 @@ results_summary <-
   filter(method != "wspoissonTest_midp") %>%
   mutate(method = fct_recode(method,
                              "Agresti-Coull" = "AC",
-                             "Clopper-Pearson" = "CP",
+                             "Korn-Graubard" = "CP",
                              "wsPoisson" = "wspoissonTest")) %>%
   mutate(group_distribution = group_distribution %>%
            fct_relevel("high", "uniform", "low") %>%

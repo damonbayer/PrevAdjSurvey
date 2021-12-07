@@ -18,10 +18,11 @@ results_summary <-
   mutate(method = fct_recode(method,
                              "WprevSeSp Binomial" = "WprevSeSp",
                              "WprevSeSp Poisson" = "WprevSeSp_gamma",
-                             "wspoissonTest" = "wspoissonTest")) %>%
+                             "wsPoisson" = "wspoissonTest")) %>%
   mutate(group_distribution = group_distribution %>%
            fct_relevel("high", "uniform", "low") %>%
-           fct_relabel(str_to_title))
+           fct_relabel(str_to_title)) %>%
+  filter(method != "wsPoisson")
 
 
 
