@@ -1,4 +1,5 @@
 library(tidyverse)
+library(asht)
 # raw_results <- read_csv("code/simulations/confidence_interval_imperfect_assay/combined_imperfect_assay_raw.csv")
 # experimental_design <- readRDS("code/simulations/confidence_interval_imperfect_assay/experimental_design.rds")
 #

@@ -15,6 +15,25 @@ suppressMessages({
 })
 source("WprevSeSp_SRS.R")
 
+prevAdj <- function(AP, sen, spec) {
+  # spec = 1 - phi_n
+  phi_n <- 1 - spec
+  phi_p <- sen
+  theta_1 <- AP
+
+  # if ((phi_n < phi_p) & (phi_p < theta_1)) {
+  #   return(1)
+  # } else if ((phi_p >= theta_1) & (theta_1 >= phi_n)) {
+  #   return((theta_1 - phi_n) / (phi_p - phi_n))
+  # } else {
+  #   return(0)
+  # }
+
+  ((phi_n < phi_p) & (phi_p < theta_1)) + # (If this is TRUE, add 1)
+    ((phi_p >= theta_1) & (theta_1 >= phi_n)) * ((theta_1 - phi_n) / (phi_p - phi_n)) # If this is true, run the normal adjustment
+  # else, just returns 0
+}
+
 save_path <- path("//", "data", "bayerdm", "confidence_interval_imperfect_assay")
 dir_create(save_path)
 
@@ -147,7 +166,8 @@ calculate_interval_results <- function(weights,
                        Se = est_sensitivity,
                        nSe = n_tested_for_sensitivity,
                        Sp = est_specificity,
-                       nSp = n_tested_for_specificity)
+                       nSp = n_tested_for_specificity,
+                       seed = NULL)
   w <- weights / tests_per_group
   WprevSeSp_gamma_result <- WprevSeSp_gamma(apparent_positive_counts = apparent_positive_counts,
                   w = w,
@@ -155,7 +175,8 @@ calculate_interval_results <- function(weights,
                   Se = est_sensitivity,
                   nSe = n_tested_for_sensitivity,
                   Sp = est_specificity,
-                  nSp = n_tested_for_specificity)
+                  nSp = n_tested_for_specificity,
+                  seed = NULL)
 
   # What if we treat it as perfect?
   result_wspoissonTest <- wspoissonTest(x = apparent_positive_counts, w = w, midp = F)
