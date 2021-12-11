@@ -7,10 +7,10 @@ library(fs)
 
 
 results_summary <-
-  read_csv("code/simulations/confidence_interval_imperfect_assay/combined_imperfect_assay_summary.csv") %>%
+  read_csv("code/simulations/confidence_interval_imperfect_assay/combined_imperfect_assay_raw.csv") %>%
   left_join(read_csv("code/simulations/confidence_interval_imperfect_assay/experimental_design.csv")) %>%
   mutate(method = str_remove(method, "_result")) %>%
-  pivot_longer(cols = c(lower_error_freq, upper_error_freq, coverage)) %>%
+  pivot_longer(cols = c(conf_int_1, conf_int_2, width, lower_error_freq, upper_error_freq, coverage)) %>%
   mutate(name = fct_recode(name,
                            "Lower Error Frequency" = "lower_error_freq",
                            "Upper Error Frequency" = "upper_error_freq",
