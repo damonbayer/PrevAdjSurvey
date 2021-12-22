@@ -66,7 +66,8 @@ generate_plot_2 <- function(name_to_plot, n_groups_to_plot, prev_to_plot){
     ) +
     cowplot::theme_minimal_grid() +
     scale_x_continuous(name = "Weight Coefficient of Variation", labels = scales::percent) +
-    scale_y_continuous(name = name_to_plot, label = ~percent(., accuracy = 1)) +
+    # scale_y_continuous(name = name_to_plot, label = ~percent(., accuracy = 1)) +
+    scale_y_continuous(name = name_to_plot, label = percent) +
     scale_color_discrete(name = "Method") +
     theme(legend.position = "bottom",
           panel.border = element_rect(color = "black", fill = NA, size = 1)) +
