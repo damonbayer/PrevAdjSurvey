@@ -9,6 +9,10 @@ imperfect_assay_raw_vec <-
   arrange(file_name) %>%
   pull(file_path)
 
+str_sub(imperfect_assay_raw_vec, 64, 67) %>%
+  as.integer() %>%
+  setdiff(1:1000, .)
+
 combined_imperfect_assay_raw <-
   map_dfr(imperfect_assay_raw_vec,
           ~read_rds(.) %>%
