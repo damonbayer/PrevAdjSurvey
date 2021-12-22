@@ -14,7 +14,10 @@ results_summary <-
   mutate(name = fct_recode(name,
                            "Lower Error Frequency" = "lower_error_freq",
                            "Upper Error Frequency" = "upper_error_freq",
-                           "Coverage" = "coverage")) %>%
+                           "Coverage" = "coverage",
+                           "Lower Confidence Limit" = "conf_int_1",
+                           "Upper Confidence Limit" = "conf_int_2",
+                           "Confidence Interval Width" = "width")) %>%
   mutate(method = fct_recode(method,
                              "WprevSeSp Binomial" = "WprevSeSp",
                              "WprevSeSp Poisson" = "WprevSeSp_gamma",
