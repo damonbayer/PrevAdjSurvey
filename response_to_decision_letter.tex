@@ -12,6 +12,19 @@ Title: "Confidence Intervals for Prevalence Estimates from Complex Surveys with 
 We are grateful to the editor and reviewers for their thoughtful comments and the opportunity to improve and resubmit our manuscript.
 Our response to individual comments from each reviewer follow.
 
+
+
+\textbf{ Associate Editor}
+
+Comments to Author:
+\textbf{Your article has been thoroughly reviewed by an expert in the field. You will see that they have several suggestions and comments for you to address, and they see multiple contributions from the article.
+As the reviewer suggests please ensure it is clear in the introduction what are the major research gap(s) the article addresses, and it is clear in the discussion what contribution(s) you believe the article has made.}
+
+We have addressed the reviewers comments in detail below.
+We have rewritten the abstract and expanded the first paragraph of the introduction to be clear about the research gaps this article addresses and to be clear about what is new in our article.
+We have also rewritten the discussion to make our main contributions clear. 
+
+
 \textbf{Reviewer: 1}
 (There are no comments.)
 
@@ -20,30 +33,50 @@ Our response to individual comments from each reviewer follow.
 \begin{itemize}
     \item \textbf{This paper has many strengths and yet could benefit from a revision that clarifies the main contribution(s) of the work. The new method is mathematically clever and appears to have the nice property of guaranteeing nominal CI coverage (though it is unclear if this has been rigorously proved); the contribution alone of generalizing the melded CI to more than 2 parameters is interesting, as well as the applicability of their method to complex surveys where each individual has their own weight. There was clearly painstaking detail taken in simulation studies to evaluate the new method.}
 
+We have clarified our contributions (see answers below). 
+We have also now explicitly stated in the first paragraph of the introduction that while our confidence interval is designed to guarantee coverage, there is no proof of that property given in the paper.
+The conjecture of guaranteed coverage is supported by simulation only.
+
     \item \textbf{The abstract and introduction imply that a main contribution of the work is that the new methods have better properties in simulations, and no drawbacks are hinted at. However, it is not clear that the new methods achieved better performance. Performance is strong at very low prevalences, but fades at higher prevalences. This is probably because the gamma CI method uses a Poisson approximation to the binomial that assumes a small binomial parameter, i.e., a small prevalence closer to 0 than 1.}
 
     \textbf{“our methods appear to guarantee coverage in simulated settings, while competing methods are shown to achieve much lower than nominal coverage” (Abstract).}
 
     \textbf{“we…show through simulations that [our new method] beats the best of [the established frequentist competitors] in each of the three stages **with respect to guaranteeing coverage**” (Introduction, last paragraph; emphasis added.) The three stages are (1) random samples with misclassification; (2) weighted samples without misclassification (using a perfect assay); and (3) weighted samples with misclassification.}
 
+We have rewritten the introduction and discussion to be clear
+that a main point of the paper is that there did not exist 
+established methods for creating confidence intervals for prevalence estimates from complex surveys when the assays are imperfect.
+Our paper has developed methods for that situation
+(closely related to the Kalish, et al method, for which the properties were not fully studied), and studied the properties  of those methods. 
 
-    We have added some mentions in the text about the drawbacks to our proposed methods and clarify the scenarios when our methods are shown to be superior:
+In the special cases (e.g., simple random samples with imperfect 
+assays, or complex samples with perfect assays), we could compare our method to established methods. 
+    We have added some mentions in the text about the drawbacks to our proposed methods compared to the established ones and to clarify the scenarios when our methods are shown to be superior:
     
-    Abstract:
-    ``We demonstrate that our methods appear to guarantee coverage in simulated settings, while competing methods are shown to achieve much lower than nominal coverage in some settings, especially when overall prevalence is very low. In other settings, our methods are shown to be overly conservative."
+    \begin{description}
+\item[    Abstract:]
+    ``In some simulations, our methods appear to guarantee coverage, while competing methods have much lower than nominal coverage, especially when overall prevalence is very low. In other settings, our methods are shown to be overly conservative."
     
-    Introduction:
+\item[    Introduction:]
     
     ``However, in some simulated settings, our proposed methods are overly conservative, while competitor methods maintain closer to nominal coverage."
 
-    Discussion:
+\item[    Discussion:]
     ``These new confidence intervals appear to guarantee coverage in most simulated settings, including some scenarios where competitor methods dramatically under-cover.
     In general, our methods demonstrate higher coverage than competitor methods in most scenarios, sometimes being very conservative while competitor methods demonstrate closer to nominal coverage.""
+\end{description}
 
     \item \textbf{The new method may guarantee coverage well, but it seems to do so by using conservative intervals that over-cover. Should such intervals be preferred to intervals that are more permissive (anti-conservative)?}
     
-    \textcolor{red}{Mike, can you add any comments about this?}
+  First, we make the point again, that was not made clear enough in our previous version, that the new methods that we study in this paper (WprevSeSp Poisson and WprevSeSp Binomial)
+do not have an established comparator method.
+There are no previously established tractable methods to give confidence intervals for prevalence from complex surveys with imperfect assays.
+(This is excluding valid methods that were developed recently and were not in print when we submitted, such as DiCiccio et al.
+See remarks in our introduction about those recently developed methods).
 
+For the special cases where there are alternative analyses (e.g., for a simple random sample with an imperfect assay, where we could use the method of Lang and Reiczigel), then the decision on which method to use would depend on the application.
+If at least nominal coverage are important, and directional inferences are important (e.g., you want to know if the prevalence is larger than some value, so you are interested in the lower error of the confidence interval), then the new methods seem attractive.
+If approximately nominal coverage for the two-sided interval is desired, then the method of Lang and Reiczigel may be recommended. 
 
     \item \textbf{For Stage 1 (Sections 2.2/3.1), consider Figure 1. The text states that “both [our new and the existing Lang-Reiczigel] methods achieve approximately nominal coverage, with the melding method being somewhat more conservative.” This definition of “approximately nominal” is debatable; the figure shows that the existing Lang-Reiczigel method achieves nominal 95\% coverage in most situations, while the melding method usually over-covers.}
     
@@ -59,7 +92,7 @@ Our response to individual comments from each reviewer follow.
     Figure~3 shows that both methods make upper errors with roughly the same frequency.
     Figure~2 demonstrates that while the melding procedure bounds the lower error frequency below 2.5\%, the Lang-Reiczigel method generally has lower error above 2.5\%.
     Each of these behaviors may be undesirable, depending on the context in which the methods are applied.
-    For applications in which there is a need to bound the lower errors, the melding method is superior."
+    For applications in which there is a need to bound the lower errors, the melding method appears to be superior."
 
     \item \textbf{For Stage 2 (Sections 2.3/3.2), Figures 4-5 display scenarios where prevalence is 0.5\%, and the new wsPoisson method generally performs well compared to competitors. However, the competitor methods demonstrate almost uniformly better properties (coverage closer to nominal) than the authors’ wsPoisson method when prevalence is 5\% in Figures 6-7. This is not pointed out in the textual description in the last paragraph of Section 3.2}
 
@@ -76,10 +109,23 @@ Our response to individual comments from each reviewer follow.
 
     \item \textbf{Is there a substantive reason that the prevalences assessed in simulations are 0.5\% and 5\%? While the number of scenarios evaluated are clearly substantial, it would be interesting to understand the methods’ performance across a larger portion of the [0, 1] prevalence parameter space.}
 
-    We only evaluated 0.5\% and 5\% because the greater prevalence leads to over-coverage for our methods.
-    We have updated the text to point to this drawback throughout.
+The simulation prevalence of 5\% is very close to the value from our motivating data example.
+The 0.5\% was chosen as to see how well the method does for a much lower value. 
+Although it would be interesting to study the performance across a larger portion of the prevalence parameter space, we leave that to future work because we already have an extensive set of simulation results in this paper. 
 
-    \item If the main contribution of the paper is superior coverage properties, then the above issues of the Poisson approximation assuming a small prevalence as well as simulation results and interpretation should be addressed. The authors could instead elaborate on other contributions of the work detailed above.
+In response to your comment, we have added a paragraph to the beginning of the simulation section and another paragraph in the discussion section to emphasize the limitation of the simulations with respect to prevalence values. 
+
+In the discussion we have added: ``Although this paper has done extensive simulations, the focus of the simulations was for low prevalence and high 
+sensitivity and specificity. For other situations, especially high prevalence situations, more work is needed to more fully explore the properties of these methods.'' 
+
+
+    \item \textbf{If the main contribution of the paper is superior coverage properties, then the above issues of the Poisson approximation assuming a small prevalence as well as simulation results and interpretation should be addressed. The authors could instead elaborate on other contributions of the work detailed above.}
+    
+    The main contribution of the paper is to have a confidence interval method that can be applied to complex surveys when there is also misclassification.
+    Although Kalish {\it et al} 2021 (note: the second and third authors of the submitted paper were also authors on Kalish {\it et al}) did have a method that could be applied to that type of data, but since the focus of that paper was the results of the survey, it did not study the properties of that method.
+    This paper is in some sense a companion paper to that paper, in that it can study the properties an interval very similar to
+     the method in Kalish {\it et al} and also propose modifications of it (the WprevSeSp Poisson method proposed in this paper). 
+    
 
     \item Minor issues:
     
@@ -93,7 +139,7 @@ Our response to individual comments from each reviewer follow.
         \equiv 
         \left\{ 
         \begin{array}{ll}
-        1 & \mbox{ if $\hat{\phi}_n < \hat{\phi}_p < \hat{\theta}_1$ }  \\
+        1 & \mbox{ if $\hat{\phi}_n < \hat{\phi}_p \leq \hat{\theta}_1$ }  \\
         \frac{\hat{\theta}_1 - \hat{\phi}_n}{\hat{\phi}_p - \hat{\phi}_n} & 
         \mbox{ if $\hat{\phi}_p > \hat{\theta}_1 \geq \hat{\phi}_n$ } \\
         0 & \mbox{ otherwise.} 
@@ -103,12 +149,12 @@ Our response to individual comments from each reviewer follow.
 
         \item \textbf{2.2 Lines 24-32: It would be helpful for the unfamiliar reader to include more background on the melding method. For instance, what exactly is the definition of the confidence distribution? Why are the confidence distributions Beta for a binomial experiment?}
         
-        I have added the definition of the confidence distribution to section 2.2
-        \textcolor{red}{Mike, feel free to add more context/intution.}
+       We have added more background on the melding method, giving an intuitive definition of the confidence distribution (and referencing the more formal modern definition).
+       We also now give some insight into why the lower and upper confidence distributions for the binomial are beta distributions.
 
         \item \textbf{As a formatting note, the paper could be much more concise if (a) many of the figures were moved to appendices, and (b) fewer lines are used for equations, e.g., the definition of the Lang-Reiczigel interval in Section 2.2.}
         
-        We have adjusted the presentation of Section 2.2 to reduce the lines used.
+        We have adjusted the some of the presentation in Sections 2.2 and 2.5.2  to reduce the lines used.
 
         \item \textbf{Please elaborate on why the third equality in Section 2.5.2, p. 8, lines 17-25 (variance of  beta-hat) holds.}
 
@@ -133,7 +179,7 @@ Our response to individual comments from each reviewer follow.
 
         \item \textbf{There are several typographical errors that distract the reader. The manuscript should be reread with this attention to detail in mind. Some instances: 2.3 Line 52: “the wsPoison method”; Section 5: “Further worked is needed”; the inconsistency about the assessment of wsPoisson in the simulations; etc.}
         
-        \textcolor{red}{Damon: I fixed these errors and a few more. Mike and Barry should also take a look for proofreading.}
+        We have corrected a the errors described here and several others found upon further review.
 
     \end{itemize}
 \end{itemize}
