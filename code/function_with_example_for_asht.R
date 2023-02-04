@@ -57,11 +57,13 @@ WprevSeSp <- function(method = c("binomial", "poisson"),
   samples_B_phi_p_L <- rbeta(n = nmc, shape1 = cp, shape2 = mp - cp + 1)
   samples_B_phi_p_U <- rbeta(n = nmc, shape1 = cp + 1, shape2 = mp - cp)
 
-
-  # For binomial
   if (method == "binomial") {
-    n_eff <- (s_w_theta_hat * (1 - s_w_theta_hat)) / (sum(w^2 / n * theta_hat))
-    n_eff <- ifelse(n_eff == 0, sum(n), n_eff)
+    n_eff <-
+      if (s_w_theta_hat == 0) {
+      sum(n)
+      } else {
+        (s_w_theta_hat * (1 - s_w_theta_hat)) / (sum(w^2 / n * theta_hat))
+    }
     x_eff <- n_eff * s_w_theta_hat
 
     samples_B_KG_L <- rbeta(n = nmc, shape1 = x_eff, shape2 = n_eff - x_eff + 1)
@@ -76,7 +78,13 @@ WprevSeSp <- function(method = c("binomial", "poisson"),
     y_star <- y + wm
     v_star <- v + wm^2
 
-    samples_G_beta_star_L <- rgamma(n = nmc, y^2 / v, scale = v / y)
+    samples_G_beta_star_L <-
+      if (y == 0) {
+        numeric(nmc)
+      } else {
+        rgamma(n = nmc, y^2 / v, scale = v / y)
+      }
+
     samples_G_beta_star_U <- rgamma(n = nmc, y_star^2 / v_star, scale = v_star / y_star)
 
     samples_g_L <- g(samples_G_beta_star_L, samples_B_phi_n_U, samples_B_phi_p_U)
@@ -162,10 +170,55 @@ WprevSeSp(
   mp = example_data_WprevSeSp$mp
 )
 
+WprevSeSp(
+  method = "poisson",
+  x = example_data_WprevSeSp$x,
+  n = example_data_WprevSeSp$n,
+  w = example_data_WprevSeSp$w,
+  cn = example_data_WprevSeSp$cn,
+  mn = example_data_WprevSeSp$mn,
+  cp = example_data_WprevSeSp$cp,
+  mp = example_data_WprevSeSp$mp
+)
+
+# Check error handling:
+WprevSeSp(
+  method = "missing method",
+  x = example_data_WprevSeSp$x,
+  n = example_data_WprevSeSp$n,
+  w = example_data_WprevSeSp$w,
+  cn = example_data_WprevSeSp$cn,
+  mn = example_data_WprevSeSp$mn,
+  cp = example_data_WprevSeSp$cp,
+  mp = example_data_WprevSeSp$mp
+)
+
 
 WprevSeSp(
   method = "poisson",
   x = example_data_WprevSeSp$x,
+  n = 200,
+  w = example_data_WprevSeSp$w,
+  cn = example_data_WprevSeSp$cn,
+  mn = example_data_WprevSeSp$mn,
+  cp = example_data_WprevSeSp$cp,
+  mp = example_data_WprevSeSp$mp
+)
+
+WprevSeSp(
+  method = "binomial",
+  x = rep(0, length(example_data_WprevSeSp$x)),
+  n = example_data_WprevSeSp$n,
+  w = example_data_WprevSeSp$w,
+  cn = example_data_WprevSeSp$cn,
+  mn = example_data_WprevSeSp$mn,
+  cp = example_data_WprevSeSp$cp,
+  mp = example_data_WprevSeSp$mp
+)
+
+WprevSeSp(
+  method = "poisson",
+  x = rep(0, length(example_data_WprevSeSp$x)),
   n = example_data_WprevSeSp$n,
   w = example_data_WprevSeSp$w,
   cn = example_data_WprevSeSp$cn,
