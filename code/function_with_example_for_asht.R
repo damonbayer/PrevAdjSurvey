@@ -26,7 +26,7 @@ WprevSeSp <- function(method = c("binomial", "poisson"),
                       nmc = 1e5, seed = 49201) {
   method <- match.arg(method)
 
-  if (!all.equal(length(x), length(n), length(w))) {
+  if (length(unique(sapply(list(x, n, w), length))) > 1) {
     stop("x, n, and w must be of equal length")
   }
 
