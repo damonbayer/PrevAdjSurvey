@@ -96,7 +96,7 @@ WprevSeSp <- function(method = c("binomial", "poisson"),
 
   ci <- c(confidence_limit_L, confidence_limit_U)
   AP <- g(s_w_theta_hat, cn / mn, cp / mp)
-  Sp <- 1 - cp / mp
+  Sp <- 1 - cn / mn
   Se <- cp / mp
 
   estimate <- c("adjusted prevalence" = g(s_w_theta_hat, cn / mn, cp / mp))
@@ -104,7 +104,7 @@ WprevSeSp <- function(method = c("binomial", "poisson"),
   statistic <- Se
   names(statistic) <- paste0("Sensitivity (using nSe=", mp, ")")
   parameter <- Sp
-  names(parameter) <- paste0("Specificity (using nSp=", mp, ")")
+  names(parameter) <- paste0("Specificity (using nSp=", mn, ")")
   method_text <- paste0(
     "Prevalence Adjusted for Sensitivity and Specificity (CI by ",
     ifelse(method == "binomial", "Korn-Graubard", "Fay and Feuer"),
